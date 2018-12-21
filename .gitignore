@@ -1,0 +1,2 @@
+# Ignore Q1_binary.rds, unless we do actually want this
+Q1_binary.rds
