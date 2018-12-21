@@ -1159,7 +1159,7 @@ List gaussiglmnet(NumericMatrix X, NumericVector Y, NumericVector lambdas, doubl
 
     NumericVector covs = absolute_covariates(X,residuals);
 
-    if(lambdas[0] < 0) lambdas = create_lambda_sequence(max(covs)-0.001,n_lambda,10.0);
+    if(lambdas[0] < 0) lambdas = create_lambda_sequence(max(na_omit(covs))-0.001,n_lambda,10.0);
 
     bool changed = false;
 
