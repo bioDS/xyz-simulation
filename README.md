@@ -1,0 +1,13 @@
+## Usage instructions
+For the moment, copy Q1_binary.rds into /simulations (or add it to the repo if it's allowed to be here).
+
+fits_xyz runs the simulation, arguments are:
+
+`n p SNR num_bi num_bij perc_viol regression_alpha`
+
+e.g. `./fits_xyz.R 1000 100 10 0 20 0 0.9`
+
+Results will be saved to /fits_proper, to be read by the graph generating code.
+No warning is given on incorrect usage, and unwanted results will be saved to fits_proper, so be sure to remove these if they don't look right.
+
+To generate graphs, run `./PrecRecF1.R`. Previous simulations will be read from results_proper, and graphs will be saved in /PrecRecF1.
