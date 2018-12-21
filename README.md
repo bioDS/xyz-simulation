@@ -9,5 +9,6 @@ e.g. `./fits_xyz.R 1000 100 10 0 20 0 0.9`
 
 Results will be saved to /fits_proper, to be read by the graph generating code.
 No warning is given on incorrect usage, and unwanted results will be saved to fits_proper, so be sure to remove these if they don't look right.
+This currently rebuilds core.cpp on every run. To avoid this you will probably need to install the local copy of xyz, and replace `sourceCPP('xyz/core.cpp')` with `library(xyz)`
 
 To generate graphs, run `./PrecRecF1.R`. Previous simulations will be read from results_proper, and graphs will be saved in /PrecRecF1.
