@@ -244,10 +244,17 @@ first <- first | unlist(split(unlist(regression_results[[3]][[10]]), 1:2)[1]) %i
 second <- unlist(split(unlist(regression_results[[3]][[10]]), 1:2)[2]) %in% unlist(bij_ind[1]) | unlist(split(unlist(regression_results[[3]][[10]]), 1:2)[2]) %in% unlist(bij_ind[2])
 
 tp_indices = list()
+reflexive_results <- 0
 tp_check = first & second
 for (i in c(1:length(tp_check))) {
 	if (tp_check[i] == TRUE) {
-		tp_indices <- append(tp_indices, i)
+		if (regression_results[[3]][[10]][[2*i]] == regression_results[[3]][[10]][[2*i + 1]]) {
+			cat("Ignoring result (", regression_results[[3]][[10]][[2*i]], ",",
+						regression_results[[3]][[10]][[2*i]], ")\n")
+			reflexive_results <- reflexive_results + 1
+		} else {
+			tp_indices <- append(tp_indices, i)
+		}
 	}
 }
 
@@ -262,7 +269,7 @@ for (i in tp_indices) {
 		}
 	}
 }
-interactions_found <- length(regression_results[[3]][[10]]) / 2
+interactions_found <- length(regression_results[[3]][[10]]) / 2 - reflexive_results
 
 cat("found pairs: ", found_results, " out of ", interactions_found, "\n")
 
