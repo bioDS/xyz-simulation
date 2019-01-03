@@ -1,4 +1,9 @@
 ## Usage instructions
+
+### dependencies
+System packages (Fedora): `R`
+R packages: `Rcpp dplyr`
+
 For the moment, copy Q1_binary.rds into /simulations (or add it to the repo if it's allowed to be here).
 
 fits_xyz runs the simulation, arguments are:
