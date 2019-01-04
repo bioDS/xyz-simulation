@@ -284,5 +284,5 @@ saveRDS(list(bij = bij_ind,
              tp = found_results,
              count = interactions_found,
              results = regression_results),
-        file = sprintf("fits_proper/n%d_p%d_SNR%d_nbi%d_nbij%d_viol%d_%d.rds",
-                       n, p, SNR, num_bi, num_bij, perc_viol, (runif(1) * 1e5) %>% floor))
+        file = sprintf("fits_proper/n%d_p%d_SNR%d_nbi%d_nbij%d_viol%d_alpha%f_%d.rds",
+                       n, p, SNR, num_bi, num_bij, perc_viol, regression_alpha, (runif(1) * 1e5) %>% floor))
