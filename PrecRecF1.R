@@ -14,6 +14,7 @@ ans <- lapply(list.files(path = "./fits_proper/", pattern = "", full.names = TRU
   nbi <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbi)\\d+(?=_)", perl = TRUE)) %>% as.numeric
   nbij <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbij)\\d+(?=_)", perl = TRUE)) %>% as.numeric
   perc_viol <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_viol)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+  regression_alpha <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_alpha)[\\d.]+(?=_)", perl = TRUE)) %>% as.numeric
   ID <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_)\\d+(?=\\.rds)", perl = TRUE)) %>% as.numeric
   tp <- ans$tp
   count <- ans$count
