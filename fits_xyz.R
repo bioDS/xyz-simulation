@@ -248,8 +248,8 @@ reflexive_results <- 0
 tp_check = first & second
 for (i in c(1:length(tp_check))) {
 	if (tp_check[i] == TRUE) {
-		if (regression_results[[3]][[10]][[2*i]] == regression_results[[3]][[10]][[2*i + 1]]) {
-			cat("Ignoring result (", regression_results[[3]][[10]][[2*i]], ",",
+		if (regression_results[[3]][[10]][[2*i - 1]] == regression_results[[3]][[10]][[2*i]]) {
+			cat("Ignoring result (", regression_results[[3]][[10]][[2*i - 1]], ",",
 						regression_results[[3]][[10]][[2*i]], ")\n")
 			reflexive_results <- reflexive_results + 1
 		} else {
