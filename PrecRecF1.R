@@ -11,7 +11,7 @@ target_alpha <- args[1] %>% as.numeric
 cat("target alpha", target_alpha, "\n")
 
 # Precision, recall and F1 for interaction terms
-ans <- lapply(list.files(path = "./fits_proper/", pattern = "", full.names = TRUE), function(f) {#, sprintf("n%d_p%d", n, p)), function(f) {
+ans <- lapply(list.files(path = "./fits_proper/", pattern = "", full.names = TRUE), function(f) {
   ans <- readRDS(f)
   n <- regmatches(x = f, m = regexpr(f, pattern = "(?<=n)\\d+(?=_)", perl = TRUE)) %>% as.numeric
   p <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_p)\\d+(?=_)", perl = TRUE)) %>% as.numeric
@@ -56,8 +56,8 @@ for (numrows in c(1000)) { #400
       filter(SNR != "1") %>%
       filter(regression_alpha == target_alpha) %>%
       mutate(SNR = factor(SNR, levels = levels(SNR), labels = paste0("SNR = ", levels(SNR)))) %>%
-      group_by(n, p, SNR, nbi, nbij, test) %>% sample_n(1)
-      #TODO: change sample_n(x) back to x=10.
+      group_by(n, p, SNR, nbi, nbij, test) #%>% sample_n(10, replace = TRUE)
+      #TODO: replace = FALSE when we have a large enough data set.
     
     pl <- group_by(dat_precrecf1, SNR, nbi, nbij) %>%
       summarise(mean = mean(precision, na.rm = TRUE), sd = sd(precision, na.rm = TRUE) / sqrt(n())) %>%
@@ -87,7 +87,7 @@ for (numrows in c(1000)) { #400
 #      theme_fs() +
       theme(legend.position = "bottom")
     pl
-    ggsave(pl, file = sprintf("PrecRecF1/PrecRecF1_n%d_t%s.pdf", numrows, t), width = 5, height = 7)
+    ggsave(pl, file = sprintf("PrecRecF1/PrecRecF1_n%d_t%s_a%.2f.pdf", numrows, t, target_alpha), width = 5, height = 7)
   }
 }
 
