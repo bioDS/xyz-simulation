@@ -5,6 +5,11 @@ require(RColorBrewer)
 #source("~/Projects/R/fs_.R")
 #setwd("..")
 
+args <- commandArgs(trailingOnly = TRUE)
+target_alpha <- args[1] %>% as.numeric
+
+cat("target alpha", target_alpha, "\n")
+
 # Precision, recall and F1 for interaction terms
 ans <- lapply(list.files(path = "./fits_proper/", pattern = "", full.names = TRUE), function(f) {#, sprintf("n%d_p%d", n, p)), function(f) {
   ans <- readRDS(f)
@@ -18,12 +23,12 @@ ans <- lapply(list.files(path = "./fits_proper/", pattern = "", full.names = TRU
   ID <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_)\\d+(?=\\.rds)", perl = TRUE)) %>% as.numeric
   tp <- ans$tp
   count <- ans$count
-  notest <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij,
+  notest <- data.frame(n = n, p = p, SNR = SNR, regression_alpha, nbi = nbi, nbij = nbij,
                        precision = tp / count,
                        recall = tp / nbij) %>%
     mutate(F1 = 2 *  (precision * recall) / (precision + recall),
            test = "no")
-  test <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij,
+  test <- data.frame(n = n, p = p, SNR = SNR, regression_alpha, nbi = nbi, nbij = nbij,
                      precision = tp / count,
                      recall = tp / nbij) %>%
     mutate(F1 = 2 *  (precision * recall) / (precision + recall),
@@ -34,6 +39,7 @@ ans <- lapply(list.files(path = "./fits_proper/", pattern = "", full.names = TRU
   mutate(n = factor(n),
          p = factor(p),
          SNR = factor(SNR),
+         regression_alpha = factor(regression_alpha),
          nbi = factor(nbi),
          nbij = factor(nbij))
 saveRDS(ans, file = "PrecRecF1/dat_precrecf1.rds")
@@ -48,6 +54,7 @@ for (numrows in c(1000)) { #400
       filter(nbi %in% c("0", "20", "50", "100")) %>%
       filter(nbij %in% c("5", "20", "50", "100")) %>%
       filter(SNR != "1") %>%
+      filter(regression_alpha == target_alpha) %>%
       mutate(SNR = factor(SNR, levels = levels(SNR), labels = paste0("SNR = ", levels(SNR)))) %>%
       group_by(n, p, SNR, nbi, nbij, test) %>% sample_n(1)
       #TODO: change sample_n(x) back to x=10.
