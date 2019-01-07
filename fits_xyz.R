@@ -1,12 +1,12 @@
 #!/usr/bin/Rscript
 require(Matrix)
 require(dplyr)
-#require(xyz)
+require(xyz)
 library(Rcpp)
-source('./xyz/R/regression.R')
-source('./xyz/R/search.R')
-source('./xyz/R/xyz.R')
-sourceCpp('./xyz/src/core.cpp')
+#source('./xyz/R/regression.R')
+#source('./xyz/R/search.R')
+#source('./xyz/R/xyz.R')
+#sourceCpp('./xyz/src/core.cpp')
 #require(glinternet)
 
 #setwd("~/Projects/epistasis")
