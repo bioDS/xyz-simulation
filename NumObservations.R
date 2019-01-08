@@ -3,46 +3,54 @@ require(RColorBrewer)
 require(dplyr)
 require(tidyr)
 require(reshape2)
-source("~/Projects/R/fs_.R")
-setwd("~/Projects/epistasis/results/simulation")
+#source("~/Projects/R/fs_.R")
+#setwd("~/Projects/epistasis/results/simulation")
 
-## Number of observations
-# ans <- lapply(list.files(path = "./fits_proper/", pattern = "", full.names = TRUE), function(f) {#, spriadditifffntf("n%d_p%d", n, p)), function(f) {
-#   ans <- readRDS(f)
-#   n <- regmatches(x = f, m = regexpr(f, pattern = "(?<=n)\\d+(?=_)", perl = TRUE)) %>% as.numeric
-#   p <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_p)\\d+(?=_)", perl = TRUE)) %>% as.numeric
-#   SNR <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_SNR)\\d+(?=_)", perl = TRUE)) %>% as.numeric
-#   nbi <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbi)\\d+(?=_)", perl = TRUE)) %>% as.numeric
-#   nbij <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbij)\\d+(?=_)", perl = TRUE)) %>% as.numeric
-#   perc_viol <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_viol)\\d+(?=_)", perl = TRUE)) %>% as.numeric
-#   id <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_)\\d+(?=\\.rds)", perl = TRUE)) %>% as.numeric
-#   smry_int <- ans$smry %>% filter(type == "interaction")
-#   notest <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij, id = id,
+# Number of observations
+ ans <- lapply(list.files(path = "./fits_proper/", pattern = "", full.names = TRUE), function(f) {
+   ans <- readRDS(f)
+   n <- regmatches(x = f, m = regexpr(f, pattern = "(?<=n)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+   p <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_p)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+   SNR <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_SNR)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+   nbi <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbi)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+   nbij <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbij)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+   perc_viol <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_viol)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+   id <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_)\\d+(?=\\.rds)", perl = TRUE)) %>% as.numeric
+   tp <- ans$tp
+   r_count <- ans$count
+   #smry_int <- ans$smry %>% filter(type == "interaction")
+   notest <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij, id = id, precision = tp / r_count,
+                       recall = tp / nbij, TP=tp,
 #              left_join(ans$bij, smry_int, by = c("gene_i", "gene_j", "o00", "o01", "o10", "o11", "omin")) %>%
 #                select(observations = omin, TP) %>%
 #                mutate(type = ifelse(is.na(TP), "FN", "TP")) %>%
 #                select(-TP) %>%
 #                rbind(., filter(smry_int, TP == FALSE) %>% select(observations = omin) %>% mutate(type = "FP")),
-#              test = "no")
-#   smry_int <- mutate(smry_int, pval = p.adjust(pval, method = "BH")) %>%
-#     filter(pval < 0.05)
-#   test <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij, id = id,
+				type = "FP",
+              test = "no")
+   #smry_int <- mutate(smry_int, pval = p.adjust(pval, method = "BH")) %>%
+     #filter(pval < 0.05)
+
+   test <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij, id = id, precision = tp / r_count,
+                       recall = tp / nbij, TP=tp,
+        # It seems like we're trying to establish whether or not the reult was a false positive?
 #                        left_join(ans$bij, smry_int, by = c("gene_i", "gene_j", "o00", "o01", "o10", "o11", "omin")) %>%
 #                          select(observations = omin, TP) %>%
 #                          mutate(type = ifelse(is.na(TP), "FN", "TP")) %>%
 #                          select(-TP) %>%
 #                        rbind(., filter(smry_int, TP == FALSE) %>% select(observations = omin) %>% mutate(type = "FP")),
-#                        test = "yes")
-#   rbind(test, notest)
-# }) %>% do.call("rbind", .) %>%
-#   tbl_df %>%
-#   mutate(n = factor(n),
-#          p = factor(p),
-#          SNR = factor(SNR),
-#          nbi = factor(nbi),
-#          nbij = factor(nbij),
-#          type = factor(type))
-# saveRDS(ans, file = "NumObservations/dat_numobs.rds")
+						type = "TP",
+                        test = "yes")
+   rbind(test, notest)
+ }) %>% do.call("rbind", .) %>%
+   tbl_df %>%
+   mutate(n = factor(n),
+          p = factor(p),
+          SNR = factor(SNR),
+          nbi = factor(nbi),
+          nbij = factor(nbij),
+          type = factor(type))
+ saveRDS(ans, file = "NumObservations/dat_numobs.rds")
 
 
   
@@ -60,17 +68,18 @@ for (numrows in c(1000)) { #400,
       filter(nbi == 20, SNR != 1) %>%
       mutate(SNR = factor(SNR, labels = paste0("SNR = ", levels(factor(SNR))))) %>%
       filter(nbij %in% c(5, 20, 50, 100)) %>%
-      group_by(n, p, SNR, nbi, nbij, observations, type) %>%
+      group_by(n, p, SNR, nbi, nbij, type, precision, recall, r_count) %>%
       summarise(count = n()) %>% 
       spread(type, count, fill = 0) %>%
-      mutate(precision = TP / (TP + FP),
-             recall = TP / (TP + FN)) %>%
+      #mutate(precision = TP / r_count, #(TP + FP),
+      #       recall = TP / nbij) %>% #(TP + FN)) %>%
       mutate(F1 = 2 *  (precision * recall) / (precision + recall)) %>%
       filter(!is.na(precision), !is.na(recall), !is.na(F1)) %>%
       gather(measure, value, precision, recall, F1) %>%
       mutate(measure = factor(measure, levels = c("precision", "recall", "F1"), labels = c("Precision", "Recall", "F1"))) %>%
       # filter(measure == "recall") %>%
-      mutate(range = cut(observations, rseq)) %>%
+      #mutate(range = cut(observations, rseq)) %>%
+      mutate(range = cut()) %>%
       group_by(n, p, SNR, nbij, measure, range) %>%
       summarise(mean = mean(value, na.rm = TRUE), sem = sd(value, na.rm = TRUE) / sqrt(n()))
     
@@ -88,7 +97,7 @@ for (numrows in c(1000)) { #400,
       ylim(c(0,1)) +
       xlab("Observations of double knockdown") +
       ylab("") +
-      theme_fs() +
+#      theme_fs() +
       theme(legend.position = "bottom",
             axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
     pl
