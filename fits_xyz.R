@@ -2,7 +2,7 @@
 require(Matrix)
 require(dplyr)
 require(xyz)
-library(Rcpp)
+#library(Rcpp)
 #source('./xyz/R/regression.R')
 #source('./xyz/R/search.R')
 #source('./xyz/R/xyz.R')
@@ -13,6 +13,7 @@ library(Rcpp)
 
 verbose <- TRUE
 lambda_min_ratio = 5e-2
+if (verbose) cat("Reading data set\n")
 Q <- readRDS("./Q1_binary.rds")
 
 
@@ -244,6 +245,7 @@ first <- first | unlist(split(unlist(regression_results[[3]][[10]]), 1:2)[1]) %i
 second <- unlist(split(unlist(regression_results[[3]][[10]]), 1:2)[2]) %in% unlist(bij_ind[1]) | unlist(split(unlist(regression_results[[3]][[10]]), 1:2)[2]) %in% unlist(bij_ind[2])
 
 tp_indices = list()
+reflexive_indices = list()
 reflexive_results <- 0
 tp_check = first & second
 for (i in c(1:length(tp_check))) {
@@ -251,6 +253,7 @@ for (i in c(1:length(tp_check))) {
 		cat("Ignoring result (", regression_results[[3]][[10]][[2*i - 1]], ",",
 					regression_results[[3]][[10]][[2*i]], ")\n")
 		reflexive_results <- reflexive_results + 1
+		reflexive_indices <- append(reflexive_indices, i)
 	} else if (tp_check[i] == TRUE) {
 		tp_indices <- append(tp_indices, i)
 	}
@@ -274,6 +277,12 @@ cat("found pairs: ", found_results, " out of ", interactions_found, "\n")
 
 cat("recall: ", found_results/num_bij, " precision: ", found_results/interactions_found, "\n")
 
+coef <- regression_results[[2]][[10]]
+for (i in reflexive_indices) {
+    coef <- coef[-i]
+}
+
+
 ## Write out
 if (verbose) cat("Saving\n")
 saveRDS(list(bij = bij_ind,
@@ -281,6 +290,6 @@ saveRDS(list(bij = bij_ind,
              obs = obs,
              tp = found_results,
              count = interactions_found,
-             results = regression_results),
+             coef = coef),
         file = sprintf("fits_proper/n%d_p%d_SNR%d_nbi%d_nbij%d_viol%d_alpha%f_%d.rds",
                        n, p, SNR, num_bi, num_bij, perc_viol, regression_alpha, (runif(1) * 1e5) %>% floor))
