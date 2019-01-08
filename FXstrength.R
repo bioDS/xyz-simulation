@@ -70,7 +70,7 @@ for (numrows in c(1000)) { #TODO: 400?
       ungroup %>%
       filter(nbij %in% c(5, 20, 50, 100)) %>%
       group_by(n, p, SNR, nbi, nbij, type, precision, recall) %>%
-      mutate(range = cut(coef, c(-Inf, seq(-0.3, 0.3, by = 0.2), Inf))) %>%
+      mutate(range = cut(coef, c(-Inf, seq(-0.2, 0.2, by = 0.025), Inf))) %>%
       group_by(n, p, SNR, nbij, type, range, precision, recall) %>%
       summarise(count = n()) %>% 
       spread(type, count, fill = 0) %>%
@@ -82,8 +82,8 @@ for (numrows in c(1000)) { #TODO: 400?
       gather(measure, value, precision, recall, F1) %>%
       mutate(measure = factor(measure, levels = c("precision", "recall", "F1"), labels = c("Precision", "Recall", "F1")))
     
-    levels(dat_fxs$range) <- c(1, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 5)
-    dat_fxs$range <- factor(dat_fxs$range, labels = c("everything"))
+#    levels(dat_fxs$range) <- c(1, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 5)
+#    dat_fxs$range <- factor(dat_fxs$range, labels = c("everything"))
     dat_fxs <- dat_fxs %>% group_by(n, p, SNR, nbij, measure, range) %>%
       summarise(mean = mean(value, na.rm = TRUE), sem = sd(value, na.rm = TRUE) / sqrt(n()))
     
@@ -95,7 +95,7 @@ for (numrows in c(1000)) { #TODO: 400?
       geom_line(aes(colour = nbij), position = position_dodge(.35)) +
       geom_point(aes(colour = nbij), position = position_dodge(.35), size = 1) +
       geom_errorbar(colour = "darkgrey", width = 0.3, position = position_dodge(.35)) +
-      scale_x_discrete(labels = c(expression(paste("(-", infinity, ", -0.3]")), "(-0.3,-0.1]", "(-0.1,0.1]", "(0.1,0.3]", expression(paste("(0.3, ", infinity, ")")))) +
+#      scale_x_discrete(labels = c(expression(paste("(-", infinity, ", -0.3]")), "(-0.3,-0.1]", "(-0.1,0.1]", "(0.1,0.3]", expression(paste("(0.3, ", infinity, ")")))) +
       facet_grid(measure~SNR) +
       scale_color_discrete(name = "True interactions") +
       # ylim(c(0,1)) +
