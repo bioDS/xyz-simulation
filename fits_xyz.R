@@ -17,8 +17,8 @@ if (verbose) cat("Reading data set\n")
 Q <- readRDS("./Q1_binary.rds")
 
 
-args <- commandArgs(trailingOnly = TRUE)
-#args <- c("1000", "100", "10", "20", "20", "0", "0.9")
+#args <- commandArgs(trailingOnly = TRUE)
+args <- c("1000", "100", "2", "20", "5", "0", "0.9")
 
 print(args)
 n <- args[1] %>% as.numeric
@@ -116,26 +116,15 @@ Y <- Y + sqrt(var(Y[,1])/(SNR * var(noise))) * noise
 
 ## Fit model, wip: use xyz
 if (verbose) cat("Fitting model\n")
-#fit <- glinternet.cv(X = X %>% as.matrix,
-#                     Y = Y %>% as.numeric,
-#                     numLevels = rep(1,p),
-#                     family = "gaussian",
-#                     nLambda = 50, lambdaMinRatio = lambda_min_ratio, verbose = TRUE)
-
-#fit <- xyz_regression(X %>% as.matrix, Y %>% as.numeric, n_lambda=50,alpha=0.9,L=10)
-
-# xyz expects binary input to be {-1,1}, not entirely sure what effect this will have.
-#Xg <- X
-#Xg[Xg == 1] <- -1
-#Xg[Xg == 0] <- 1
-
-#xyz_results <- xyz_search(Xg %>% as.matrix, Y %>% as.numeric, L=500, N=25, binary=FALSE, negative=FALSE)
+regression_results <- xyz_regression(X, Y %>% as.numeric, standardize=TRUE, standardize_response=TRUE, alpha=regression_alpha)
 
 #q()
 
 # let's not worry about anything past here for the moment.
 
-#if (verbose) cat("Collecting stats\n")
+if (verbose) cat("Collecting stats\n")
+
+## Glinternet version:
 #cf <- coef(fit, lambdaType = "lambdaHat") #lambdaIndex = 50)#
 
 ## Collect coefficients
@@ -147,6 +136,16 @@ if (verbose) cat("Fitting model\n")
 #  arrange(desc(TP)) %>%
 #  tbl_df
 #fx_main
+
+# Collect coefficients
+fx_main <- data.frame(gene_i = regression_results[[1]][[10]]) %>%
+                     # effect = cf$mainEffectsCoef$cont %>% lapply(., function(x) x[[1]]) %>% unlist) %>%
+  arrange(gene_i) %>%
+  mutate(type = "main", gene_j = NA, TP = gene_i %in% bi_ind[["gene_i"]]) %>%
+  select(gene_i, gene_j, type, TP) %>%
+  arrange(desc(TP)) %>%
+  tbl_df
+fx_main
 
 # fx_int <- data.frame(gene_i = cf$interactions$catcat[,1], gene_j = cf$interactions$catcat[,2],
 #                      effect = cf$interactionsCoef$catcat %>% lapply(., function(x) x[1,1]) %>% unlist) %>%
@@ -164,39 +163,67 @@ if (verbose) cat("Fitting model\n")
 #  tbl_df
 #fx_int %>% data.frame
 
+#TODO: remove reflexive results again.
+fx_int <- data.frame (gene_i = unlist(split(regression_results[[3]][[10]], 1:2)[1]), 
+                      gene_j = unlist(split(regression_results[[3]][[10]], 1:2)[2])) %>%
+  arrange(gene_i) %>%
+  left_join(., obs, by = c("gene_i", "gene_j")) %>%
+  mutate(type = "interaction") %>%
+  rowwise %>%
+  left_join(., bij_ind, by = c("gene_i", "gene_j")) %>%
+  ungroup %>%
+  mutate(TP = !is.na(coef)) %>%
+  select(gene_i, gene_j, type, TP) %>%
+  arrange(desc(TP)) %>%
+  tbl_df
+fx_int %>% data.frame
+
 ## Statistical test if b_i and b_ij are sig. > 0
-#Z <- cbind(X[,fx_main[["gene_i"]]])
-#for (i in 1:nrow(fx_int)) {
-#  Z <- cbind(Z, X[,fx_int[i,][["gene_i"]], drop = FALSE] * X[,fx_int[i,][["gene_j"]], drop = FALSE])
-#}
-#Z <- as.matrix(Z)
-#colnames(Z) <- rownames(Z) <- NULL
-#Ynum <- as.numeric(Y)
-#fit_red <- lm(Ynum ~ Z)
+Z <- cbind(X[,fx_main[["gene_i"]]])
+for (i in 1:nrow(fx_int)) {
+  Z <- cbind(Z, X[,fx_int[i,][["gene_i"]], drop = FALSE] * X[,fx_int[i,][["gene_j"]], drop = FALSE])
+}
+Z <- as.matrix(Z)
+colnames(Z) <- rownames(Z) <- NULL
+Ynum <- as.numeric(Y)
+fit_red <- lm(Ynum ~ Z)
 
 
-#pvals <- data.frame(id = 1:ncol(Z), coef = coef(fit_red)[-1]) %>%
-#  filter(!is.na(coef)) %>%
-#  data.frame(., pval = summary(fit_red)$coef[-1,4]) %>%
-#  tbl_df
-#smry <- left_join(rbind(fx_main, fx_int) %>% data.frame(id = 1:nrow(.), .), pvals, by = "id") %>%
-#  mutate(pval = ifelse(is.na(pval), 1, pval)) %>%
-#  rename(coef.est = coef) %>%
-#  left_join(., obs, by = c("gene_i", "gene_j")) #%>%
-  # mutate(pval = p.adjust(pval, method = "BH")) %>%
-  # filter(pval < 0.05)
+pvals <- data.frame(id = 1:ncol(Z), coef = coef(fit_red)[-1]) %>%
+  filter(!is.na(coef)) %>%
+  data.frame(., pval = summary(fit_red)$coef[-1,4]) %>%
+  tbl_df
+smry <- left_join(rbind(fx_main, fx_int) %>% data.frame(id = 1:nrow(.), .), pvals, by = "id") %>%
+  mutate(pval = ifelse(is.na(pval), 1, pval)) %>%
+  rename(coef.est = coef) %>%
+  left_join(., obs, by = c("gene_i", "gene_j")) %>%
+   mutate(pval = p.adjust(pval, method = "BH")) %>%
+   filter(pval < 0.05)
 
-# smry <- summary(fit_red)$coef %>%
-#   data.frame %>% 
-#   tbl_df %>%
-#   .[-1,c(1,4)] %>%
-#   tbl_df %>%
-#   rename(coef = Estimate, pval = Pr...t..) %>%
-#   mutate(pval = p.adjust(pval, method = "BH")) %>%
-#   cbind(rbind(fx_main, fx_int), .) %>%
-#   filter(pval < 0.01) %>%
-#   left_join(., bij_ind, by = c("gene_i", "gene_j"))
+ smry <- summary(fit_red)$coef %>%
+   data.frame %>% 
+   tbl_df %>%
+   .[-1,c(1,4)] %>%
+   tbl_df %>%
+   rename(coef = Estimate, pval = Pr...t..) %>%
+   mutate(pval = p.adjust(pval, method = "BH")) %>%
+   cbind(rbind(fx_main, fx_int), .) %>%
+   filter(pval < 0.01) %>%
+   left_join(., bij_ind, by = c("gene_i", "gene_j"))
 
+
+## Write out
+if (verbose) cat("Saving\n")
+saveRDS(list(fit = regression_results,
+             bij = bij_ind,
+             bi = bi_ind,
+             obs = obs,
+             fx_int = fx_int,
+             fx_main = fx_main,
+             fit_red = fit_red,
+             smry = smry),
+        file = sprintf("./fits_proper/n%d_p%d_SNR%d_nbi%d_nbij%d_viol%d_%d.rds",
+                       n, p, SNR, num_bi, num_bij, perc_viol, (runif(1) * 1e5) %>% floor))
 
 # now that we've printed glinternet restults, let's see how xyz compares
 #print(xyz_results)
@@ -226,70 +253,74 @@ if (verbose) cat("Fitting model\n")
 #}
 #cat("found pairs: ", found_results, "\n")
 
-Xg <- X
-Xg[Xg == 0] <- -1
+#Xg <- X
+#Xg[Xg == 0] <- -1
 
-regression_results <- xyz_regression(Xg, Y %>% as.numeric, standardize=TRUE, standardize_response=TRUE, alpha=regression_alpha)
+#regression_results <- xyz_regression(Xg, Y %>% as.numeric, standardize=TRUE, standardize_response=TRUE, alpha=regression_alpha)
 
-print(regression_results)
+#print(regression_results)
 
-bij_ind
+#bij_ind
 
-#for (i in c(1:length(regression_results[[3]][[10]]) / 2))
-#for (i in regression_results[[3]][[10]]) {
-	#print(i)
+##for (i in c(1:length(regression_results[[3]][[10]]) / 2))
+##for (i in regression_results[[3]][[10]]) {
+#	#print(i)
+##}
+
+#first <- unlist(split(unlist(regression_results[[3]][[10]]), 1:2)[1]) %in% unlist(bij_ind[1])
+#first <- first | unlist(split(unlist(regression_results[[3]][[10]]), 1:2)[1]) %in% unlist(bij_ind[2])
+#second <- unlist(split(unlist(regression_results[[3]][[10]]), 1:2)[2]) %in% unlist(bij_ind[1]) | unlist(split(unlist(regression_results[[3]][[10]]), 1:2)[2]) %in% unlist(bij_ind[2])
+
+#tp_indices = list()
+#reflexive_indices = list()
+#reflexive_results <- 0
+#tp_check = first & second
+#for (i in c(1:length(tp_check))) {
+#	if (regression_results[[3]][[10]][[2*i - 1]] == regression_results[[3]][[10]][[2*i]]) {
+#		cat("Ignoring result (", regression_results[[3]][[10]][[2*i - 1]], ",",
+#					regression_results[[3]][[10]][[2*i]], ")\n")
+#		reflexive_results <- reflexive_results + 1
+#		reflexive_indices <- append(reflexive_indices, i)
+#	} else if (tp_check[i] == TRUE) {
+#		tp_indices <- append(tp_indices, i)
+#	}
 #}
 
-first <- unlist(split(unlist(regression_results[[3]][[10]]), 1:2)[1]) %in% unlist(bij_ind[1])
-first <- first | unlist(split(unlist(regression_results[[3]][[10]]), 1:2)[1]) %in% unlist(bij_ind[2])
-second <- unlist(split(unlist(regression_results[[3]][[10]]), 1:2)[2]) %in% unlist(bij_ind[1]) | unlist(split(unlist(regression_results[[3]][[10]]), 1:2)[2]) %in% unlist(bij_ind[2])
+#found_results <- 0
+#for (i in tp_indices) {
+#	for (j in which(unlist(bij_ind[1]) %in% unlist(regression_results[[3]][[10]])[(i-1)*2 + 1])) {
+#			if (unlist(bij_ind[2])[j] == unlist(regression_results[[3]][[10]])[(i-1)*2 + 2]) {
+#			cat(unlist(regression_results[[3]][[10]])[(i-1)*2 + 1],
+#				unlist(regression_results[[3]][[10]])[(i-1)*2 + 2],
+#				unlist(regression_results[[4]][[10]])[i], "\n")
+#			found_results <- found_results + 1
+#		}
+#	}
+#}
+##TODO: if there are no results this will still return 1. It appears to be correct for >0 results, however.
+#interactions_found <- length(regression_results[[3]][[10]]) / 2 - reflexive_results
 
-tp_indices = list()
-reflexive_indices = list()
-reflexive_results <- 0
-tp_check = first & second
-for (i in c(1:length(tp_check))) {
-	if (regression_results[[3]][[10]][[2*i - 1]] == regression_results[[3]][[10]][[2*i]]) {
-		cat("Ignoring result (", regression_results[[3]][[10]][[2*i - 1]], ",",
-					regression_results[[3]][[10]][[2*i]], ")\n")
-		reflexive_results <- reflexive_results + 1
-		reflexive_indices <- append(reflexive_indices, i)
-	} else if (tp_check[i] == TRUE) {
-		tp_indices <- append(tp_indices, i)
-	}
-}
+#cat("found pairs: ", found_results, " out of ", interactions_found, "\n")
 
-found_results <- 0
-for (i in tp_indices) {
-	for (j in which(unlist(bij_ind[1]) %in% unlist(regression_results[[3]][[10]])[(i-1)*2 + 1])) {
-			if (unlist(bij_ind[2])[j] == unlist(regression_results[[3]][[10]])[(i-1)*2 + 2]) {
-			cat(unlist(regression_results[[3]][[10]])[(i-1)*2 + 1],
-				unlist(regression_results[[3]][[10]])[(i-1)*2 + 2],
-				unlist(regression_results[[4]][[10]])[i], "\n")
-			found_results <- found_results + 1
-		}
-	}
-}
-#TODO: if there are no results this will still return 1. It appears to be correct for >0 results, however.
-interactions_found <- length(regression_results[[3]][[10]]) / 2 - reflexive_results
+#cat("recall: ", found_results/num_bij, " precision: ", found_results/interactions_found, "\n")
 
-cat("found pairs: ", found_results, " out of ", interactions_found, "\n")
+#coef <- regression_results[[2]][[10]]
+#for (i in reflexive_indices) {
+#    coef <- coef[-i]
+#}
 
-cat("recall: ", found_results/num_bij, " precision: ", found_results/interactions_found, "\n")
-
-coef <- regression_results[[2]][[10]]
-for (i in reflexive_indices) {
-    coef <- coef[-i]
-}
+#if (size(coef) == 0) {
+#    coef = list()
+#}
 
 
-## Write out
-if (verbose) cat("Saving\n")
-saveRDS(list(bij = bij_ind,
-             bi = bi_ind,
-             obs = obs,
-             tp = found_results,
-             count = interactions_found,
-             coef = coef),
-        file = sprintf("fits_proper/n%d_p%d_SNR%d_nbi%d_nbij%d_viol%d_alpha%f_%d.rds",
-                       n, p, SNR, num_bi, num_bij, perc_viol, regression_alpha, (runif(1) * 1e5) %>% floor))
+### Write out
+#if (verbose) cat("Saving\n")
+#saveRDS(list(bij = bij_ind,
+#             bi = bi_ind,
+#             obs = obs,
+#             tp = found_results,
+#             count = interactions_found,
+#             coef.est = coef.est),
+#        file = sprintf("fits_proper/n%d_p%d_SNR%d_nbi%d_nbij%d_viol%d_alpha%f_%d.rds",
+#                       n, p, SNR, num_bi, num_bij, perc_viol, regression_alpha, (runif(1) * 1e5) %>% floor))
