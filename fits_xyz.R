@@ -17,7 +17,7 @@ Q <- readRDS("./Q1_binary.rds")
 
 
 args <- commandArgs(trailingOnly = TRUE)
-#args <- c("1000", "100", "1", "20", "20", "0", "0.9")
+#args <- c("1000", "100", "10", "20", "20", "0", "0.9")
 
 print(args)
 n <- args[1] %>% as.numeric
@@ -124,7 +124,7 @@ if (verbose) cat("Fitting model\n")
 #fit <- xyz_regression(X %>% as.matrix, Y %>% as.numeric, n_lambda=50,alpha=0.9,L=10)
 
 # xyz expects binary input to be {-1,1}, not entirely sure what effect this will have.
-Xg <- X
+#Xg <- X
 #Xg[Xg == 1] <- -1
 #Xg[Xg == 0] <- 1
 
@@ -234,10 +234,10 @@ print(regression_results)
 
 bij_ind
 
-for (i in c(1:length(regression_results[[3]][[10]]) / 2))
-for (i in regression_results[[3]][[10]]) {
+#for (i in c(1:length(regression_results[[3]][[10]]) / 2))
+#for (i in regression_results[[3]][[10]]) {
 	#print(i)
-}
+#}
 
 first <- unlist(split(unlist(regression_results[[3]][[10]]), 1:2)[1]) %in% unlist(bij_ind[1])
 first <- first | unlist(split(unlist(regression_results[[3]][[10]]), 1:2)[1]) %in% unlist(bij_ind[2])
@@ -247,14 +247,12 @@ tp_indices = list()
 reflexive_results <- 0
 tp_check = first & second
 for (i in c(1:length(tp_check))) {
-	if (tp_check[i] == TRUE) {
-		if (regression_results[[3]][[10]][[2*i - 1]] == regression_results[[3]][[10]][[2*i]]) {
-			cat("Ignoring result (", regression_results[[3]][[10]][[2*i - 1]], ",",
-						regression_results[[3]][[10]][[2*i]], ")\n")
-			reflexive_results <- reflexive_results + 1
-		} else {
-			tp_indices <- append(tp_indices, i)
-		}
+	if (regression_results[[3]][[10]][[2*i - 1]] == regression_results[[3]][[10]][[2*i]]) {
+		cat("Ignoring result (", regression_results[[3]][[10]][[2*i - 1]], ",",
+					regression_results[[3]][[10]][[2*i]], ")\n")
+		reflexive_results <- reflexive_results + 1
+	} else if (tp_check[i] == TRUE) {
+		tp_indices <- append(tp_indices, i)
 	}
 }
 
@@ -269,6 +267,7 @@ for (i in tp_indices) {
 		}
 	}
 }
+#TODO: if there are no results this will still return 1. It appears to be correct for >0 results, however.
 interactions_found <- length(regression_results[[3]][[10]]) / 2 - reflexive_results
 
 cat("found pairs: ", found_results, " out of ", interactions_found, "\n")
@@ -276,7 +275,6 @@ cat("found pairs: ", found_results, " out of ", interactions_found, "\n")
 cat("recall: ", found_results/num_bij, " precision: ", found_results/interactions_found, "\n")
 
 ## Write out
-# for the moment let's not
 if (verbose) cat("Saving\n")
 saveRDS(list(bij = bij_ind,
              bi = bi_ind,
