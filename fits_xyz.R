@@ -163,9 +163,15 @@ fx_main
 #  tbl_df
 #fx_int %>% data.frame
 
-#TODO: remove reflexive results again.
-fx_int <- data.frame (gene_i = unlist(split(regression_results[[3]][[10]], 1:2)[1]), 
-                      gene_j = unlist(split(regression_results[[3]][[10]], 1:2)[2])) %>%
+# remove reflexive results
+first = unlist(split(regression_results[[3]][[10]], 1:2)[1])
+second = unlist(split(regression_results[[3]][[10]], 1:2)[2])
+
+nfirst = first[first != second]
+nsecond = second[first != second]
+
+fx_int <- data.frame (gene_i = nfirst, 
+                      gene_j = nsecond) %>%
   arrange(gene_i) %>%
   left_join(., obs, by = c("gene_i", "gene_j")) %>%
   mutate(type = "interaction") %>%
