@@ -195,7 +195,7 @@ Ynum <- as.numeric(Y)
 fit_red <- lm(Ynum ~ Z)
 
 #TODO: probably shouldn't do this, it seems bad.
-fit_red[[1]][is.na(fit_red[[1]])] <- 0
+#fit_red[[1]][is.na(fit_red[[1]])] <- 0
 
 
 pvals <- data.frame(id = 1:ncol(Z), coef = coef(fit_red)[-1]) %>%
