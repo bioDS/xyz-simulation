@@ -17,8 +17,8 @@ if (verbose) cat("Reading data set\n")
 Q <- readRDS("./Q1_binary.rds")
 
 
-#args <- commandArgs(trailingOnly = TRUE)
-args <- c("1000", "100", "2", "20", "5", "0", "0.9")
+args <- commandArgs(trailingOnly = TRUE)
+#args <- c("1000", "100", "2", "20", "5", "0", "0.9")
 
 print(args)
 n <- args[1] %>% as.numeric
