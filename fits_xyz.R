@@ -17,8 +17,8 @@ if (verbose) cat("Reading data set\n")
 Q <- readRDS("./Q1_binary.rds")
 
 
-args <- commandArgs(trailingOnly = TRUE)
-#args <- c("1000", "100", "10", "50", "20", "0", "0.9")
+#args <- commandArgs(trailingOnly = TRUE)
+args <- c("1000", "100", "10", "50", "20", "0", "0.9")
 
 print(args)
 n <- args[1] %>% as.numeric
@@ -209,16 +209,16 @@ smry <- left_join(rbind(fx_main, fx_int) %>% data.frame(id = 1:nrow(.), .), pval
    mutate(pval = p.adjust(pval, method = "BH")) %>%
    filter(pval < 0.05)
 
- smry <- summary(fit_red)$coef %>%
-   data.frame %>% 
-   tbl_df %>%
-   .[-1,c(1,4)] %>%
-   tbl_df %>%
-   rename(coef = Estimate, pval = Pr...t..) %>%
-   mutate(pval = p.adjust(pval, method = "BH")) %>%
-   cbind(rbind(fx_main, fx_int), .) %>%
-   filter(pval < 0.01) %>%
-   left_join(., bij_ind, by = c("gene_i", "gene_j"))
+# smry <- summary(fit_red)$coef %>%
+#   data.frame %>% 
+#   tbl_df %>%
+#   .[-1,c(1,4)] %>%
+#   tbl_df %>%
+#   rename(coef = Estimate, pval = Pr...t..) %>%
+#   mutate(pval = p.adjust(pval, method = "BH")) %>%
+#   cbind(rbind(fx_main, fx_int), .) %>%
+#   filter(pval < 0.01) %>%
+#   left_join(., bij_ind, by = c("gene_i", "gene_j"))
 
 
 ## Write out
