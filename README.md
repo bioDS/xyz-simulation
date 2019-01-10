@@ -2,7 +2,7 @@
 
 ### dependencies
 System packages (Fedora): `R`
-R packages: `Rcpp dplyr RColorBrewer ggplot2 tidyr gridExtra`
+R packages: `Rcpp dplyr RColorBrewer ggplot2 tidyr gridExtra stringr`
 
 For the moment, copy Q1_binary.rds into /simulations (or add it to the repo if it's allowed to be here).
 
