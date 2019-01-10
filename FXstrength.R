@@ -4,7 +4,7 @@ require(tidyr)
 require(ggplot2)
 require(RColorBrewer)
 #source("~/Projects/R/fs_.R")
-#setwd("~/Projects/epistasis/results/simulation")
+setwd("/run/media/kieran/local_files/interactions_msc/simulation")
 
 ## Number of observations
  ans <- lapply(list.files(path = "./fits_proper/", pattern = "", full.names = TRUE), function(f) {#, sprintf("n%d_p%d", n, p)), function(f) {
@@ -21,10 +21,10 @@ require(RColorBrewer)
 #   results <- ans$results
 #   coef <- results[[2]][[10]]
 #   coef <- ans$results %>% filter(type == "coefficient")
-   coef <- ans$coef
+   coef.est <- ans$coef.est
    tp <- ans$tp
    count <- ans$count
-   notest <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij, id = id, type="TP", coef=coef, #TODO: correct type
+   notest <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij, id = id, type="TP", coef.est=coef.est, #TODO: correct type
                        precision = tp / count,
                        recall = tp / nbij,
 #              left_join(ans$bij, smry_int, by = c("gene_i", "gene_j", "o00", "o01", "o10", "o11", "omin")) %>%
@@ -35,7 +35,8 @@ require(RColorBrewer)
               test = "no") %>% tbl_df
 #   smry_int <- mutate(smry_int, pval = p.adjust(pval, method = "BH")) %>%
 #     filter(pval < 0.05)
-   test <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij, id = id, type="TP", coef=coef, #TODO: correct type
+   cat("file: ", f, "\n")
+   test <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij, id = id, type="TP", coef.est=coef.est, #TODO: correct type
                        precision = tp / count,
                        recall = tp / nbij,
 #                      left_join(ans$bij, smry_int, by = c("gene_i", "gene_j", "o00", "o01", "o10", "o11", "omin")) %>%
@@ -61,6 +62,7 @@ require(RColorBrewer)
 for (numrows in c(1000)) { #TODO: 400?
   for (t in c("yes", "no")) {
     dat_fxs <- readRDS("FXstrength/dat_fxstrength.rds") %>%
+      mutate(coef = abs(coef)) %>%
       filter(n == numrows) %>%
       filter(test == t) %>%
       filter(nbi == 0, SNR != 1) %>%
@@ -71,7 +73,7 @@ for (numrows in c(1000)) { #TODO: 400?
       ungroup %>%
       filter(nbij %in% c(5, 20, 50, 100)) %>%
       group_by(n, p, SNR, nbi, nbij, type, precision, recall) %>%
-      mutate(range = cut(coef, c(-Inf, seq(-0.2, 0.2, by = 0.025), Inf))) %>%
+      mutate(range = cut(coef, c(-Inf, seq(0, 0.3, by = 0.05), Inf))) %>%
       group_by(n, p, SNR, nbij, type, range, precision, recall) %>%
       summarise(count = n()) %>% 
       spread(type, count, fill = 0) %>%
