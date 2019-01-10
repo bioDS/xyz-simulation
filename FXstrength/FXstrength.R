@@ -1,3 +1,4 @@
+#!/usr/bin/Rscript
 require(dplyr)
 require(tidyr)
 require(ggplot2)
@@ -46,9 +47,13 @@ saveRDS(ans, file = "FXstrength/dat_fxstrength.rds")
 
 
 
-for (numrows in c(400, 1000)) {
+for (numrows in c(1000)) {
   for (t in c("yes", "no")) {
-    dat_fxs <- readRDS("FXstrength/dat_fxstrength.rds") %>%
+    dat_fxs <- readRDS("FXstrength/dat_fxstrength.rds")
+    TP=length(unlist((dat_fxs %>% filter(type=="TP"))[1]))
+    FP=length(unlist((dat_fxs %>% filter(type=="FP"))[1]))
+    FN=length(unlist((dat_fxs %>% filter(type=="FN"))[1]))
+    dat_fxs <- dat_fxs %>%
       filter(n == numrows) %>%
       filter(test == t) %>%
       filter(nbi == 0, SNR != 1) %>%
@@ -72,7 +77,7 @@ for (numrows in c(400, 1000)) {
       mutate(measure = factor(measure, levels = c("precision", "recall", "F1"), labels = c("Precision", "Recall", "F1")))
     
     levels(dat_fxs$range) <- c(1, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 5)
-    dat_fxs$range <- factor(dat_fxs$range, labels = c("(-infinity,-3]",  "(-3,-1]", "(-1,1]", "(1,3]", "(3,infinity]"))
+#    dat_fxs$range <- factor(dat_fxs$range, labels = c("(-infinity,-3]",  "(-3,-1]", "(-1,1]", "(1,3]", "(3,infinity]"))
     dat_fxs <- dat_fxs %>% group_by(n, p, SNR, nbij, measure, range) %>%
       summarise(mean = mean(value, na.rm = TRUE), sem = sd(value, na.rm = TRUE) / sqrt(n()))
     
@@ -90,7 +95,7 @@ for (numrows in c(400, 1000)) {
       # ylim(c(0,1)) +
       xlab("True epistasis") +
       ylab("") +
-      theme_fs() +
+#      theme_fs() +
       theme(legend.position = "bottom",
             axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
     pl
@@ -117,7 +122,7 @@ for (numrows in c(400, 1000)) {
       ylim(c(0,15)) +
       xlab("True epistasis") +
       ylab("Incorrect direction [%]") +
-      theme_fs() +
+#      theme_fs() +
       theme(legend.position = "bottom",
             axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
     pl_wrongdir
