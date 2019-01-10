@@ -202,6 +202,7 @@ pvals <- data.frame(id = 1:ncol(Z), coef = coef(fit_red)[-1]) %>%
   filter(!is.na(coef)) %>%
   data.frame(., pval = summary(fit_red)$coef[-1,4]) %>%
   tbl_df
+  
 smry <- left_join(rbind(fx_main, fx_int) %>% data.frame(id = 1:nrow(.), .), pvals, by = "id") %>%
   mutate(pval = ifelse(is.na(pval), 1, pval)) %>%
   rename(coef.est = coef) %>%
