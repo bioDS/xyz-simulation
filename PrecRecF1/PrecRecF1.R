@@ -50,7 +50,7 @@ for (numrows in c(1000)) { #400
       filter(nbij %in% c("5", "20", "50", "100")) %>%
       filter(SNR != "1") %>%
       mutate(SNR = factor(SNR, levels = levels(SNR), labels = paste0("SNR = ", levels(SNR)))) %>%
-      group_by(n, p, SNR, nbi, nbij, test) %>% sample_n(10, replace=TRUE)
+      group_by(n, p, SNR, nbi, nbij, test) %>% sample_n(10, replace=TRUE) #TODO: improve this?
     
     pl <- group_by(dat_precrecf1, SNR, nbi, nbij) %>%
       summarise(mean = mean(precision, na.rm = TRUE), sd = sd(precision, na.rm = TRUE) / sqrt(n())) %>%
