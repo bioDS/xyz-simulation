@@ -1,7 +1,9 @@
+#!/usr/bin/Rscript
 require(ggplot2)
 require(RColorBrewer)
-source("~/Projects/R/fs_.R")
-setwd("~/Projects/epistasis/results/simulation")
+require(dplyr)
+#source("~/Projects/R/fs_.R")
+setwd("..")
 
 
 
@@ -42,7 +44,7 @@ for (numrows in c(1000)) { #400,
       xlab("Observations of double knockdown") +
       ylab("Absolute deviation [%]") +
       ylim(c(0, 4)) +
-      theme_fs() +
+#      theme_fs() +
       theme(legend.position = "bottom",
             axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
     pl
