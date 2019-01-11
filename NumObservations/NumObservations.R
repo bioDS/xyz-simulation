@@ -1,48 +1,49 @@
+#!/usr/bin/Rscript
 require(ggplot2)
 require(RColorBrewer)
 require(dplyr)
 require(tidyr)
 require(reshape2)
-source("~/Projects/R/fs_.R")
-setwd("~/Projects/epistasis/results/simulation")
+#source("~/Projects/R/fs_.R")
+setwd("..")
 
-## Number of observations
-# ans <- lapply(list.files(path = "./fits_proper/", pattern = "", full.names = TRUE), function(f) {#, spriadditifffntf("n%d_p%d", n, p)), function(f) {
-#   ans <- readRDS(f)
-#   n <- regmatches(x = f, m = regexpr(f, pattern = "(?<=n)\\d+(?=_)", perl = TRUE)) %>% as.numeric
-#   p <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_p)\\d+(?=_)", perl = TRUE)) %>% as.numeric
-#   SNR <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_SNR)\\d+(?=_)", perl = TRUE)) %>% as.numeric
-#   nbi <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbi)\\d+(?=_)", perl = TRUE)) %>% as.numeric
-#   nbij <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbij)\\d+(?=_)", perl = TRUE)) %>% as.numeric
-#   perc_viol <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_viol)\\d+(?=_)", perl = TRUE)) %>% as.numeric
-#   id <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_)\\d+(?=\\.rds)", perl = TRUE)) %>% as.numeric
-#   smry_int <- ans$smry %>% filter(type == "interaction")
-#   notest <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij, id = id,
-#              left_join(ans$bij, smry_int, by = c("gene_i", "gene_j", "o00", "o01", "o10", "o11", "omin")) %>%
-#                select(observations = omin, TP) %>%
-#                mutate(type = ifelse(is.na(TP), "FN", "TP")) %>%
-#                select(-TP) %>%
-#                rbind(., filter(smry_int, TP == FALSE) %>% select(observations = omin) %>% mutate(type = "FP")),
-#              test = "no")
-#   smry_int <- mutate(smry_int, pval = p.adjust(pval, method = "BH")) %>%
-#     filter(pval < 0.05)
-#   test <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij, id = id,
-#                        left_join(ans$bij, smry_int, by = c("gene_i", "gene_j", "o00", "o01", "o10", "o11", "omin")) %>%
-#                          select(observations = omin, TP) %>%
-#                          mutate(type = ifelse(is.na(TP), "FN", "TP")) %>%
-#                          select(-TP) %>%
-#                        rbind(., filter(smry_int, TP == FALSE) %>% select(observations = omin) %>% mutate(type = "FP")),
-#                        test = "yes")
-#   rbind(test, notest)
-# }) %>% do.call("rbind", .) %>%
-#   tbl_df %>%
-#   mutate(n = factor(n),
-#          p = factor(p),
-#          SNR = factor(SNR),
-#          nbi = factor(nbi),
-#          nbij = factor(nbij),
-#          type = factor(type))
-# saveRDS(ans, file = "NumObservations/dat_numobs.rds")
+# Number of observations
+ ans <- lapply(list.files(path = "./fits_proper/", pattern = "", full.names = TRUE), function(f) {#, spriadditifffntf("n%d_p%d", n, p)), function(f) {
+   ans <- readRDS(f)
+   n <- regmatches(x = f, m = regexpr(f, pattern = "(?<=n)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+   p <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_p)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+   SNR <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_SNR)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+   nbi <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbi)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+   nbij <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbij)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+   perc_viol <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_viol)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+   id <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_)\\d+(?=\\.rds)", perl = TRUE)) %>% as.numeric
+   smry_int <- ans$smry %>% filter(type == "interaction")
+   notest <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij, id = id,
+              left_join(ans$bij, smry_int, by = c("gene_i", "gene_j", "o00", "o01", "o10", "o11", "omin")) %>%
+                select(observations = omin, TP) %>%
+                mutate(type = ifelse(is.na(TP), "FN", "TP")) %>%
+                select(-TP) %>%
+                rbind(., filter(smry_int, TP == FALSE) %>% select(observations = omin) %>% mutate(type = "FP")),
+              test = "no")
+   smry_int <- mutate(smry_int, pval = p.adjust(pval, method = "BH")) %>%
+     filter(pval < 0.05)
+   test <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij, id = id,
+                        left_join(ans$bij, smry_int, by = c("gene_i", "gene_j", "o00", "o01", "o10", "o11", "omin")) %>%
+                          select(observations = omin, TP) %>%
+                          mutate(type = ifelse(is.na(TP), "FN", "TP")) %>%
+                          select(-TP) %>%
+                        rbind(., filter(smry_int, TP == FALSE) %>% select(observations = omin) %>% mutate(type = "FP")),
+                        test = "yes")
+   rbind(test, notest)
+ }) %>% do.call("rbind", .) %>%
+   tbl_df %>%
+   mutate(n = factor(n),
+          p = factor(p),
+          SNR = factor(SNR),
+          nbi = factor(nbi),
+          nbij = factor(nbij),
+          type = factor(type))
+ saveRDS(ans, file = "NumObservations/dat_numobs.rds")
 
 
   
@@ -88,7 +89,7 @@ for (numrows in c(1000)) { #400,
       ylim(c(0,1)) +
       xlab("Observations of double knockdown") +
       ylab("") +
-      theme_fs() +
+#      theme_fs() +
       theme(legend.position = "bottom",
             axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
     pl
@@ -193,7 +194,7 @@ pl <- ggplot(ans, aes(x = range)) +
   xlab("Observations of double knockdown") +
   ylab("Gene pairs [%]") +
   scale_x_discrete(labels = c("(0, 10]", "(10, 20]", "(20, 40]", "(40, 80]", expression(paste("(80, ", infinity, ")")))) +
-  theme_fs() +
+#  theme_fs() +
   theme(legend.position = "bottom",
         axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 
