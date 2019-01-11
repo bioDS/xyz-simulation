@@ -1,3 +1,4 @@
+#!/usr/bin/Rscript
 # Libraries
 require(reshape2)
 require(Matrix)
@@ -7,8 +8,8 @@ require(gridExtra)
 
 
 ## General settings
-setwd("~/Projects/epistasis/")
-source("~/Projects/R/fs_.R")
+setwd("..")
+#source("~/Projects/R/fs_.R")
 
 #' Perturbation matrix
 #'
@@ -40,7 +41,7 @@ perturbation_matrix <- function(n, p) {
 
 
 p <- 100
-Q <- readRDS("results/simulation/Q1_binary.rds")
+Q <- readRDS("Q1_binary.rds")
 
 ## Simulate
 # Perturbation matrix
@@ -97,7 +98,7 @@ for (numrows in c(400, 1000)) {
     xlab("Observations of double knockdown") +
     ylab("Frequency") +
     ggtitle("A") +
-    theme_fs() +
+#    theme_fs() +
     theme(plot.title = element_text(hjust = -0.1, vjust = -0.2, size = 18))
   pl.hist
   
@@ -113,7 +114,7 @@ for (numrows in c(400, 1000)) {
     annotate(geom = "text", x = Inf, y = -Inf, 
              label = sprintf("%.0f%% non-zero", ident_perc * 100), 
              hjust = 1.2, vjust = -1.5, colour = "black") +
-    theme_fs() +
+#    theme_fs() +
     theme(legend.position = "bottom",
           plot.title = element_text(hjust = -0.1, vjust = -0.2, size = 18),
           panel.grid.major = element_blank(),
@@ -121,7 +122,7 @@ for (numrows in c(400, 1000)) {
   pl.heatmap
   
   
-  pdf(sprintf("results/simulation/perturbation_matrix/pmatrix_n%d.pdf", numrows), width = 11, height = 6.5)
+  pdf(sprintf("perturbation_matrix/pmatrix_n%d.pdf", numrows), width = 11, height = 6.5)
   grid.arrange(pl.hist, pl.heatmap, ncol = 2)
   dev.off()
 }
