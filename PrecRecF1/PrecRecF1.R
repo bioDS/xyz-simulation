@@ -97,7 +97,7 @@ for (numrows in c(1000)) { #400
 require(tidyr)
 require(gridExtra)
 #source("~/Projects/R/fs_.R")
-for (numrows in c(400, 1000)) {
+for (numrows in c(1000)) { #400
   
   dat <- readRDS(file = "PrecRecF1/dat_precrecf1.rds") %>%
     filter(n == numrows) %>%
@@ -116,8 +116,8 @@ for (numrows in c(400, 1000)) {
     summarise(change = yes - no) %>%
     ggplot(aes(x = nbij, y = change)) +
     geom_bar(aes(fill = nbi), stat = "identity", position = "dodge") +
-    # facet_wrap(~measure, scale = "free_y", ncol = 1) +
-    # scale_fill_manual(name = "Additional\nmain effects", values = c("#7fcdbb", "#1d91c0", "#253494")) +
+     facet_wrap(~measure, scale = "free_y", ncol = 1) +
+     scale_fill_manual(name = "Additional\nmain effects", values = c("#7fcdbb", "#1d91c0", "#253494")) +
     scale_fill_discrete(name = "True additional\nmain effects") +
     ylim(c(0, 0.8)) +
     xlab("True interactions") +
@@ -129,8 +129,8 @@ for (numrows in c(400, 1000)) {
     summarise(change = yes - no) %>%
     ggplot(aes(x = nbij, y = change)) +
     geom_bar(aes(fill = nbi), stat = "identity", position = "dodge") +
-    # facet_wrap(~measure, scale = "free_y", ncol = 1) +
-    # scale_fill_manual(name = "Additional\nmain effects", values = c("#7fcdbb", "#1d91c0", "#253494")) +
+     facet_wrap(~measure, scale = "free_y", ncol = 1) +
+     scale_fill_manual(name = "Additional\nmain effects", values = c("#7fcdbb", "#1d91c0", "#253494")) +
     scale_fill_discrete(name = "True additional\nmain effects") +
     ylim(c(-0.8, 0)) +
     xlab("True interactions") +

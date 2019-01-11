@@ -206,9 +206,9 @@ pvals <- data.frame(id = 1:ncol(Z), coef = coef(fit_red)[-1]) %>%
 smry <- left_join(rbind(fx_main, fx_int) %>% data.frame(id = 1:nrow(.), .), pvals, by = "id") %>%
   mutate(pval = ifelse(is.na(pval), 1, pval)) %>%
   rename(coef.est = coef) %>%
-  left_join(., obs, by = c("gene_i", "gene_j")) %>%
-   mutate(pval = p.adjust(pval, method = "BH")) %>%
-   filter(pval < 0.05)
+  left_join(., obs, by = c("gene_i", "gene_j")) #%>%
+#   mutate(pval = p.adjust(pval, method = "BH")) %>%
+#   filter(pval < 0.05)
 
 # smry <- summary(fit_red)$coef %>%
 #   data.frame %>% 
