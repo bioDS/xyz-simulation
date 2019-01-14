@@ -116,7 +116,7 @@ Y <- Y + sqrt(var(Y[,1])/(SNR * var(noise))) * noise
 
 ## Fit model, wip: use xyz
 if (verbose) cat("Fitting model\n")
-regression_results <- xyz_regression(X, Y %>% as.numeric, standardize=TRUE, standardize_response=TRUE, alpha=regression_alpha)
+time <- system.time(regression_results <- xyz_regression(X, Y %>% as.numeric, standardize=TRUE, standardize_response=TRUE, alpha=regression_alpha, L=10))
 
 #q()
 
@@ -147,6 +147,7 @@ fx_main <- data.frame(gene_i = regression_results[[1]][[10]]) %>%
   tbl_df
 fx_main
 
+## glinternet version:
 # fx_int <- data.frame(gene_i = cf$interactions$catcat[,1], gene_j = cf$interactions$catcat[,2],
 #                      effect = cf$interactionsCoef$catcat %>% lapply(., function(x) x[1,1]) %>% unlist) %>%
 #fx_int <- data.frame(gene_i = cf$interactions$contcont[,1], gene_j = cf$interactions$contcont[,2],
@@ -194,7 +195,8 @@ colnames(Z) <- rownames(Z) <- NULL
 Ynum <- as.numeric(Y)
 fit_red <- lm(Ynum ~ Z)
 
-#TODO: probably shouldn't do this, it seems bad.
+#TODO: probably shouldn't do this, it seems bad. For now let's just let it crash on these.
+#TODO: What does an na in fit_red actually mean?
 #fit_red[[1]][is.na(fit_red[[1]])] <- 0
 
 
@@ -206,10 +208,14 @@ pvals <- data.frame(id = 1:ncol(Z), coef = coef(fit_red)[-1]) %>%
 smry <- left_join(rbind(fx_main, fx_int) %>% data.frame(id = 1:nrow(.), .), pvals, by = "id") %>%
   mutate(pval = ifelse(is.na(pval), 1, pval)) %>%
   rename(coef.est = coef) %>%
-  left_join(., obs, by = c("gene_i", "gene_j")) #%>%
+  left_join(., obs, by = c("gene_i", "gene_j")) 
+  # The commented out section below "Selects estimates with \Beta_{i,j} significantly different from 0"
+  #%>%
 #   mutate(pval = p.adjust(pval, method = "BH")) %>%
 #   filter(pval < 0.05)
 
+#TODO: this is in fact the only section where fit_red containing 'NA' is a problem. Since we aren't obviously using it for anything, this may not be an issue?
+# not entirely certain what this does differently
 # smry <- summary(fit_red)$coef %>%
 #   data.frame %>% 
 #   tbl_df %>%
@@ -221,6 +227,10 @@ smry <- left_join(rbind(fx_main, fx_int) %>% data.frame(id = 1:nrow(.), .), pval
 #   filter(pval < 0.01) %>%
 #   left_join(., bij_ind, by = c("gene_i", "gene_j"))
 
+
+# Print time taken to actuall run xyz
+if (verbose)
+    time
 
 ## Write out
 if (verbose) cat("Saving\n")
