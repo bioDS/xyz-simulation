@@ -116,7 +116,7 @@ Y <- Y + sqrt(var(Y[,1])/(SNR * var(noise))) * noise
 
 ## Fit model, wip: use xyz
 if (verbose) cat("Fitting model\n")
-time <- system.time(regression_results <- xyz_regression(X, Y %>% as.numeric, standardize=TRUE, standardize_response=TRUE, alpha=regression_alpha, L=10))
+time <- system.time(regression_results <- xyz_regression(X, Y %>% as.numeric, standardize=TRUE, standardize_response=TRUE, alpha=regression_alpha, L=min(ceiling(sqrt(n)),100)))
 
 #q()
 
