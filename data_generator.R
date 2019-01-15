@@ -18,6 +18,7 @@ SNR <- args[3] %>% as.numeric
 num_bi <- args[4] %>% as.numeric
 num_bij <- args[5] %>% as.numeric
 perc_viol <- args[6] %>% as.numeric
+
 #' Perturbation matrix
 #'
 #' Sample a n \times p perturbation matrix from a frequency vector
