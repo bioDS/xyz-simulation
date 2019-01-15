@@ -16,7 +16,7 @@ if (args[1] == 'large') {
     graph_nbij <- c("50", "200", "500", "1000")
 } else {
     cat("using small data\n")
-    graph_rownums <- c(1000)
+    graph_numrows <- c(1000)
     graph_nbi <- c("0", "20", "50", "100")
     graph_nbij <- c("5", "20", "50", "100")
     large <- FALSE
