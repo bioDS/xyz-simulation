@@ -106,8 +106,8 @@ Y <- Y + sqrt(var(Y[,1])/(SNR * var(noise))) * noise
 ## Write out
 if (verbose) cat("Saving\n")
 saveRDS(list(X=X, Y=Y,
-             bij = bij_ind,
-             bi = bi_ind,
+             bij_ind = bij_ind,
+             bi_ind = bi_ind,
              obs = obs),
         file = sprintf("./simulated_data/n%d_p%d_SNR%d_nbi%d_nbij%d_viol%d_%d.rds",
                        n, p, SNR, num_bi, num_bij, perc_viol, (runif(1) * 1e5) %>% floor))
