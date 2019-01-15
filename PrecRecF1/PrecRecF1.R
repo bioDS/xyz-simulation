@@ -6,6 +6,22 @@ require(RColorBrewer)
 #setwd("~/Projects/epistasis/results/simulation")
 setwd("..")
 
+args <- commandArgs(trailingOnly = TRUE)
+
+if (args[1] == 'large') {
+    cat("using large data\n")
+    large <- TRUE
+    graph_numrows <- c(10000)
+    graph_nbi <- c("0", "200", "500", "1000")
+    graph_nbij <- c("50", "200", "500", "1000")
+} else {
+    cat("using small data\n")
+    graph_rownums <- c(1000)
+    graph_nbi <- c("0", "20", "50", "100")
+    graph_nbij <- c("5", "20", "50", "100")
+    large <- FALSE
+}
+
 # Precision, recall and F1 for interaction terms
  ans <- lapply(list.files(path = "./fits_proper/", pattern = "", full.names = TRUE), function(f) {#, sprintf("n%d_p%d", n, p)), function(f) {
    ans <- readRDS(f)
@@ -41,13 +57,13 @@ setwd("..")
 
 
 
-for (numrows in c(1000)) { #400
+for (numrows in graph_numrows) { #400
   for (t in c("yes", "no")) {
     dat_precrecf1 <- readRDS(file = "PrecRecF1/dat_precrecf1.rds") %>%
       filter(n == numrows) %>%
       filter(test == t) %>%
-      filter(nbi %in% c("0", "20", "50", "100")) %>%
-      filter(nbij %in% c("5", "20", "50", "100")) %>%
+      filter(nbi %in% graph_nbi) %>%
+      filter(nbij %in% graph_nbij) %>%
       filter(SNR != "1") %>%
       mutate(SNR = factor(SNR, levels = levels(SNR), labels = paste0("SNR = ", levels(SNR)))) %>%
       group_by(n, p, SNR, nbi, nbij, test) %>% sample_n(10, replace=TRUE) #TODO: improve this?
@@ -97,7 +113,7 @@ for (numrows in c(1000)) { #400
 require(tidyr)
 require(gridExtra)
 #source("~/Projects/R/fs_.R")
-for (numrows in c(1000)) { #400
+for (numrows in graph_numrows) { #400
   
   dat <- readRDS(file = "PrecRecF1/dat_precrecf1.rds") %>%
     filter(n == numrows) %>%
@@ -108,8 +124,8 @@ for (numrows in c(1000)) { #400
     ungroup %>%
     spread(test, value) %>%
     filter(SNR == 5) %>%
-    filter(nbi %in% c(0, 20, 50, 100)) %>%
-    filter(nbij %in% c("5", "20", "50", "100"))
+    filter(nbi %in% graph_nbi) %>% # These numbers were unquoted for some reason, this might matter.
+    filter(nbij %in% graph_nbij)
   
   
   pl.prec <- group_by(subset(dat, measure == "precision"), n, p, nbi, nbij, measure) %>%
