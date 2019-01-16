@@ -1,0 +1,27 @@
+\documentclass{beamer}
+\usetheme{default}
+
+\title{Inferring genetic interactions using xyz}
+\author{Kieran Elmes}
+\begin{document}
+\begin{frame}[plain]
+    \maketitle
+\end{frame}
+\begin{frame}{$P = 100$}
+Results for $p=100$ using vanilla xyz
+\includegraphics[width=0.5\linewidth]{"PrecRecF1/PrecRecF1_n1000_tno-vanilla_xyz"}%
+\includegraphics[width=0.5\linewidth]{"PrecRecF1/PrecRecF1_n1000_tyes-vanilla_xyz"}
+\end{frame}
+\begin{frame}{$P = 1000$}
+Results for $p=1000$ using vanilla xyz
+\includegraphics[width=0.5\linewidth]{"PrecRecF1/PrecRecF1_n10000_tno-vanilla_xyz"}%
+\includegraphics[width=0.5\linewidth]{"PrecRecF1/PrecRecF1_n10000_tyes-vanilla_xyz"}
+\end{frame}
+\begin{frame}{$P = 1000$, increased limits in xyz}
+Results for $p=1000$ using increased limits\footnote{commit 4517afbc59bdf091eed75683a28070476933f5da}
+\includegraphics[width=0.5\linewidth]{"PrecRecF1/increased_limits/PrecRecF1_n10000_tno"}%
+\includegraphics[width=0.5\linewidth]{"PrecRecF1/increased_limits/PrecRecF1_n10000_tyes"}
+\end{frame}
+\end{document}
+
+% Things to mention: (also see notes)
