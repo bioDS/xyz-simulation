@@ -6,7 +6,8 @@ require(RColorBrewer)
 #setwd("~/Projects/epistasis/results/simulation")
 setwd("..")
 
-args <- commandArgs(trailingOnly = TRUE)
+#args <- commandArgs(trailingOnly = TRUE)
+args <- c('large')
 
 if (args[1] == 'large') {
     cat("using large data\n")
@@ -31,7 +32,7 @@ if (args[1] == 'large') {
    nbi <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbi)\\d+(?=_)", perl = TRUE)) %>% as.numeric
    nbij <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbij)\\d+(?=_)", perl = TRUE)) %>% as.numeric
    perc_viol <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_viol)\\d+(?=_)", perl = TRUE)) %>% as.numeric
-   L <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_L)\\d+(?=\\.rds)", perl = TRUE)) %>% as.numeric
+   L <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_L)\\d+(?=_)", perl = TRUE)) %>% as.numeric
    ID <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_)\\d+(?=\\.rds)", perl = TRUE)) %>% as.numeric
    
    smry_int <- ans$smry %>% filter(type == "interaction")
@@ -56,29 +57,29 @@ if (args[1] == 'large') {
           L = factor(L),
           nbi = factor(nbi),
           nbij = factor(nbij))
- saveRDS(ans, file = "PrecRecF1/dat_precrecf1.rds")
+ saveRDS(ans, file = "l_diff/dat_l_diff.rds")
 
 
 
 for (numrows in graph_numrows) { #400
   for (t in c("yes", "no")) {
-    dat_precrecf1 <- readRDS(file = "PrecRecF1/dat_precrecf1.rds") %>%
+    dat_l_diff <- readRDS(file = "l_diff/dat_l_diff.rds") %>%
       filter(n == numrows) %>%
       filter(test == t) %>%
       filter(nbi %in% graph_nbi) %>%
       filter(nbij %in% graph_nbij) %>%
-      filter(SNR == "5") %>%
-      filter(L %in c(10, 10, 1000)) %>%
+      filter(SNR == 5) %>%
+      filter(L %in% c(10, 100, 1000)) %>%
       mutate(L = factor(L, levels = levels(L), labels = paste0("L = ", levels(L)))) %>%
       group_by(n, p, L, nbi, nbij, test) %>% sample_n(10, replace=TRUE) #TODO: improve this?
     
-    pl <- group_by(dat_precrecf1, L, nbi, nbij) %>%
+    pl <- group_by(dat_l_diff, L, nbi, nbij) %>%
       summarise(mean = mean(precision, na.rm = TRUE), sd = sd(precision, na.rm = TRUE) / sqrt(n())) %>%
       mutate(Measure = "Precision") %>%
-      rbind(., group_by(dat_precrecf1, L, nbi, nbij) %>%
+      rbind(., group_by(dat_l_diff, L, nbi, nbij) %>%
               summarise(mean = mean(recall, na.rm = TRUE), sd = sd(recall, na.rm = TRUE) / sqrt(n())) %>%
               mutate(Measure = "Recall")) %>%
-      rbind(., group_by(dat_precrecf1, L, nbi, nbij) %>%
+      rbind(., group_by(dat_l_diff, L, nbi, nbij) %>%
               summarise(mean = mean(F1, na.rm = TRUE), sd = sd(F1, na.rm = TRUE) / sqrt(n())) %>%
               mutate(Measure = "F1")) %>%
       mutate(Measure = factor(Measure, levels = c("Precision", "Recall", "F1"))) %>%
@@ -98,9 +99,10 @@ for (numrows in graph_numrows) { #400
       xlab("True interactions") +
       ylab("") +
       #theme_fs() +
+      scale_y_continuous(trans='log10') +
       theme(legend.position = "bottom")
     pl
-    ggsave(pl, file = sprintf("PrecRecF1/PrecRecF1_n%d_t%s.pdf", numrows, t), width = 5, height = 7)
+    ggsave(pl, file = sprintf("l_diff/l_diff_n%d_t%s.pdf", numrows, t), width = 5, height = 7)
   }
 }
 
@@ -119,7 +121,7 @@ require(gridExtra)
 #source("~/Projects/R/fs_.R")
 for (numrows in graph_numrows) { #400
   
-  dat <- readRDS(file = "PrecRecF1/dat_precrecf1.rds") %>%
+  dat <- readRDS(file = "l_diff/dat_l_diff.rds") %>%
     filter(n == numrows) %>%
     mutate(test = factor(test)) %>%
     group_by(n, p, SNR, L, nbi, nbij, test) %>%
@@ -158,7 +160,7 @@ for (numrows in graph_numrows) { #400
     #theme_fs() +
     theme(legend.position = "bottom")
   
-  pdf(sprintf("PrecRecF1/test_analysis_n%d.pdf", numrows), width = 5, height = 5)
+  pdf(sprintf("l_diff/test_analysis_n%d.pdf", numrows), width = 5, height = 5)
   grid.arrange(pl.prec, pl.rec, ncol = 1)
   dev.off()
 }
