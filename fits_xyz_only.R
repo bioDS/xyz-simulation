@@ -16,6 +16,7 @@ args <- commandArgs(trailingOnly = TRUE)
 
 print(args)
 f <- args[1]
+L <- args[2] %>% as.numeric
 regression_alpha <- 0.9
 
 n <- regmatches(x = f, m = regexpr(f, pattern = "(?<=n)\\d+(?=_)", perl = TRUE)) %>% as.numeric
@@ -40,7 +41,7 @@ gc()
 
 ## Fit model, wip: use xyz
 if (verbose) cat("Fitting model\n")
-time <- system.time(regression_results <- xyz_regression(X, Y %>% as.numeric, standardize=TRUE, standardize_response=TRUE, alpha=regression_alpha, L=min(ceiling(sqrt(n)),100)))
+time <- system.time(regression_results <- xyz_regression(X, Y %>% as.numeric, standardize=TRUE, standardize_response=TRUE, alpha=regression_alpha, L=L))
 
 
 if (verbose) cat("Collecting stats\n")
@@ -110,5 +111,5 @@ saveRDS(list(fit = regression_results,
              fx_main = fx_main,
              fit_red = fit_red,
              smry = smry),
-        file = sprintf("./fits_proper/n%d_p%d_SNR%d_nbi%d_nbij%d_viol%d_%d.rds",
-                       n, p, SNR, num_bi, num_bij, perc_viol, ID))
+        file = sprintf("./fits_proper/n%d_p%d_SNR%d_nbi%d_nbij%d_viol%d_L%d_%d.rds",
+                       n, p, SNR, num_bi, num_bij, perc_viol, L, ID))
