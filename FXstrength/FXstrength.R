@@ -6,6 +6,8 @@ require(RColorBrewer)
 #source("~/Projects/R/fs_.R")
 setwd("..")
 
+L_restriction <- 100
+
 ## Number of observations
 ans <- lapply(list.files(path = "./fits_proper/", pattern = "", full.names = TRUE), function(f) {#, sprintf("n%d_p%d", n, p)), function(f) {
   ans <- readRDS(f)
@@ -15,9 +17,10 @@ ans <- lapply(list.files(path = "./fits_proper/", pattern = "", full.names = TRU
   nbi <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbi)\\d+(?=_)", perl = TRUE)) %>% as.numeric
   nbij <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbij)\\d+(?=_)", perl = TRUE)) %>% as.numeric
   perc_viol <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_viol)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+   L <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_L)\\d+(?=_)", perl = TRUE)) %>% as.numeric
   id <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_)\\d+(?=\\.rds)", perl = TRUE)) %>% as.numeric
   smry_int <- ans$smry %>% filter(type == "interaction")
-  notest <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij, id = id,
+  notest <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij, L=L, id = id,
              left_join(ans$bij, smry_int, by = c("gene_i", "gene_j", "o00", "o01", "o10", "o11", "omin")) %>%
                select(coef = coef, coef_est = coef.est, TP, omin) %>%
                mutate(type = ifelse(is.na(TP), "FN", "TP")) %>%
@@ -26,7 +29,7 @@ ans <- lapply(list.files(path = "./fits_proper/", pattern = "", full.names = TRU
              test = "no") %>% rename(observations = omin) %>% tbl_df
   smry_int <- mutate(smry_int, pval = p.adjust(pval, method = "BH")) %>%
     filter(pval < 0.05)
-  test <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij, id = id,
+  test <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij, L=L, id = id,
                      left_join(ans$bij, smry_int, by = c("gene_i", "gene_j", "o00", "o01", "o10", "o11", "omin")) %>%
                        select(coef = coef, coef_est = coef.est, TP, omin) %>%
                        mutate(type = ifelse(is.na(TP), "FN", "TP")) %>%
@@ -41,13 +44,19 @@ ans <- lapply(list.files(path = "./fits_proper/", pattern = "", full.names = TRU
          SNR = factor(SNR),
          nbi = factor(nbi),
          nbij = factor(nbij),
+         L = factor(L),
          type = factor(type))
 saveRDS(ans, file = "FXstrength/dat_fxstrength.rds")
 
 
 
 
-for (numrows in c(1000)) {
+for (numrows in c(10000)) {#1000
+  if (numrows == 1000) {
+	  nbij_values = c(5,20,50,100)
+  } else {
+	  nbij_values = c(50,200,500,1000)
+  }
   for (t in c("yes", "no")) {
     dat_fxs <- readRDS("FXstrength/dat_fxstrength.rds")
     TP=length(unlist((dat_fxs %>% filter(type=="TP"))[1]))
@@ -57,12 +66,13 @@ for (numrows in c(1000)) {
       filter(n == numrows) %>%
       filter(test == t) %>%
       filter(nbi == 0, SNR != 1) %>%
+      filter(L == L_restriction) %>%
       mutate(SNR = factor(SNR, labels = paste0("SNR = ", levels(factor(SNR))))) %>%
       rowwise %>%
       mutate(coef = ifelse(is.na(coef), coef_est, coef)) %>%
       select(-coef_est) %>%
       ungroup %>%
-      filter(nbij %in% c(5, 20, 50, 100)) %>%
+      filter(nbij %in% nbij_values) %>%
       group_by(n, p, SNR, nbi, nbij, coef, type) %>%
       mutate(range = cut(coef %>% as.numeric, c(-Inf, seq(-5, 5, by = 1), Inf))) %>%
       group_by(n, p, SNR, nbij, type, range) %>%
@@ -99,7 +109,7 @@ for (numrows in c(1000)) {
       theme(legend.position = "bottom",
             axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
     pl
-    ggsave(pl, file = sprintf("FXstrength/FXstrength_PRF_n%d_t%s.pdf", numrows, t), width = 5, height = 7)
+    ggsave(pl, file = sprintf("FXstrength/FXstrength_PRF_n%d_L%d_t%s.pdf", numrows, L_restriction, t), width = 5, height = 7)
     
     
    pl_wrongdir <- readRDS("FXstrength/dat_fxstrength.rds") %>%
