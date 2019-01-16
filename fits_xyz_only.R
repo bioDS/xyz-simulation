@@ -1,14 +1,14 @@
 #!/usr/bin/Rscript
 require(Matrix)
 require(dplyr)
-require(xyz)
+#require(xyz)
 
 ## Uncomment to use modified xyz
-#library(Rcpp)
-#source('./xyz/R/regression.R')
-#source('./xyz/R/search.R')
-#source('./xyz/R/xyz.R')
-#sourceCpp('./xyz/src/core.cpp')
+library(Rcpp)
+source('./xyz/R/regression.R')
+source('./xyz/R/search.R')
+source('./xyz/R/xyz.R')
+sourceCpp('./xyz/src/core.cpp')
 
 verbose <- TRUE
 
