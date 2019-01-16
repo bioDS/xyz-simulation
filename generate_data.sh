@@ -1,5 +1,7 @@
 #!/bin/bash
 
+trap "echo Exited!; exit;" SIGINT SIGTERM
+
 counter=0
 threads=20
 
