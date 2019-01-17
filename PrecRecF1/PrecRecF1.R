@@ -8,7 +8,7 @@ setwd("..")
 
 args <- commandArgs(trailingOnly = TRUE)
 
-if (args[1] == 'large') {
+if (args[1] == 'l') {
     cat("using large data\n")
     large <- TRUE
     graph_numrows <- c(10000)
