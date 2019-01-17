@@ -67,7 +67,7 @@ xyz_regression<-function(X,Y,lambdas=NULL,n_lambda=10,alpha=0.9,L=10,standardize
   if(L < 1) {
     stop("Number of runs has to be at least 1.")
   }
-  if(L > 1000) {
+  if(L > 100) {
     warning("You choose very high number of runs.")
   }
   if(n_lambda < 1) {
@@ -102,8 +102,8 @@ xyz_regression<-function(X,Y,lambdas=NULL,n_lambda=10,alpha=0.9,L=10,standardize
   if(is.null(lambdas)) {
     lambdas<-rep(-1,n_lambda)
   }
-  max_main_effects<-2000
-  max_interaction_effects<-1000
+  max_main_effects<-100
+  max_interaction_effects<-20
   result<-gaussiglmnet(X, Y, lambdas, alpha,standardize, max_main_effects, max_interaction_effects, 2, L)
   L<-length(result[[1]])
   for(i in 1:L) {
