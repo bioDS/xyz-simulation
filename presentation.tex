@@ -1,0 +1,78 @@
+\documentclass[8pt]{beamer}
+\usetheme{default}
+
+%\geometry{paperwidth=140mm,paperheight=105mm}
+
+\title{Inferring genetic interactions using xyz}
+\author{Kieran Elmes}
+\begin{document}
+\begin{frame}[plain]
+    \maketitle
+\end{frame}
+\begin{frame}{What are we doing}
+content...
+\end{frame}
+\begin{frame}{Why do we care}
+content...
+\end{frame}
+\begin{frame}{$P = 100$}
+Results for $p=100$ using vanilla xyz
+\begin{center}
+\begin{minipage}{0.9\linewidth}
+	\centering
+	\includegraphics[width=0.5\linewidth]{"PrecRecF1/PrecRecF1_n1000_tno-vanilla_xyz"}%
+	\includegraphics[width=0.5\linewidth]{"PrecRecF1/PrecRecF1_n1000_tyes-vanilla_xyz"}
+\end{minipage}
+\end{center}
+For 1000 measurements of only 100 genes, results are good.
+\end{frame}
+\begin{frame}{$P = 1000$}
+Results for $p=1000$ using vanilla xyz
+\begin{center}
+	\begin{minipage}{0.9\linewidth}
+		\centering
+		\includegraphics[width=0.5\linewidth]{"PrecRecF1/PrecRecF1_n10000_tno-vanilla_xyz"}%
+		\includegraphics[width=0.5\linewidth]{"PrecRecF1/PrecRecF1_n10000_tyes-vanilla_xyz"}
+	\end{minipage}
+\end{center}
+Large data sets are a problem, however.
+\end{frame}
+\begin{frame}{$P = 1000$, increased limits in xyz}
+Results for $p=1000$ using increased limits\footnote{commit 4517afbc59bdf091eed75683a28070476933f5da}
+\begin{center}
+	\begin{minipage}{0.9\linewidth}
+		\centering
+		\includegraphics[width=0.5\linewidth]{"PrecRecF1/increased_limits/PrecRecF1_n10000_tno"}%
+		\includegraphics[width=0.5\linewidth]{"PrecRecF1/increased_limits/PrecRecF1_n10000_tyes"}
+	\end{minipage}
+\end{center}
+Increasing the maximum allowed number of interactions in xyz does not improve results.
+\end{frame}
+\begin{frame}{Larger values of $L$}
+\begin{center}
+	\begin{minipage}{0.9\linewidth}
+		\centering
+		\includegraphics[width=0.5\linewidth]{"l_diff/l_diff_n10000_tno"}%
+		\includegraphics[width=0.5\linewidth]{"l_diff/l_diff_n10000_tyes"}
+	\end{minipage}
+\end{center}
+
+
+Where results are found, a larger value of $L$ does not obviously improve accuracy. It does seem to improve the odds of finding at least some results, however.
+\end{frame}
+\begin{frame}{Interaction strength}
+\begin{center}
+	\begin{minipage}{0.9\linewidth}
+		\centering
+		\includegraphics[width=0.5\linewidth]{"FXstrength/FXstrength_PRF_n10000_L100_tno"}%
+		\includegraphics[width=0.5\linewidth]{"FXstrength/FXstrength_PRF_n10000_L100_tyes"}
+	\end{minipage}
+\end{center}
+
+
+Fixing $L = 100$ (for the moment), a small number of strong interactions are somewhat reliably found. When the data contains a large enough number of total interactions, performance relatively poor.
+\end{frame}
+
+\end{document}
+
+% Things to mention: (also see notes)
