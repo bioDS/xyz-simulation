@@ -10,10 +10,12 @@
     \maketitle
 \end{frame}
 \begin{frame}{What are we doing}
-content...
+Simulating large(ish) sets of SiRNA knockdowns, and measuring xyz's ability to correctly determine interactions in the data.
+
+We can already do this with glinternet, but xyz is (several hundred times?) faster.
 \end{frame}
 \begin{frame}{Why do we care}
-content...
+Genetic interactions are useful. For reasons.
 \end{frame}
 \begin{frame}{$P = 100$}
 Results for $p=100$ using vanilla xyz
@@ -48,17 +50,37 @@ Results for $p=1000$ using increased limits\footnote{commit 4517afbc59bdf091eed7
 \end{center}
 Increasing the maximum allowed number of interactions in xyz does not improve results.
 \end{frame}
-\begin{frame}{Larger values of $L$}
+\begin{frame}{Larger values of $L$, $SNR = 2$}
 \begin{center}
 	\begin{minipage}{0.9\linewidth}
 		\centering
-		\includegraphics[width=0.5\linewidth]{"l_diff/l_diff_n10000_tno"}%
-		\includegraphics[width=0.5\linewidth]{"l_diff/l_diff_n10000_tyes"}
+		\includegraphics[width=0.5\linewidth]{"l_diff/l_diff_n10000_SNR2_tno"}%
+		\includegraphics[width=0.5\linewidth]{"l_diff/l_diff_n10000_SNR2_tyes"}
+	\end{minipage}
+\end{center}
+
+\end{frame}
+\begin{frame}{Larger values of $L$, $SNR = 5$}
+\begin{center}
+	\begin{minipage}{0.9\linewidth}
+		\centering
+		\includegraphics[width=0.5\linewidth]{"l_diff/l_diff_n10000_SNR5_tno"}%
+		\includegraphics[width=0.5\linewidth]{"l_diff/l_diff_n10000_SNR5_tyes"}
+	\end{minipage}
+\end{center}
+
+\end{frame}
+\begin{frame}{Larger values of $L$, $SNR = 10$}
+\begin{center}
+	\begin{minipage}{0.9\linewidth}
+		\centering
+		\includegraphics[width=0.5\linewidth]{"l_diff/l_diff_n10000_SNR10_tno"}%
+		\includegraphics[width=0.5\linewidth]{"l_diff/l_diff_n10000_SNR10_tyes"}
 	\end{minipage}
 \end{center}
 
 
-Where results are found, a larger value of $L$ does not obviously improve accuracy. It does seem to improve the odds of finding at least some results, however.
+Where results are found, a larger value of $L$ does not obviously improve precision. It does seem to improve the odds of finding at least some results, however.
 \end{frame}
 \begin{frame}{Interaction strength}
 \begin{center}
@@ -70,7 +92,7 @@ Where results are found, a larger value of $L$ does not obviously improve accura
 \end{center}
 
 
-Fixing $L = 100$ (for the moment), a small number of strong interactions are somewhat reliably found. When the data contains a large enough number of total interactions, performance relatively poor.
+Fixing $L = 100$ (for the moment), a small number of strong interactions are reliably found, even in a large data set. When the data contains a large number of total interactions, we find almost nothing.
 \end{frame}
 
 \end{document}
