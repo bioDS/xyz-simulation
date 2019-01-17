@@ -7,46 +7,49 @@ require(RColorBrewer)
 setwd("..")
 
 L_restriction <- 100
+args <- commandArgs(trailingOnly = TRUE)
 
 ## Number of observations
-ans <- lapply(list.files(path = "./fits_proper/", pattern = "", full.names = TRUE), function(f) {#, sprintf("n%d_p%d", n, p)), function(f) {
-  ans <- readRDS(f)
-  n <- regmatches(x = f, m = regexpr(f, pattern = "(?<=n)\\d+(?=_)", perl = TRUE)) %>% as.numeric
-  p <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_p)\\d+(?=_)", perl = TRUE)) %>% as.numeric
-  SNR <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_SNR)\\d+(?=_)", perl = TRUE)) %>% as.numeric
-  nbi <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbi)\\d+(?=_)", perl = TRUE)) %>% as.numeric
-  nbij <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbij)\\d+(?=_)", perl = TRUE)) %>% as.numeric
-  perc_viol <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_viol)\\d+(?=_)", perl = TRUE)) %>% as.numeric
-   L <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_L)\\d+(?=_)", perl = TRUE)) %>% as.numeric
-  id <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_)\\d+(?=\\.rds)", perl = TRUE)) %>% as.numeric
-  smry_int <- ans$smry %>% filter(type == "interaction")
-  notest <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij, L=L, id = id,
-             left_join(ans$bij, smry_int, by = c("gene_i", "gene_j", "o00", "o01", "o10", "o11", "omin")) %>%
-               select(coef = coef, coef_est = coef.est, TP, omin) %>%
-               mutate(type = ifelse(is.na(TP), "FN", "TP")) %>%
-               select(-TP) %>%
-               rbind(., filter(smry_int, TP == FALSE) %>% mutate(coef = NA) %>% select(coef, coef_est = coef.est, omin) %>% mutate(type = "FP")),
-             test = "no") %>% rename(observations = omin) %>% tbl_df
-  smry_int <- mutate(smry_int, pval = p.adjust(pval, method = "BH")) %>%
-    filter(pval < 0.05)
-  test <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij, L=L, id = id,
-                     left_join(ans$bij, smry_int, by = c("gene_i", "gene_j", "o00", "o01", "o10", "o11", "omin")) %>%
-                       select(coef = coef, coef_est = coef.est, TP, omin) %>%
-                       mutate(type = ifelse(is.na(TP), "FN", "TP")) %>%
-                       select(-TP) %>%
-                       rbind(., filter(smry_int, TP == FALSE) %>% mutate(coef = NA) %>% select(coef, coef_est = coef.est, omin) %>% mutate(type = "FP")),
-                     test = "yes") %>% rename(observations = omin) %>% tbl_df
-  rbind(test, notest)
-}) %>% do.call("rbind", .) %>%
-  tbl_df %>%
-  mutate(n = factor(n),
-         p = factor(p),
-         SNR = factor(SNR),
-         nbi = factor(nbi),
-         nbij = factor(nbij),
-         L = factor(L),
-         type = factor(type))
-saveRDS(ans, file = "FXstrength/dat_fxstrength.rds")
+if (args[1] == 'y') {
+    ans <- lapply(list.files(path = "./fits_proper/", pattern = "", full.names = TRUE), function(f) {#, sprintf("n%d_p%d", n, p)), function(f) {
+      ans <- readRDS(f)
+      n <- regmatches(x = f, m = regexpr(f, pattern = "(?<=n)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+      p <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_p)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+      SNR <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_SNR)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+      nbi <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbi)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+      nbij <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbij)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+      perc_viol <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_viol)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+       L <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_L)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+      id <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_)\\d+(?=\\.rds)", perl = TRUE)) %>% as.numeric
+      smry_int <- ans$smry %>% filter(type == "interaction")
+      notest <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij, L=L, id = id,
+                 left_join(ans$bij, smry_int, by = c("gene_i", "gene_j", "o00", "o01", "o10", "o11", "omin")) %>%
+                   select(coef = coef, coef_est = coef.est, TP, omin) %>%
+                   mutate(type = ifelse(is.na(TP), "FN", "TP")) %>%
+                   select(-TP) %>%
+                   rbind(., filter(smry_int, TP == FALSE) %>% mutate(coef = NA) %>% select(coef, coef_est = coef.est, omin) %>% mutate(type = "FP")),
+                 test = "no") %>% rename(observations = omin) %>% tbl_df
+      smry_int <- mutate(smry_int, pval = p.adjust(pval, method = "BH")) %>%
+        filter(pval < 0.05)
+      test <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij, L=L, id = id,
+                         left_join(ans$bij, smry_int, by = c("gene_i", "gene_j", "o00", "o01", "o10", "o11", "omin")) %>%
+                           select(coef = coef, coef_est = coef.est, TP, omin) %>%
+                           mutate(type = ifelse(is.na(TP), "FN", "TP")) %>%
+                           select(-TP) %>%
+                           rbind(., filter(smry_int, TP == FALSE) %>% mutate(coef = NA) %>% select(coef, coef_est = coef.est, omin) %>% mutate(type = "FP")),
+                         test = "yes") %>% rename(observations = omin) %>% tbl_df
+      rbind(test, notest)
+    }) %>% do.call("rbind", .) %>%
+      tbl_df %>%
+      mutate(n = factor(n),
+             p = factor(p),
+             SNR = factor(SNR),
+             nbi = factor(nbi),
+             nbij = factor(nbij),
+             L = factor(L),
+             type = factor(type))
+    saveRDS(ans, file = "FXstrength/dat_fxstrength.rds")
+}
 
 
 
