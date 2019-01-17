@@ -7,7 +7,7 @@ setwd("..")
 
 
 
-for (numrows in c(1000)) { #400, 
+for (numrows in c(1000, 10000)) { #400, 
   if (numrows == 400) {
     rseq <- 0#c(seq(0, 60, by = 20), 100)
   } else if (numrows == 1000) {
