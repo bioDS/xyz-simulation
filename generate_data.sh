@@ -1,7 +1,7 @@
 #!/bin/bash
 
 counter=0
-threads=20
+threads=24
 
 if [[ $1 ]]; then
         multiplier=$1
