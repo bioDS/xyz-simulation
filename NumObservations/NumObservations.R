@@ -16,9 +16,10 @@ setwd("..")
    nbi <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbi)\\d+(?=_)", perl = TRUE)) %>% as.numeric
    nbij <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbij)\\d+(?=_)", perl = TRUE)) %>% as.numeric
    perc_viol <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_viol)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+   L <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_L)\\d+(?=_)", perl = TRUE)) %>% as.numeric
    id <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_)\\d+(?=\\.rds)", perl = TRUE)) %>% as.numeric
    smry_int <- ans$smry %>% filter(type == "interaction")
-   notest <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij, id = id,
+   notest <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij, L=L, id = id,
               left_join(ans$bij, smry_int, by = c("gene_i", "gene_j", "o00", "o01", "o10", "o11", "omin")) %>%
                 select(observations = omin, TP) %>%
                 mutate(type = ifelse(is.na(TP), "FN", "TP")) %>%
@@ -27,7 +28,7 @@ setwd("..")
               test = "no")
    smry_int <- mutate(smry_int, pval = p.adjust(pval, method = "BH")) %>%
      filter(pval < 0.05)
-   test <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij, id = id,
+   test <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij, L=L, id = id,
                         left_join(ans$bij, smry_int, by = c("gene_i", "gene_j", "o00", "o01", "o10", "o11", "omin")) %>%
                           select(observations = omin, TP) %>%
                           mutate(type = ifelse(is.na(TP), "FN", "TP")) %>%
@@ -42,23 +43,31 @@ setwd("..")
           SNR = factor(SNR),
           nbi = factor(nbi),
           nbij = factor(nbij),
+          L = factor(L),
           type = factor(type))
  saveRDS(ans, file = "NumObservations/dat_numobs.rds")
 
 
   
 
-for (numrows in c(1000)) { #400, 
+for (numrows in c(10000)) { #1000, 
   if (numrows == 400) {
     rseq <- 0#c(seq(0, 60, by = 20), 100)
   } else if (numrows == 1000) {
     rseq <- rseq <- c(0, 10, 20, 40, 80, Inf)#c(seq(0, 150, by = 50), 250)
+  } else {
+    rseq <- rseq <- c(0, 10, 20, 40, 80, Inf) #TODO: what should these be?
   }
   for (t in c("yes", "no")) {
-    dat_nobs <- readRDS("NumObservations/dat_numobs.rds") %>%
+  dat_nobs <- readRDS("NumObservations/dat_numobs.rds")
+    TP=length(unlist((dat_nobs %>% filter(type=="TP"))[1]))
+    FP=length(unlist((dat_nobs %>% filter(type=="FP"))[1]))
+    FN=length(unlist((dat_nobs %>% filter(type=="FN"))[1]))
+    dat_nobs <- dat_nobs %>%
       filter(n == numrows) %>%
       filter(test == t) %>%
       filter(nbi == 20, SNR != 1) %>%
+      filter(L == 100) %>%
       mutate(SNR = factor(SNR, labels = paste0("SNR = ", levels(factor(SNR))))) %>%
       filter(nbij %in% c(5, 20, 50, 100)) %>%
       group_by(n, p, SNR, nbi, nbij, observations, type) %>%
