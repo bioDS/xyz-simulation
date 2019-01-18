@@ -118,7 +118,7 @@ for (i in 1:nrow(bij_ind)) {
 
 ## add noise
 # If fitness is the average number of ofspring per generation, then a mean of 0 would suggest the vast majority of things do not survive many generations. Surely this should be 1?
-noise <- (rnorm(n = nrow(Y), mean = 0, sd = 1))
+noise <- (rnorm(n = nrow(Y), mean = 1, sd = 1))
 Y <- Y + sqrt(var(Y[,1])/(SNR * var(noise))) * noise
 
 # If interaction coefficients are an indication of the number of the generations offspring the combination would kill, then a more negative result would be, at most, dead faster.
