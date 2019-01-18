@@ -122,7 +122,7 @@ noise <- (rnorm(n = nrow(Y), mean = 1, sd = 1))
 Y <- Y + sqrt(var(Y[,1])/(SNR * var(noise))) * noise
 
 # If interaction coefficients are an indication of the number of the generations offspring the combination would kill, then a more negative result would be, at most, dead faster.
-#Y[Y<0] <- 0
+Y[Y<0] <- 0
 
 # make fitness values positive (e.g. representing remaining living fraction)
 #TODO: find a better way of doing this, it wreaks havok on estimated coefficients.
