@@ -48,6 +48,7 @@ perturbation_matrix <- function(n, p) {
 
 ## Simulate
 # Perturbation matrix
+# obs gives us (every?) possible interaction we can use to generate Y.
 if (verbose) cat("Make perturbation matrix\n")
 X <- perturbation_matrix(n = n, p = p)
 obs <- lapply(2:p, function(i) {
@@ -68,6 +69,7 @@ obs <- lapply(2:p, function(i) {
   ungroup
 
 # Interaction terms
+# choose num_bij distinct interactions at random from the available ones (determined above). These will be the interactions actually used in Y.
 if (verbose) cat("Sampling interaction fx\n")
 # s <- seq(from = max(0, median(bij_obs) - floor(num_bij/2)) + 1, to = min(median(bij_obs) + floor(num_bij/2), max(bij_obs)))
 bij_ind <- obs %>%
@@ -79,9 +81,11 @@ bij_ind <- obs %>%
   mutate(coef = rnorm(1, mean = 0, sd = 2)) # double amplitude sd
 
 ## Main effects
+# both sides of the interaction effects.
 if (verbose) cat("Sampling main fx\n")
 bi_ind <- c(bij_ind[["gene_i"]], bij_ind[["gene_j"]]) %>% unique %>% sort
-# Add violations
+## Add violations
+# main effects that violate (what?)
 num_viols <- perc_viol / 100 * nrow(bij_ind)
 bi_ind <- cbind(sample(1:nrow(bij_ind), size = num_viols, replace = FALSE), 
                 sample(1:2, size = num_viols, replace = TRUE)) %>%
@@ -93,7 +97,9 @@ bi_ind <- data.frame(gene_i = c(bi_ind, bi_main_ind) %>% unique, gene_j = NA) %>
   rowwise %>%
   mutate(coef = rnorm(1, mean = 0, sd = 1))
 
-# Fitness
+## Fitness
+# as a result of only the main effects, and their interactions.
+# if we want to add some explicit synthetic lethals, we need to set up bij_ind so that Y[somewhere] == 0.
 if (verbose) cat("Sampling fitness\n")
 Y <- X[,bi_ind[["gene_i"]], drop = FALSE] %*% bi_ind[["coef"]]
 for (i in 1:nrow(bij_ind)) {
@@ -102,6 +108,9 @@ for (i in 1:nrow(bij_ind)) {
 ## add noise
 noise <- (rnorm(n = nrow(Y), mean = 0, sd = 1))
 Y <- Y + sqrt(var(Y[,1])/(SNR * var(noise))) * noise
+
+# If fitness is less than 0, we're dead (presumably just faster than if fitness == 0)
+Y[Y<0] <- 0
 
 
 ## Write out
