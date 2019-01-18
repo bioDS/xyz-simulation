@@ -17,6 +17,7 @@ args <- commandArgs(trailingOnly = TRUE)
 print(args)
 f <- args[1]
 L <- args[2] %>% as.numeric
+write_out <- args[3] == 'write'
 regression_alpha <- 0.9
 
 n <- regmatches(x = f, m = regexpr(f, pattern = "(?<=n)\\d+(?=_)", perl = TRUE)) %>% as.numeric
@@ -29,7 +30,8 @@ ID <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_)\\d+(?=\\.rds)", perl = 
 
 
 ## not really necessary, but X is neater than data$X
-data <- readRDS(paste("simulated_data/", f, sep=''))
+#data <- readRDS(paste("simulated_lethal_data/", f, sep=''))
+data <- readRDS(f)
 X <- data$X
 Y <- data$Y
 obs <- data$obs
@@ -102,14 +104,18 @@ if (verbose)
     time
 
 ## Write out
-if (verbose) cat("Saving\n")
-saveRDS(list(fit = regression_results,
-             bij = bij_ind,
-             bi = bi_ind,
-             obs = obs,
-             fx_int = fx_int,
-             fx_main = fx_main,
-             fit_red = fit_red,
-             smry = smry),
-        file = sprintf("./fits_proper/n%d_p%d_SNR%d_nbi%d_nbij%d_viol%d_L%d_%d.rds",
+if (write_out) {
+    if (verbose) cat("Saving\n")
+    saveRDS(list(fit = regression_results,
+                 bij = bij_ind,
+                 bi = bi_ind,
+                 obs = obs,
+                 fx_int = fx_int,
+                 fx_main = fx_main,
+                 fit_red = fit_red,
+                 smry = smry),
+            file = sprintf("./fits_proper/n%d_p%d_SNR%d_nbi%d_nbij%d_viol%d_L%d_%d.rds",
                        n, p, SNR, num_bi, num_bij, perc_viol, L, ID))
+} else {
+    cat("Not saving\n")
+}
