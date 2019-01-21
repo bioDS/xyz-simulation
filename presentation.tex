@@ -18,7 +18,7 @@
 
 %\geometry{paperwidth=140mm,paperheight=105mm}
 
-\title{Inferring genetic interactions using xyz}
+\title{Inferring Genetic Interactions Using xyz}
 \author{Kieran Elmes}
 \begin{document}
 \begin{frame}[plain]
@@ -26,7 +26,6 @@
 \end{frame}
 
 \begin{frame}{The Problem}
-\todo[inline]{move this up?}
 \begin{minipage}{0.4\linewidth}
 	\includegraphics[width=0.8\linewidth]{"cells_2x"}\\[-1ex]
 	{\tiny Obligatory xkcd\\Source: \href{https://www.xkcd.com/1217/}{https://www.xkcd.com/1217/}}
@@ -125,8 +124,8 @@ Increasing the maximum allowed number of interactions in xyz does not improve re
 \begin{center}
 	\begin{minipage}{0.9\linewidth}
 		\centering
-		\includegraphics[width=0.5\linewidth]{"FXstrength/FXstrength_PRF_n10000_L100_tno"}%
-		\includegraphics[width=0.5\linewidth]{"FXstrength/FXstrength_PRF_n10000_L100_tyes"}
+		\includegraphics[width=0.5\linewidth]{"FXstrength/FXstrength_PRF_n10000_L100_tno_mult10"}%
+		\includegraphics[width=0.5\linewidth]{"FXstrength/FXstrength_PRF_n10000_L100_tyes_mult10"}
 	\end{minipage}
 \end{center}
 
@@ -134,17 +133,30 @@ Increasing the maximum allowed number of interactions in xyz does not improve re
 Fixing $L = 100$, a small number of strong interactions are reliably found, even in a large data set. When the data contains a large number of total interactions, we find almost nothing. If nothing else, our ability to detect synthetic lethals still looks good.
 \end{frame}
 
-\begin{frame}
-\todo[inline]{wording/detail}
-Does xyz perform any better when there are fewer interactions in a large dataset?
-\end{frame}
 
 \begin{frame}{Large data, few interactions}
 	\begin{minipage}{0.9\linewidth}
 		\centering
 		\includegraphics[width=0.5\linewidth]{"PrecRecF1/PrecRecF1_n10000_tno_large0"}%
 		\includegraphics[width=0.5\linewidth]{"PrecRecF1/PrecRecF1_n10000_tyes_large0"}
+	\end{minipage}\\
+	Performance is no worse with only a few interactions in a large data set.
+\end{frame}
+
+\begin{frame}
+	\begin{minipage}{0.9\linewidth}
+		\centering
+		\includegraphics[width=0.5\linewidth]{"FXstrength/FXstrength_PRF_n10000_L100_tno_mult1"}%
+		\includegraphics[width=0.5\linewidth]{"FXstrength/FXstrength_PRF_n10000_L100_tyes_mult1"}
 	\end{minipage}
+
+	With only a few interactions, xyz is able to find strong interactions much more easily.
+\end{frame}
+
+\begin{frame}{Summary}
+\begin{itemize}
+	\item 
+\end{itemize}
 \end{frame}
 
 \begin{frame}{WIP/TODO}
