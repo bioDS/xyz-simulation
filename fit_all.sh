@@ -3,7 +3,7 @@
 trap "echo Exited!; exit;" SIGINT SIGTERM
 
 for i in `ls simulated_data`; do
-	for L in 10 100 1000; do
-		./fits_xyz_only.R $i $L
+	for L in 100; do
+		./fits_xyz_only.R simulated_data/$i $L write
 	done
 done
