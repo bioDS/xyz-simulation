@@ -1,7 +1,19 @@
+\begin{filecontents*}{presentation.bib}
+@article{Kaelin:2005gm,
+	author = {Kaelin, William G},
+	title = {{The concept of synthetic lethality in the context of anticancer therapy.}},
+	journal = {Nat. Rev. Cancer},
+	year = {2005}
+}
+\end{filecontents*}
+
 \documentclass[8pt]{beamer}
 \usetheme{Hannover}
 
+\usepackage[style=numeric,firstinits=true,backend=biber]{biblatex}
+\addbibresource{presentation.bib}
 \usepackage{todonotes}
+
 \presetkeys{todonotes}{inline}{}
 
 %\geometry{paperwidth=140mm,paperheight=105mm}
@@ -12,6 +24,22 @@
 \begin{frame}[plain]
     \maketitle
 \end{frame}
+
+\begin{frame}{The Problem}
+\todo[inline]{move this up?}
+\begin{minipage}{0.4\linewidth}
+	\includegraphics[width=0.8\linewidth]{"cells_2x"}\\[-1ex]
+	{\tiny Obligatory xkcd\\Source: \href{https://www.xkcd.com/1217/}{https://www.xkcd.com/1217/}}
+\end{minipage}%
+\begin{minipage}{0.6\linewidth}
+	\begin{itemize}
+		\item Killing cancer cells is easy. Killing cancer cells selectively is hard.
+		\item Synthetic lethal interactions could potentially be used for exactly that.\cite{Kaelin:2005gm}
+		\item We have approx. 20,000 genes. Experimentally testing all 200 million pairwise interactions is awkward.
+	\end{itemize}
+\end{minipage}
+\end{frame}
+
 \begin{frame}{What are we doing}
 \todo{detail, how do glinternet/xyz work?}
 Simulating large(ish) sets of SiRNA knockdowns, and measuring xyz's ability to correctly determine interactions in the data.
@@ -29,23 +57,7 @@ We can already do this with glinternet, but xyz is (several hundred times?) fast
 
 
 \end{frame}
-\begin{frame}{Why do we care}
-\todo[inline]{move this up?}
-\begin{minipage}{0.4\linewidth}
-\includegraphics[width=0.8\linewidth]{"cells_2x"}\\[-1ex]
-	{\tiny Obligatory xkcd\\Source: \href{https://www.xkcd.com/1217/}{https://www.xkcd.com/1217/}}
-\end{minipage}%
-\begin{minipage}{0.6\linewidth}
-\begin{itemize}
-	\item Killing cancer cells is easy. Killing cancer cells selectively is hard.
-	\item Synthetic lethal interactions could potentially be used for exactly that.
-	\item We have approx. 20,000 genes. Experimentally testing all 200 million pairwise interactions is awkward.
-\end{itemize}
-\end{minipage}
 
-
-
-\end{frame}
 \begin{frame}{$P = 100$}
 Results for $p=100$ using vanilla xyz
 \begin{center}
@@ -140,6 +152,13 @@ Does xyz perform any better when there are fewer interactions in a large dataset
 	\item Test detection of synthetic lethals specifically, including glinternet.
 \end{itemize}
 \end{frame}
+
+\begin{frame}
+\frametitle{References}
+\printbibliography
+\end{frame}
 \end{document}
+
+
 
 % Things to mention: (also see notes)
