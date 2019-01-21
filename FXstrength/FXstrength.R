@@ -51,15 +51,10 @@ if (args[1] == 'y') {
     saveRDS(ans, file = "FXstrength/dat_fxstrength.rds")
 }
 
-
-
+mult <- args[2] %>% as.numeric
 
 for (numrows in c(10000)) {#1000
-  if (numrows == 1000) {
-	  nbij_values = c(5,20,50,100)
-  } else {
-	  nbij_values = c(50,200,500,1000)
-  }
+  nbij_values = c(5*mult,20*mult,50*mult,100*mult)
   for (t in c("yes", "no")) {
     dat_fxs <- readRDS("FXstrength/dat_fxstrength.rds")
     TP=length(unlist((dat_fxs %>% filter(type=="TP"))[1]))
@@ -112,7 +107,7 @@ for (numrows in c(10000)) {#1000
       theme(legend.position = "bottom",
             axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
     pl
-    ggsave(pl, file = sprintf("FXstrength/FXstrength_PRF_n%d_L%d_t%s.pdf", numrows, L_restriction, t), width = 5, height = 7)
+    ggsave(pl, file = sprintf("FXstrength/FXstrength_PRF_n%d_L%d_t%s_mult%d.pdf", numrows, L_restriction, t, mult), width = 5, height = 7)
     
     
    pl_wrongdir <- readRDS("FXstrength/dat_fxstrength.rds") %>%
@@ -120,7 +115,7 @@ for (numrows in c(10000)) {#1000
       filter(test == t) %>%
       filter(type == "TP") %>%
       filter(nbi == 0, SNR != 1) %>%
-      filter(nbij %in% c(5, 20, 50, 100)) %>%
+      filter(nbij %in% c(5*mult, 20*mult, 50*mult, 100*mult)) %>%
       mutate(SNR = factor(SNR, labels = paste0("SNR = ", levels(factor(SNR))))) %>%
       mutate(coef = ifelse(is.na(coef), coef_est, coef)) %>%
       mutate(corrdir = sign(coef) == sign(coef_est)) %>%
@@ -139,7 +134,7 @@ for (numrows in c(10000)) {#1000
       theme(legend.position = "bottom",
             axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
     pl_wrongdir
-    ggsave(pl_wrongdir, file = sprintf("FXstrength/FXstrength_direction_n%d_t%s.pdf", numrows, t), width = 4.5, height = 4)
+    ggsave(pl_wrongdir, file = sprintf("FXstrength/FXstrength_direction_n%d_t%s_mult%d.pdf", numrows, t, mult), width = 4.5, height = 4)
   }
 }
 
