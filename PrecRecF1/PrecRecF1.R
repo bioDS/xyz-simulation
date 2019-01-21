@@ -10,16 +10,22 @@ args <- commandArgs(trailingOnly = TRUE)
 
 if (args[1] == 'l') {
     cat("using large data\n")
-    large <- TRUE
+    large_int <- TRUE
     graph_numrows <- c(10000)
     graph_nbi <- c("0", "200", "500", "1000")
     graph_nbij <- c("50", "200", "500", "1000")
+} else if (args[1] == 'm') {
+    cat("using mixed data\n")
+    graph_numrows <- c(10000)
+    graph_nbi <- c("0", "20", "50", "100")
+    graph_nbij <- c("5", "20", "50", "100")
+    large_int <- FALSE
 } else {
     cat("using small data\n")
     graph_numrows <- c(1000)
     graph_nbi <- c("0", "20", "50", "100")
     graph_nbij <- c("5", "20", "50", "100")
-    large <- FALSE
+    large_int <- FALSE
 }
 
 # Precision, recall and F1 for interaction terms
@@ -96,7 +102,7 @@ for (numrows in graph_numrows) { #400
       #theme_fs() +
       theme(legend.position = "bottom")
     pl
-    ggsave(pl, file = sprintf("PrecRecF1/PrecRecF1_n%d_t%s.pdf", numrows, t), width = 5, height = 7)
+    ggsave(pl, file = sprintf("PrecRecF1/PrecRecF1_n%d_t%s_large%d.pdf", numrows, t, large_int), width = 5, height = 7)
   }
 }
 
@@ -154,7 +160,7 @@ for (numrows in graph_numrows) { #400
     #theme_fs() +
     theme(legend.position = "bottom")
   
-  pdf(sprintf("PrecRecF1/test_analysis_n%d.pdf", numrows), width = 5, height = 5)
+  pdf(sprintf("PrecRecF1/test_analysis_n%d_large%d.pdf", numrows, large_int), width = 5, height = 5)
   grid.arrange(pl.prec, pl.rec, ncol = 1)
   dev.off()
 }
