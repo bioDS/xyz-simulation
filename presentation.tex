@@ -1,5 +1,5 @@
 \documentclass[8pt]{beamer}
-\usetheme{default}
+\usetheme{Hannover}
 
 \usepackage{todonotes}
 \presetkeys{todonotes}{inline}{}
@@ -13,14 +13,38 @@
     \maketitle
 \end{frame}
 \begin{frame}{What are we doing}
-\todo{detail}
+\todo{detail, how do glinternet/xyz work?}
 Simulating large(ish) sets of SiRNA knockdowns, and measuring xyz's ability to correctly determine interactions in the data.
 
 We can already do this with glinternet, but xyz is (several hundred times?) faster.
+
+
+\end{frame}
+\begin{frame}{The Data}
+\begin{itemize}
+	\item SiRNAs can reduce the expression of several hundred genes at once.
+	\item $X \leftarrow n \times p$ matrix, $n$ trials with $p$ affected genes.
+	\item $Y \leftarrow p$ fitness values.
+\end{itemize}
+
+
 \end{frame}
 \begin{frame}{Why do we care}
-\todo[inline]{everything}
-Genetic interactions are useful. For reasons.
+\todo[inline]{move this up?}
+\begin{minipage}{0.4\linewidth}
+\includegraphics[width=0.8\linewidth]{"cells_2x"}\\[-1ex]
+	{\tiny Obligatory xkcd\\Source: \href{https://www.xkcd.com/1217/}{https://www.xkcd.com/1217/}}
+\end{minipage}%
+\begin{minipage}{0.6\linewidth}
+\begin{itemize}
+	\item Killing cancer cells is easy. Killing cancer cells selectively is hard.
+	\item Synthetic lethal interactions could potentially be used for exactly that.
+	\item We have approx. 20,000 genes. Experimentally testing all 200 million pairwise interactions is awkward.
+\end{itemize}
+\end{minipage}
+
+
+
 \end{frame}
 \begin{frame}{$P = 100$}
 Results for $p=100$ using vanilla xyz
@@ -55,12 +79,21 @@ Results for $p=1000$ using increased limits\footnote{commit 4517afbc59bdf091eed7
 \end{center}
 Increasing the maximum allowed number of interactions in xyz does not improve results.
 \end{frame}
-\begin{frame}{Larger values of $L$, $SNR = 2$}
+
+\begin{frame}{Larger values of $L$}
 \begin{center}
-	\begin{minipage}{0.9\linewidth}
+	\begin{minipage}{0.5\linewidth}
 		\centering
-		\includegraphics[width=0.5\linewidth]{"l_diff/l_diff_n10000_SNR2_tno"}%
-		\includegraphics[width=0.5\linewidth]{"l_diff/l_diff_n10000_SNR2_tyes"}
+		\includegraphics[width=\linewidth]{"l_diff/quant_analysis_n10000"}
+	\end{minipage}%
+	\begin{minipage}{0.1\linewidth}
+		\ 
+	\end{minipage}%
+	\begin{minipage}{0.4\linewidth}
+		\begin{itemize}
+			\item $L = 1000$ produces a smaller set of results than $L=100$, with similar accuracy.
+			\item For our purposes $L = 100$ will be used from now on.
+		\end{itemize}
 	\end{minipage}
 \end{center}
 
@@ -75,38 +108,7 @@ Increasing the maximum allowed number of interactions in xyz does not improve re
 \end{center}
 
 \end{frame}
-\begin{frame}{Larger values of $L$, $SNR = 10$}
-\begin{center}
-	\begin{minipage}{0.9\linewidth}
-		\centering
-		\includegraphics[width=0.5\linewidth]{"l_diff/l_diff_n10000_SNR10_tno"}%
-		\includegraphics[width=0.5\linewidth]{"l_diff/l_diff_n10000_SNR10_tyes"}
-	\end{minipage}
-\end{center}
 
-
-Where results are found, a larger value of $L$ does not obviously improve precision. It does seem to improve the odds of finding at least some results, however.
-\end{frame}
-\begin{frame}{Number of results}
-\begin{center}
-	\begin{minipage}{0.5\linewidth}
-		\centering
-		\includegraphics[width=\linewidth]{"l_diff/quant_analysis_n10000"}
-	\end{minipage}%
-	\begin{minipage}{0.1\linewidth}
-\ 
-	\end{minipage}%
-	\begin{minipage}{0.4\linewidth}
-		\begin{itemize}
-			\item $L = 1000$ produces a smaller set of results than $L=100$, with similar accuracy.
-			\item For our purposes $L = 100$ will be used from now on.
-		\end{itemize}
-	\end{minipage}
-\end{center}
-
-
-
-\end{frame}
 \begin{frame}{Interaction strength}
 \begin{center}
 	\begin{minipage}{0.9\linewidth}
@@ -117,7 +119,7 @@ Where results are found, a larger value of $L$ does not obviously improve precis
 \end{center}
 
 
-Fixing $L = 100$, a small number of strong interactions are reliably found, even in a large data set. When the data contains a large number of total interactions, we find almost nothing.
+Fixing $L = 100$, a small number of strong interactions are reliably found, even in a large data set. When the data contains a large number of total interactions, we find almost nothing. If nothing else, our ability to detect synthetic lethals still looks good.
 \end{frame}
 
 \begin{frame}
@@ -125,6 +127,19 @@ Fixing $L = 100$, a small number of strong interactions are reliably found, even
 Does xyz perform any better when there are fewer interactions in a large dataset?
 \end{frame}
 
+\begin{frame}{Large data, few interactions}
+	\begin{minipage}{0.9\linewidth}
+		\centering
+		\includegraphics[width=0.5\linewidth]{"PrecRecF1/PrecRecF1_n10000_tno_large0"}%
+		\includegraphics[width=0.5\linewidth]{"PrecRecF1/PrecRecF1_n10000_tyes_large0"}
+	\end{minipage}
+\end{frame}
+
+\begin{frame}{WIP/TODO}
+\begin{itemize}
+	\item Test detection of synthetic lethals specifically, including glinternet.
+\end{itemize}
+\end{frame}
 \end{document}
 
 % Things to mention: (also see notes)
