@@ -5,6 +5,16 @@
 	journal = {Nat. Rev. Cancer},
 	year = {2005}
 }
+@article{thanei2018xyz,
+	title={The xyz algorithm for fast interaction search in high-dimensional data},
+	author={Thanei, Gian-Andrea and Meinshausen, Nicolai and Shah, Rajen D},
+	journal={The Journal of Machine Learning Research},
+	volume={19},
+	number={1},
+	pages={1343--1384},
+	year={2018},
+	publisher={JMLR. org}
+}
 \end{filecontents*}
 
 \documentclass[8pt]{beamer}
@@ -41,7 +51,6 @@
 \end{frame}
 
 \begin{frame}{What are we doing}
-\todo{detail, how do glinternet/xyz work?}
 \begin{itemize}
 	\item Simulating large(ish) sets of SiRNA knockdowns, and measuring xyz's ability to correctly determine interactions in the data.
 	\item We can already do this with glinternet, but xyz is (several hundred times?) faster.
@@ -57,11 +66,27 @@
 \end{frame}
 
 \begin{frame}{glinternet}
-glinternet (runtime, workings, performance)
+\centering
+	\begin{itemize}
+		\item Fits the data with a group-lasso.
+	\end{itemize}
+	\begin{minipage}{0.8\linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{"PrecRecF1/glinternet_figure"}
+	\end{minipage}
 \end{frame}
 
 \begin{frame}{xyz}
-xyz (runtime, workings)
+	\begin{itemize}
+		\item Converts $X, Y$ into an equivalent matrix $Z = (z_1,z_2,...)$, which is then projected into a single dimensional space, in a way that mostly preserves closeness.
+		\item Find now close points, rinse and repeat.
+	\end{itemize}
+	~\\
+	\begin{minipage}{\linewidth}
+		\centering
+		\includegraphics[width=0.7\linewidth]{xyz_explanation}
+		{Source: \cite{thanei2018xyz}}
+	\end{minipage}
 \end{frame}
 
 \section{Simulation}
@@ -74,7 +99,7 @@ Results for $p=100$ using vanilla xyz
 	\includegraphics[width=0.5\linewidth]{"PrecRecF1/PrecRecF1_n1000_tyes-vanilla_xyz"}
 \end{minipage}
 \end{center}
-For 1000 measurements of only 100 genes, results are good.
+For 1000 measurements of only 100 genes, this works.
 \end{frame}
 \begin{frame}{$P = 1000$}
 Results for $p=1000$ using vanilla xyz
@@ -160,15 +185,26 @@ A small number of strong interactions seems best.
 	With only a few interactions, xyz is able to find strong interactions much more easily.
 \end{frame}
 
+\begin{frame}{Synthetic Lethals}
+	\begin{minipage}{0.9\linewidth}
+		\centering
+		\includegraphics[width=0.5\linewidth]{"PrecRecF1/PrecRecF1_n10000_tno_large0_lethal"}%
+		\includegraphics[width=0.5\linewidth]{"PrecRecF1/PrecRecF1_n10000_tyes_large0_lethal"}
+	\end{minipage}
+
+	(Work in progress, there's a chance these were not generated correctly)
+\end{frame}
+
 \begin{frame}{Summary}
 \begin{itemize}
-	\item 
+	\item xyz may be useful for finding strong interactions, but it's not looking good.
 \end{itemize}
 \end{frame}
 
 \begin{frame}{WIP/TODO}
 \begin{itemize}
 	\item Test detection of synthetic lethals specifically, including glinternet.
+	\item Re-run without imposing a strong hierarchy for the sake of glinternet.
 \end{itemize}
 \end{frame}
 
