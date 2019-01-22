@@ -8,6 +8,12 @@ setwd("..")
 
 args <- commandArgs(trailingOnly = TRUE)
 
+if (length(args) >= 2) {
+    append_str = args[2]
+} else {
+    append_str = ''
+}
+
 if (args[1] == 'l') {
     cat("using large data\n")
     large_int <- TRUE
@@ -102,7 +108,7 @@ for (numrows in graph_numrows) { #400
       #theme_fs() +
       theme(legend.position = "bottom")
     pl
-    ggsave(pl, file = sprintf("PrecRecF1/PrecRecF1_n%d_t%s_large%d.pdf", numrows, t, large_int), width = 5, height = 7)
+    ggsave(pl, file = sprintf("PrecRecF1/PrecRecF1_n%d_t%s_large%d_%s.pdf", numrows, t, large_int, append_str), width = 5, height = 7)
   }
 }
 
