@@ -122,7 +122,7 @@ noise <- (rnorm(n = nrow(Y), mean = 0, sd = 1))
 Y <- Y + sqrt(var(Y[,1])/(SNR * var(noise))) * noise
 
 # If interaction coefficients are an indication of the number of the generations offspring the combination would kill, then a more negative result would be, at most, dead faster.
-Y[Y<0] <- 0
+#Y[Y<0] <- 0
 
 # make fitness values positive (e.g. representing remaining living fraction)
 #TODO: find a better way of doing this, it wreaks havok on estimated coefficients.
@@ -134,5 +134,5 @@ saveRDS(list(X=X, Y=Y,
              bij_ind = bij_ind,
 #             bi_ind = bi_ind,
              obs = obs),
-        file = sprintf("./simulated_lethal_data/n%d_p%d_SNR%d_nbi%d_nbij%d_viol%d_%d.rds",
+        file = sprintf("./simulated_lethal_data/n%d_p%d_SNR%d_nbi%d_nbij%d_viol%d_%d_lethal.rds",
                        n, p, SNR, num_bi, num_bij, perc_viol, (runif(1) * 1e5) %>% floor))

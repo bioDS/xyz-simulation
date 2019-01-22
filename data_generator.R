@@ -110,7 +110,7 @@ noise <- (rnorm(n = nrow(Y), mean = 0, sd = 1))
 Y <- Y + sqrt(var(Y[,1])/(SNR * var(noise))) * noise
 
 # If fitness is less than 0, we're dead (presumably just faster than if fitness == 0)
-Y[Y<0] <- 0
+#Y[Y<0] <- 0
 
 
 ## Write out
