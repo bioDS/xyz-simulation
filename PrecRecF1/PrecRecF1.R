@@ -43,7 +43,7 @@ if (args[1] == 'l') {
    nbi <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbi)\\d+(?=_)", perl = TRUE)) %>% as.numeric
    nbij <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbij)\\d+(?=_)", perl = TRUE)) %>% as.numeric
    perc_viol <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_viol)\\d+(?=_)", perl = TRUE)) %>% as.numeric
-   ID <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_)\\d+(?=\\.rds)", perl = TRUE)) %>% as.numeric
+   ID <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_)\\d+(?=_|\\.rds)", perl = TRUE)) %>% as.numeric
    smry_int <- ans$smry %>% filter(type == "interaction")
    notest <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij,
                         precision = sum(smry_int[["TP"]]) / nrow(smry_int),
@@ -166,7 +166,7 @@ for (numrows in graph_numrows) { #400
     #theme_fs() +
     theme(legend.position = "bottom")
   
-  pdf(sprintf("PrecRecF1/test_analysis_n%d_large%d.pdf", numrows, large_int), width = 5, height = 5)
+  pdf(sprintf("PrecRecF1/test_analysis_n%d_large%d_%s.pdf", numrows, large_int, append_str), width = 5, height = 5)
   grid.arrange(pl.prec, pl.rec, ncol = 1)
   dev.off()
 }
