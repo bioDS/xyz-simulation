@@ -25,6 +25,7 @@
     \maketitle
 \end{frame}
 
+\section{Background}
 \begin{frame}{The Problem}
 \begin{minipage}{0.4\linewidth}
 	\includegraphics[width=0.8\linewidth]{"cells_2x"}\\[-1ex]
@@ -41,22 +42,29 @@
 
 \begin{frame}{What are we doing}
 \todo{detail, how do glinternet/xyz work?}
-Simulating large(ish) sets of SiRNA knockdowns, and measuring xyz's ability to correctly determine interactions in the data.
-
-We can already do this with glinternet, but xyz is (several hundred times?) faster.
-
-
+\begin{itemize}
+	\item Simulating large(ish) sets of SiRNA knockdowns, and measuring xyz's ability to correctly determine interactions in the data.
+	\item We can already do this with glinternet, but xyz is (several hundred times?) faster.
+\end{itemize}
 \end{frame}
+
 \begin{frame}{The Data}
 \begin{itemize}
 	\item SiRNAs can reduce the expression of several hundred genes at once.
 	\item $X \leftarrow n \times p$ matrix, $n$ trials with $p$ affected genes.
 	\item $Y \leftarrow p$ fitness values.
 \end{itemize}
-
-
 \end{frame}
 
+\begin{frame}{glinternet}
+glinternet (runtime, workings, performance)
+\end{frame}
+
+\begin{frame}{xyz}
+xyz (runtime, workings)
+\end{frame}
+
+\section{Simulation}
 \begin{frame}{$P = 100$}
 Results for $p=100$ using vanilla xyz
 \begin{center}
@@ -82,7 +90,7 @@ Large data sets are a problem, however.
 \begin{frame}{$P = 1000$, increased limits in xyz}
 Results for $p=1000$ using increased limits\footnote{commit 4517afbc59bdf091eed75683a28070476933f5da}
 \begin{center}
-	\begin{minipage}{0.9\linewidth}
+	\begin{minipage}{0.85\linewidth}
 		\centering
 		\includegraphics[width=0.5\linewidth]{"PrecRecF1/increased_limits/PrecRecF1_n10000_tno"}%
 		\includegraphics[width=0.5\linewidth]{"PrecRecF1/increased_limits/PrecRecF1_n10000_tyes"}
@@ -95,7 +103,7 @@ Increasing the maximum allowed number of interactions in xyz does not improve re
 \begin{center}
 	\begin{minipage}{0.5\linewidth}
 		\centering
-		\includegraphics[width=\linewidth]{"l_diff/quant_analysis_n10000"}
+		\includegraphics[width=0.9\linewidth]{"l_diff/quant_analysis_n10000"}
 	\end{minipage}%
 	\begin{minipage}{0.1\linewidth}
 		\ 
@@ -129,8 +137,7 @@ Increasing the maximum allowed number of interactions in xyz does not improve re
 	\end{minipage}
 \end{center}
 
-
-Fixing $L = 100$, a small number of strong interactions are reliably found, even in a large data set. When the data contains a large number of total interactions, we find almost nothing. If nothing else, our ability to detect synthetic lethals still looks good.
+A small number of strong interactions seems best.
 \end{frame}
 
 
@@ -140,7 +147,7 @@ Fixing $L = 100$, a small number of strong interactions are reliably found, even
 		\includegraphics[width=0.5\linewidth]{"PrecRecF1/PrecRecF1_n10000_tno_large0"}%
 		\includegraphics[width=0.5\linewidth]{"PrecRecF1/PrecRecF1_n10000_tyes_large0"}
 	\end{minipage}\\
-	Performance is no worse with only a few interactions in a large data set.
+	Performance is similar with only a few interactions in a large data set.
 \end{frame}
 
 \begin{frame}
