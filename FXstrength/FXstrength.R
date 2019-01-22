@@ -9,8 +9,15 @@ setwd("..")
 L_restriction <- 100
 args <- commandArgs(trailingOnly = TRUE)
 
+if (length(args) >= 3) {
+    append_str = args[3]
+} else {
+    append_str = ''
+}
+
 ## Number of observations
 if (args[1] == 'y') {
+    cat("regenerating data\n")
     ans <- lapply(list.files(path = "./fits_proper/", pattern = "", full.names = TRUE), function(f) {#, sprintf("n%d_p%d", n, p)), function(f) {
       ans <- readRDS(f)
       n <- regmatches(x = f, m = regexpr(f, pattern = "(?<=n)\\d+(?=_)", perl = TRUE)) %>% as.numeric
@@ -107,7 +114,7 @@ for (numrows in c(10000)) {#1000
       theme(legend.position = "bottom",
             axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
     pl
-    ggsave(pl, file = sprintf("FXstrength/FXstrength_PRF_n%d_L%d_t%s_mult%d.pdf", numrows, L_restriction, t, mult), width = 5, height = 7)
+    ggsave(pl, file = sprintf("FXstrength/FXstrength_PRF_n%d_L%d_t%s_mult%d_%s.pdf", numrows, L_restriction, t, mult, append_str), width = 5, height = 7)
     
     
    pl_wrongdir <- readRDS("FXstrength/dat_fxstrength.rds") %>%
@@ -134,7 +141,7 @@ for (numrows in c(10000)) {#1000
       theme(legend.position = "bottom",
             axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
     pl_wrongdir
-    ggsave(pl_wrongdir, file = sprintf("FXstrength/FXstrength_direction_n%d_t%s_mult%d.pdf", numrows, t, mult), width = 4.5, height = 4)
+    ggsave(pl_wrongdir, file = sprintf("FXstrength/FXstrength_direction_n%d_t%s_mult%d_%s.pdf", numrows, t, mult, append_str), width = 4.5, height = 4)
   }
 }
 
