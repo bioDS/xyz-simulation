@@ -7,7 +7,7 @@ threads=12
 
 (
 for f in `ls simulated_data`; do
-	for L in 100; do
+	for L in -1; do
 		if [[ -f fits_proper/`expr "$f" : '\(.*_\)'`L$L`expr "$f" : '.*\(_.*\)'` ]]; then
 			echo "file '$f' already fitted, ignoring"
 		else
