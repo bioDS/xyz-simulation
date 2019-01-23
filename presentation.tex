@@ -54,6 +54,7 @@
 \begin{itemize}
 	\item Simulating large(ish) sets of SiRNA knockdowns, and measuring xyz's ability to correctly determine interactions in the data.
 	\item We can already do this with glinternet, but xyz is (several hundred times?) faster.
+	\item xyz $= O(p^\alpha)$ for $1 < \alpha < 2$, depending on the strength of the interactions.
 \end{itemize}
 \end{frame}
 
@@ -192,7 +193,7 @@ A small number of strong interactions seems best.
 	With only a few interactions, xyz is able to find strong interactions much more easily.
 \end{frame}
 
-\begin{frame}{Synthetic Lethals}
+\begin{frame}{Synthetic Lethal Pairs}
 	\begin{minipage}{0.9\linewidth}
 		\centering
 		\includegraphics[width=0.5\linewidth]{"PrecRecF1/PrecRecF1_n10000_tno_large0_lethal"}%
@@ -210,7 +211,7 @@ A small number of strong interactions seems best.
 
 \begin{frame}{WIP/TODO}
 \begin{itemize}
-	\item Test detection of synthetic lethals specifically, including glinternet.
+	\item Test detection of synthetic lethal pairs specifically, including glinternet.
 	\item Re-run without imposing a strong hierarchy for the sake of glinternet.
 \end{itemize}
 \end{frame}
