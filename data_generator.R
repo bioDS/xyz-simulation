@@ -17,7 +17,8 @@ p <- args[2] %>% as.numeric
 SNR <- args[3] %>% as.numeric
 num_bi <- args[4] %>% as.numeric
 num_bij <- args[5] %>% as.numeric
-perc_viol <- args[6] %>% as.numeric
+num_lethals <- args[6] %>% as.numeric
+perc_viol <- args[7] %>% as.numeric
 
 #' Perturbation matrix
 #'
@@ -78,14 +79,23 @@ bij_ind <- obs %>%
   sample_n(size = 1) %>%
   ungroup %>%
   rowwise %>%
-  mutate(coef = rnorm(1, mean = 0, sd = 2)) # double amplitude sd
+  mutate(coef = rnorm(1, mean = 4, sd = 2)) # double amplitude sd
+
+# Lethal pairs
+lethal_ind <- obs %>%
+  filter(omin %in% sample(setdiff(obs$omin, 0) %>% unique, size = num_lethals)) %>%
+  group_by(omin) %>%
+  sample_n(size = 1) %>%
+  ungroup %>%
+  rowwise %>%
+  mutate(coef = -1000) # mostly lethal
 
 ## Main effects
 # both sides of the interaction effects.
 if (verbose) cat("Sampling main fx\n")
 bi_ind <- c(bij_ind[["gene_i"]], bij_ind[["gene_j"]]) %>% unique %>% sort
 ## Add violations
-# main effects that violate (what?)
+# main effects that violate strong hierarchy?
 num_viols <- perc_viol / 100 * nrow(bij_ind)
 bi_ind <- cbind(sample(1:nrow(bij_ind), size = num_viols, replace = FALSE), 
                 sample(1:2, size = num_viols, replace = TRUE)) %>%
@@ -105,6 +115,9 @@ Y <- X[,bi_ind[["gene_i"]], drop = FALSE] %*% bi_ind[["coef"]]
 for (i in 1:nrow(bij_ind)) {
   Y <- Y + (X[,bij_ind[i,][["gene_i"]], drop = FALSE] * X[,bij_ind[i,][["gene_j"]], drop = FALSE]) %*% bij_ind[i,][["coef"]]
 }
+for (i in 1:nrow(lethal_ind)) {
+  Y <- Y + (X[,lethal_ind[i,][["gene_i"]], drop = FALSE] * X[,lethal_ind[i,][["gene_j"]], drop = FALSE]) %*% lethal_ind[i,][["coef"]]
+}
 ## add noise
 noise <- (rnorm(n = nrow(Y), mean = 0, sd = 1))
 Y <- Y + sqrt(var(Y[,1])/(SNR * var(noise))) * noise
@@ -117,7 +130,8 @@ Y <- Y + sqrt(var(Y[,1])/(SNR * var(noise))) * noise
 if (verbose) cat("Saving\n")
 saveRDS(list(X=X, Y=Y,
              bij_ind = bij_ind,
+             lethal_ind = lethal_ind,
              bi_ind = bi_ind,
              obs = obs),
-        file = sprintf("./simulated_data/n%d_p%d_SNR%d_nbi%d_nbij%d_viol%d_%d.rds",
-                       n, p, SNR, num_bi, num_bij, perc_viol, (runif(1) * 1e5) %>% floor))
+        file = sprintf("./simulated_data/n%d_p%d_SNR%d_nbi%d_nbij%d_lethals%d_viol%d_%d.rds",
+                       n, p, SNR, num_bi, num_bij, num_lethals, perc_viol, (runif(1) * 1e5) %>% floor))

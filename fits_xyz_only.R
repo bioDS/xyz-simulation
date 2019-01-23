@@ -11,6 +11,7 @@ require(xyz)
 #sourceCpp('./xyz/src/core.cpp')
 
 verbose <- TRUE
+lethal_coef <- -1000
 
 args <- commandArgs(trailingOnly = TRUE)
 
@@ -25,8 +26,9 @@ p <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_p)\\d+(?=_)", perl = TRUE)
 SNR <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_SNR)\\d+(?=_)", perl = TRUE)) %>% as.numeric
 num_bi <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbi)\\d+(?=_)", perl = TRUE)) %>% as.numeric
 num_bij <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbij)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+num_lethals <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_lethals)\\d+(?=_)", perl = TRUE)) %>% as.numeric
 perc_viol <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_viol)\\d+(?=_)", perl = TRUE)) %>% as.numeric
-ID <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_)\\d+(?=\\.rds)", perl = TRUE)) %>% as.numeric
+ID <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_)\\d[0-9a-z_]+(?=\\.rds)", perl = TRUE))
 
 
 ## not really necessary, but X is neater than data$X
@@ -37,6 +39,7 @@ Y <- data$Y
 obs <- data$obs
 bi_ind <- data$bi_ind
 bij_ind <- data$bij_ind
+lethal_ind <- data$lethal_ind
 
 data <- NULL
 gc()
@@ -51,9 +54,11 @@ if (verbose) cat("Collecting stats\n")
 # Collect coefficients
 fx_main <- data.frame(gene_i = regression_results[[1]][[10]]) %>%
   arrange(gene_i) %>%
-  mutate(type = "main", gene_j = NA, TP = gene_i %in% bi_ind[["gene_i"]]) %>%
-  select(gene_i, gene_j, type, TP) %>%
+  mutate(type = "main", gene_j = NA, TP = (gene_i %in% bi_ind[["gene_i"]] || gene_i %in% lethal_ind[["gene_i"]]))  %>%
+  mutate(lethal=gene_i %in% lethal_ind[["gene_i"]]) %>%
+  select(gene_i, gene_j, type, TP, lethal) %>%
   arrange(desc(TP)) %>%
+  arrange(desc(lethal)) %>%
   tbl_df
 fx_main
 
@@ -70,12 +75,15 @@ fx_int <- data.frame (gene_i = nfirst,
   left_join(., obs, by = c("gene_i", "gene_j")) %>%
   mutate(type = "interaction") %>%
   rowwise %>%
-  left_join(., bij_ind, by = c("gene_i", "gene_j")) %>%
+  left_join(., merge(bij_ind, lethal_ind, all=T), by = c("gene_i", "gene_j")) %>%
   ungroup %>%
   mutate(TP = !is.na(coef)) %>%
-  select(gene_i, gene_j, type, TP) %>%
+  mutate(lethal = (coef == lethal_coef)) %>%
+  select(gene_i, gene_j, type, TP, lethal) %>%
   arrange(desc(TP)) %>%
+  arrange(desc(lethal)) %>%
   tbl_df
+
 fx_int %>% data.frame
 
 ## Statistical test if b_i and b_ij are sig. > 0
@@ -114,7 +122,7 @@ if (write_out) {
                  fx_main = fx_main,
                  fit_red = fit_red,
                  smry = smry),
-            file = sprintf("./fits_proper/n%d_p%d_SNR%d_nbi%d_nbij%d_viol%d_L%d_%d.rds",
+            file = sprintf("./fits_proper/n%d_p%d_SNR%d_nbi%d_nbij%d_viol%d_L%d_%s.rds",
                        n, p, SNR, num_bi, num_bij, perc_viol, L, ID))
 } else {
     cat("Not saving\n")
