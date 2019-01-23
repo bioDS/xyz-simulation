@@ -69,15 +69,8 @@ fx_main <- data.frame(gene_i = cf$mainEffects$cont,
   tbl_df
 fx_main
 
-# remove reflexive results
-first = unlist(split(regression_results[[3]][[10]], 1:2)[1])
-second = unlist(split(regression_results[[3]][[10]], 1:2)[2])
-
-nfirst = first[first != second]
-nsecond = second[first != second]
-
-fx_int <- data.frame (gene_i = nfirst, 
-                      gene_j = nsecond) %>%
+fx_int <- data.frame(gene_i = cf$interactions$contcont[,1], gene_j = cf$interactions$contcont[,2],
+                     effect = cf$interactionsCoef$contcont %>% unlist) %>%
   arrange(gene_i) %>%
   left_join(., obs, by = c("gene_i", "gene_j")) %>%
   mutate(type = "interaction") %>%
