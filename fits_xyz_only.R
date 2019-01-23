@@ -41,6 +41,11 @@ bi_ind <- data$bi_ind
 bij_ind <- data$bij_ind
 lethal_ind <- data$lethal_ind
 
+if (L == -1) {
+    if(verbose) cat("using L= sqrt(p)\n")
+    L <- ceiling(sqrt(p))
+}
+
 data <- NULL
 gc()
 
@@ -122,8 +127,8 @@ if (write_out) {
                  fx_main = fx_main,
                  fit_red = fit_red,
                  smry = smry),
-            file = sprintf("./fits_proper/n%d_p%d_SNR%d_nbi%d_nbij%d_viol%d_L%d_%s.rds",
-                       n, p, SNR, num_bi, num_bij, perc_viol, L, ID))
+            file = sprintf("./fits_proper/n%d_p%d_SNR%d_nbi%d_nbij%d_viol%d_nlethals%d_L%d_%s.rds",
+                       n, p, SNR, num_bi, num_bij, perc_viol, num_lethals, L, ID))
 } else {
     cat("Not saving\n")
 }
