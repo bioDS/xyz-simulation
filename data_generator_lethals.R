@@ -113,7 +113,7 @@ if (verbose) cat("Sampling main fx\n")
 if (verbose) cat("Sampling fitness\n")
 #Y <- X[,bi_ind[["gene_i"]], drop = FALSE] %*% bi_ind[["coef"]]
 for (i in 1:nrow(bij_ind)) {
-  Y <- 1 + (X[,bij_ind[i,][["gene_i"]], drop = FALSE] * X[,bij_ind[i,][["gene_j"]], drop = FALSE]) %*% bij_ind[i,][["coef"]]
+  Y <- (X[,bij_ind[i,][["gene_i"]], drop = FALSE] * X[,bij_ind[i,][["gene_j"]], drop = FALSE]) %*% bij_ind[i,][["coef"]]
 }
 
 ## add noise
