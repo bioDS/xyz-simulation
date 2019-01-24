@@ -15,9 +15,9 @@ if (length(args) >= 1) {
 }
 
 cat("using lethal data\n")
-graph_numrows <- c(1000)
-graph_nbij <- c("0", "20", "50", "100")
-graph_nlethals <- c("5", "20", "50", "100")
+graph_numrows <- c(10000)
+graph_nbij <- c("0", "200", "500", "1000")
+graph_nlethals <- c("10", "20", "50", "100")
 large_int <- FALSE
 append_str <- "lethal"
 
@@ -34,16 +34,17 @@ append_str <- "lethal"
    ID <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_)\\d+(?=_|\\.rds)", perl = TRUE)) %>% as.numeric
    smry_int <- ans$smry %>% filter(type == "interaction")
    lethal <- ans$smry %>% select(lethal)
+   smry_int[["lethal"]][is.na(smry_int[["lethal"]])] <- FALSE
    notest <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij, lethal=lethal, nlethals = nlethals,
-                        precision = sum(smry_int[["TP"]]) / nrow(smry_int),
-                        recall = sum(smry_int[["TP"]]) / nbij) %>%
+                        precision = sum(smry_int[["lethal"]]) / nrow(smry_int),
+                        recall = sum(smry_int[["lethal"]]) / nlethals) %>%
      mutate(F1 = 2 *  (precision * recall) / (precision + recall),
             test = "no")
    smry_int <- mutate(smry_int, pval = p.adjust(pval, method = "BH")) %>%
      filter(pval < 0.05)
    test <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij, lethal=lethal, nlethals = nlethals,
-                      precision = sum(smry_int[["TP"]]) / nrow(smry_int),
-                      recall = sum(smry_int[["TP"]]) / nbij) %>%
+                      precision = sum(smry_int[["lethal"]]) / nrow(smry_int),
+                      recall = sum(smry_int[["lethal"]]) / nlethals) %>%
      mutate(F1 = 2 *  (precision * recall) / (precision + recall),
             test = "yes")
    rbind(notest, test) %>% data.frame(., id = ID)
