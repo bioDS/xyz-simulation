@@ -28,7 +28,7 @@ for repetition in `seq 1 $repetitions`; do
 			for bi_pre in 0 20 50 100; do
 				((i=i%threads)); ((i++==0)) && wait
 				{ bi=$((multiplier * bi_pre))
-				./data_generator.R $n $p $SNR $bi $bij 0 || true; } &
+				./data_generator.R $n $p $SNR $bi $bij 0 0 || true; } &
 			done
 		done
 	done
