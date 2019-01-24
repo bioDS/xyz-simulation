@@ -115,8 +115,10 @@ Y <- X[,bi_ind[["gene_i"]], drop = FALSE] %*% bi_ind[["coef"]]
 for (i in 1:nrow(bij_ind)) {
   Y <- Y + (X[,bij_ind[i,][["gene_i"]], drop = FALSE] * X[,bij_ind[i,][["gene_j"]], drop = FALSE]) %*% bij_ind[i,][["coef"]]
 }
-for (i in 1:nrow(lethal_ind)) {
-  Y <- Y + (X[,lethal_ind[i,][["gene_i"]], drop = FALSE] * X[,lethal_ind[i,][["gene_j"]], drop = FALSE]) %*% lethal_ind[i,][["coef"]]
+if (num_lethals > 0) {
+    for (i in 1:nrow(lethal_ind)) {
+      Y <- Y + (X[,lethal_ind[i,][["gene_i"]], drop = FALSE] * X[,lethal_ind[i,][["gene_j"]], drop = FALSE]) %*% lethal_ind[i,][["coef"]]
+    }
 }
 ## add noise
 noise <- (rnorm(n = nrow(Y), mean = 0, sd = 1))
@@ -133,5 +135,5 @@ saveRDS(list(X=X, Y=Y,
              lethal_ind = lethal_ind,
              bi_ind = bi_ind,
              obs = obs),
-        file = sprintf("./simulated_data/n%d_p%d_SNR%d_nbi%d_nbij%d_lethals%d_viol%d_%d.rds",
+        file = sprintf("./simulated_data/n%d_p%d_SNR%d_nbi%d_nbij%d_nlethals%d_viol%d_%d.rds",
                        n, p, SNR, num_bi, num_bij, num_lethals, perc_viol, (runif(1) * 1e5) %>% floor))
