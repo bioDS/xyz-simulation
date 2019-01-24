@@ -127,8 +127,8 @@ if (write_out) {
                  fx_main = fx_main,
                  fit_red = fit_red,
                  smry = smry),
-            file = sprintf("./fits_proper/n%d_p%d_SNR%d_nbi%d_nbij%d_viol%d_nlethals%d_L%d_%s.rds",
-                       n, p, SNR, num_bi, num_bij, perc_viol, num_lethals, L, ID))
+            file = sprintf("./fits_proper/n%d_p%d_SNR%d_nbi%d_nbij%d_nlethals%d_viol%d_L%d_%s.rds",
+                       n, p, SNR, num_bi, num_bij, num_lethals, perc_viol, L, ID))
 } else {
     cat("Not saving\n")
 }
