@@ -42,17 +42,18 @@ if (args[1] == 'l') {
    SNR <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_SNR)\\d+(?=_)", perl = TRUE)) %>% as.numeric
    nbi <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbi)\\d+(?=_)", perl = TRUE)) %>% as.numeric
    nbij <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbij)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+   nlethals <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nlethals)\\d+(?=_)", perl = TRUE)) %>% as.numeric
    perc_viol <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_viol)\\d+(?=_)", perl = TRUE)) %>% as.numeric
    ID <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_)\\d+(?=_|\\.rds)", perl = TRUE)) %>% as.numeric
    smry_int <- ans$smry %>% filter(type == "interaction")
-   notest <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij,
+   notest <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij, nlethals = nlethals, 
                         precision = sum(smry_int[["TP"]]) / nrow(smry_int),
                         recall = sum(smry_int[["TP"]]) / nbij) %>%
      mutate(F1 = 2 *  (precision * recall) / (precision + recall),
             test = "no")
    smry_int <- mutate(smry_int, pval = p.adjust(pval, method = "BH")) %>%
      filter(pval < 0.05)
-   test <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij,
+   test <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij, nlethals = nlethals,
                       precision = sum(smry_int[["TP"]]) / nrow(smry_int),
                       recall = sum(smry_int[["TP"]]) / nbij) %>%
      mutate(F1 = 2 *  (precision * recall) / (precision + recall),
@@ -64,7 +65,8 @@ if (args[1] == 'l') {
           p = factor(p),
           SNR = factor(SNR),
           nbi = factor(nbi),
-          nbij = factor(nbij))
+          nbij = factor(nbij),
+          nlethals = factor(nlethals))
  saveRDS(ans, file = "PrecRecF1/dat_precrecf1.rds")
 
 
@@ -77,6 +79,7 @@ for (numrows in graph_numrows) { #400
       filter(nbi %in% graph_nbi) %>%
       filter(nbij %in% graph_nbij) %>%
       filter(SNR != "1") %>%
+      filter(nlethals == 0) %>%
       mutate(SNR = factor(SNR, levels = levels(SNR), labels = paste0("SNR = ", levels(SNR)))) %>%
       group_by(n, p, SNR, nbi, nbij, test) %>% sample_n(10, replace=TRUE) #TODO: improve this?
     
