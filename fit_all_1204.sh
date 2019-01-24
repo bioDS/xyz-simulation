@@ -3,12 +3,14 @@
 trap "echo Exited!; exit;" SIGINT SIGTERM
 
 counter=0
-threads=12
+threads=2
 
 (
 for f in `ls simulated_data`; do
 	for L in -1; do
-		if [[ -f fits_proper/`expr "$f" : '\(.*_\)'`L$L`expr "$f" : '.*\(_.*\)'` ]]; then
+		p=`expr "$f" : '.*p\([0-9]*\)_'`
+		l=$(bc<<<"scale=1; x=sqrt($p) + 0.5; scale=0; x/1")
+		if [[ -f fits_proper/`expr "$f" : '\(.*_\)'`L$l`expr "$f" : '.*\(_.*\)'` ]]; then
 			echo "file '$f' already fitted, ignoring"
 		else
 			((i=i%threads)); ((i++==0)) && wait
