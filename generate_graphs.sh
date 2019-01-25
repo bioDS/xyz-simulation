@@ -24,10 +24,11 @@ else
     exit 0
 fi
 
+
 cd PrecRecF1; ./PrecRecF1.R $prf_size
 ./PrecRecF1_lethals.R
 cd ..
-FXstrength; ./FXstrength.R y $mult
+cd FXstrength; ./FXstrength.R y $mult
 cd ..
 cd FXdiff; ./FXdiff.R $mult
 cd ..
