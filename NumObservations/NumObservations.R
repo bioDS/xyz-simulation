@@ -7,6 +7,8 @@ require(reshape2)
 #source("~/Projects/R/fs_.R")
 setwd("..")
 
+args <- commandArgs(trailingOnly = TRUE)
+
 # Number of observations
  ans <- lapply(list.files(path = "./fits_proper/", pattern = "", full.names = TRUE), function(f) {#, spriadditifffntf("n%d_p%d", n, p)), function(f) {
    ans <- readRDS(f)

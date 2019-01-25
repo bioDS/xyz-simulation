@@ -34,6 +34,4 @@ cd FXdiff; ./FXdiff.R $mult
 cd ..
 cd NumObservations; ./NumObservations.R $mult
 cd ..
-cd l_diff; ./l_diff.R $prf_size
-
-#TODO: l_diff needs to play nicely with others
+cd l_diff; ./l_diff.R $prf_size y

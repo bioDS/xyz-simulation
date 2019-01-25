@@ -5,6 +5,7 @@ require(dplyr)
 #source("~/Projects/R/fs_.R")
 setwd("..")
 
+args <- commandArgs(trailingOnly = TRUE)
 mult <- args[1] %>% as.numeric
 
 for (numrows in c(1000 * mult)) { #400, 1000
