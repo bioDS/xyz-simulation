@@ -2,8 +2,13 @@
 
 trap "echo Exited!; exit;" SIGINT SIGTERM
 
+if [[ $1 ]]; then
+	threads=$1
+else
+	threads=2
+fi
+
 counter=0
-threads=2
 
 (
 for f in `ls simulated_data`; do
