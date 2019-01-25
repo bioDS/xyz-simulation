@@ -1,19 +1,23 @@
-## Usage instructions
-
 ### dependencies
 System packages (Fedora): `R`
 R packages: `Rcpp dplyr RColorBrewer ggplot2 tidyr gridExtra stringr`
 
 For the moment, copy Q1_binary.rds into /simulations (or add it to the repo if it's allowed to be here).
 
-fits_xyz runs the simulation, arguments are:
+### Usage
+`./generate_data.sh $multiplier $count`
 
-`n p SNR num_bi num_bij perc_viol regression_alpha`
+Will generate a $count sets of data to be graphed, with sizes (n,p, etc.) scaled by $multiplier. Graph scripts assume the multiplier is either 10 or 1. Output is stored in ./simulated_data.
 
-e.g. `./fits_xyz.R 1000 100 10 0 20 0 0.9`
+`./generate_lethal_data.sh $multiplier $count`
 
-Results will be saved to /fits_proper, to be read by the graph generating code.
-No warning is given on incorrect usage, and unwanted results will be saved to fits_proper, so be sure to remove these if they don't look right.
-This currently rebuilds core.cpp on every run. To avoid this you will probably need to install the local copy of xyz, and replace `sourceCPP('xyz/core.cpp')` with `library(xyz)`
+Will do the same, but will generate data with lethal pairs. For the moment this is only used in one graph. Output is stored in ./simulated_data.
 
-To generate graphs, run `./PrecRecF1.R $regression_alpha`. Previous simulations will be read from results_proper, and graphs will be saved in /PrecRecF1. To allow experimentation with different values of regression_alpha, only results with the chosen value will be read.
+`./fit_all_1204.sh $threads`
+
+Will check whether each generated dataset has already been (fitted/checked?) by xyz, and, if it hasn't, do so now. This will be done on `$threads` separate threads (2 by default).
+
+`./generate_graphs.sh [large/small/store]`
+
+Will (re)create every graph. 'large' will use n=10,000, p=1,000. 'small' will use n=1,000, p=100. 'store' will move every graph currently present into a subdirectory "pdfs_`date +%s`" (e.g. pdfs_1548386299). To find out when such a directory was made (in a more readable fashion), use `date --date=@1548386299` (adjusting the date as required).
+
