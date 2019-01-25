@@ -79,7 +79,7 @@ bij_ind <- obs %>%
   sample_n(size = 1) %>%
   ungroup %>%
   rowwise %>%
-  mutate(coef = rnorm(1, mean = 4, sd = 2)) # double amplitude sd
+  mutate(coef = rnorm(1, mean = 0, sd = 2)) # double amplitude sd
 
 # Lethal pairs
 lethal_ind <- obs %>%
