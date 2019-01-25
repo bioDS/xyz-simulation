@@ -72,6 +72,7 @@ for (numrows in c(10000)) {#1000
     dat_fxs <- dat_fxs %>%
       filter(n == numrows) %>%
       filter(test == t) %>%
+      filter(L == round(sqrt(levels(p) %>% as.numeric))) %>%
       filter(nbi == 0, SNR != 1) %>%
 #      filter(L == L_restriction) %>%
       mutate(SNR = factor(SNR, labels = paste0("SNR = ", levels(factor(SNR))))) %>%

@@ -22,6 +22,7 @@ for (numrows in c(1000 * mult)) { #400, 1000
       filter(type == "TP") %>%
       filter(n == numrows) %>%
       filter(SNR != 1) %>%
+      filter(L == round(sqrt(levels(p) %>% as.numeric))) %>%
 #      mutate(SNR = factor(SNR, labels = paste0("SNR = ", levels(SNR)))) %>%
       filter(nbi == 20*mult) %>%
       filter(nbij %in% c(5*mult, 20*mult, 50*mult, 100*mult)) %>%

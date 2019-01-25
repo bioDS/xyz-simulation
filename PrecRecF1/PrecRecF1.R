@@ -40,20 +40,21 @@ if (args[1] == 'l') {
    n <- regmatches(x = f, m = regexpr(f, pattern = "(?<=n)\\d+(?=_)", perl = TRUE)) %>% as.numeric
    p <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_p)\\d+(?=_)", perl = TRUE)) %>% as.numeric
    SNR <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_SNR)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+   L <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_L)\\d+(?=_)", perl = TRUE)) %>% as.numeric
    nbi <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbi)\\d+(?=_)", perl = TRUE)) %>% as.numeric
    nbij <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbij)\\d+(?=_)", perl = TRUE)) %>% as.numeric
    nlethals <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nlethals)\\d+(?=_)", perl = TRUE)) %>% as.numeric
    perc_viol <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_viol)\\d+(?=_)", perl = TRUE)) %>% as.numeric
    ID <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_)\\d+(?=_|\\.rds)", perl = TRUE)) %>% as.numeric
    smry_int <- ans$smry %>% filter(type == "interaction")
-   notest <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij, nlethals = nlethals, 
+   notest <- data.frame(n = n, p = p, SNR = SNR, L = L, nbi = nbi, nbij = nbij, nlethals = nlethals, 
                         precision = sum(smry_int[["TP"]]) / nrow(smry_int),
                         recall = sum(smry_int[["TP"]]) / nbij) %>%
      mutate(F1 = 2 *  (precision * recall) / (precision + recall),
             test = "no")
    smry_int <- mutate(smry_int, pval = p.adjust(pval, method = "BH")) %>%
      filter(pval < 0.05)
-   test <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij, nlethals = nlethals,
+   test <- data.frame(n = n, p = p, SNR = SNR, L = L, nbi = nbi, nbij = nbij, nlethals = nlethals,
                       precision = sum(smry_int[["TP"]]) / nrow(smry_int),
                       recall = sum(smry_int[["TP"]]) / nbij) %>%
      mutate(F1 = 2 *  (precision * recall) / (precision + recall),
@@ -64,6 +65,7 @@ if (args[1] == 'l') {
    mutate(n = factor(n),
           p = factor(p),
           SNR = factor(SNR),
+          L = factor(L),
           nbi = factor(nbi),
           nbij = factor(nbij),
           nlethals = factor(nlethals))
@@ -75,6 +77,7 @@ for (numrows in graph_numrows) { #400
   for (t in c("yes", "no")) {
     dat_precrecf1 <- readRDS(file = "PrecRecF1/dat_precrecf1.rds") %>%
       filter(n == numrows) %>%
+      filter(L == round(sqrt(levels(p) %>% as.numeric))) %>%
       filter(test == t) %>%
       filter(nbi %in% graph_nbi) %>%
       filter(nbij %in% graph_nbij) %>%
