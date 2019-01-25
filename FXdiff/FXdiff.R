@@ -5,21 +5,26 @@ require(dplyr)
 #source("~/Projects/R/fs_.R")
 setwd("..")
 
+mult <- args[1] %>% as.numeric
 
-
-for (numrows in c(1000, 10000)) { #400, 
+for (numrows in c(1000 * mult)) { #400, 1000
   if (numrows == 400) {
     rseq <- 0#c(seq(0, 60, by = 20), 100)
   } else if (numrows == 1000) {
     rseq <- c(0, 10, 20, 40, 80, Inf)#c(seq(0, 150, by = 50), 250)
+    #mult<-1
+  } else if (numrows == 10000) {
+    #mult<-10
+    rseq <- 25*c(0, 10, 20, 40, 80, Inf)#c(seq(0, 150, by = 50), 250)
   }
   for (t in c("yes", "no")) {
     dat_dir <- readRDS("FXstrength/dat_fxstrength.rds") %>%
       filter(type == "TP") %>%
       filter(n == numrows) %>%
-      mutate(SNR = factor(SNR, labels = paste0("SNR = ", levels(SNR)))) %>%
-      filter(nbi == 20, SNR != "SNR = 1") %>%
-      filter(nbij %in% c(5, 20, 50, 100)) %>%
+      filter(SNR != 1) %>%
+#      mutate(SNR = factor(SNR, labels = paste0("SNR = ", levels(SNR)))) %>%
+      filter(nbi == 20*mult) %>%
+      filter(nbij %in% c(5*mult, 20*mult, 50*mult, 100*mult)) %>%
       filter(test == t) %>%
       mutate(range = cut(observations, rseq)) %>%
       rowwise %>%
@@ -40,7 +45,7 @@ for (numrows in c(1000, 10000)) { #400,
       geom_errorbar(colour = "darkgrey", width = 0.3, position = position_dodge(.25)) +
       facet_grid(.~SNR) +
       scale_color_discrete(name = "True interactions") +
-      scale_x_discrete(labels = c("(0, 10]", "(10, 20]", "(20, 40]", "(40, 80]", expression(paste("(80, ", infinity, ")")))) +
+#      scale_x_discrete(labels = c("(0, 10]", "(10, 20]", "(20, 40]", "(40, 80]", expression(paste("(80, ", infinity, ")")))) +
       xlab("Observations of double knockdown") +
       ylab("Absolute deviation [%]") +
       ylim(c(0, 4)) +
