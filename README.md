@@ -21,3 +21,5 @@ Will check whether each generated dataset has already been (fitted/checked?) by 
 
 Will (re)create every graph. 'large' will use n=10,000, p=1,000. 'small' will use n=1,000, p=100. 'store' will move every graph currently present into a subdirectory "pdfs_`date +%s`" (e.g. pdfs_1548386299). To find out when such a directory was made (in a more readable fashion), use `date --date=@1548386299` (adjusting the date as required).
 
+N.B. attempts using different values of L (number of projections, for l_diff) need to be run manually (using `./fits_xyz_only $simulated_data/filename $L write`).
+
