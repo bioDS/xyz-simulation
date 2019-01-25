@@ -106,7 +106,7 @@ for (numrows in c(10000)) {#1000
       geom_line(aes(colour = nbij), position = position_dodge(.35)) +
       geom_point(aes(colour = nbij), position = position_dodge(.35), size = 1) +
       geom_errorbar(colour = "darkgrey", width = 0.3, position = position_dodge(.35)) +
-      scale_x_discrete(labels = c(expression(paste("(-", infinity, ", -3]")), "(-3,-1]", "(-1,1]", "(1,3]", expression(paste("(3, ", infinity, ")")))) +
+#      scale_x_discrete(labels = c(expression(paste("(-", infinity, ", -3]")), "(-3,-1]", "(-1,1]", "(1,3]", expression(paste("(3, ", infinity, ")")))) +
       facet_grid(measure~SNR) +
       scale_color_discrete(name = "True interactions") +
       # ylim(c(0,1)) +
