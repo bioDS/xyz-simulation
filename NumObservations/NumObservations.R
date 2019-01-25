@@ -50,9 +50,9 @@ setwd("..")
  saveRDS(ans, file = "NumObservations/dat_numobs.rds")
 
 
-mult<-10
+mult <- args[1] %>% as.numeric
 
-for (numrows in c(10000)) { #1000, 
+for (numrows in c(1000 * mult)) { #1000, 
   if (numrows == 400) {
     rseq <- 0#c(seq(0, 60, by = 20), 100)
   } else if (numrows == 1000) {
