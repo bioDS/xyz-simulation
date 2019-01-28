@@ -12,7 +12,7 @@ elif [ $1 == "store" ]; then
     for i in PrecRecF1 FXstrength FXdiff NumObservations l_diff; do
         if [[ -d $i ]]; then
             cd $i
-            if ls *.pdfg 1> /dev/null 2>&1; then 
+            if ls *.pdf 1> /dev/null 2>&1; then
                 mkdir pdfs_$d; mv *.pdf pdfs_$d/
             fi
             cd ..
