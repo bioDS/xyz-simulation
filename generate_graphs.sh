@@ -37,7 +37,7 @@ echo "PrecRecF1"
 cd PrecRecF1; ./PrecRecF1.R $read_fits $prf_size
 if [ $1 == "large" ]; then
     echo "PrecRecF1_lethals"
-    ./PrecRecF1_lethals.R $read_fits
+    ./PrecRecF1_lethals.R $read_fits # actually won't work unless 'y' is used.
 fi
 cd ..
 echo "FXstrength"
