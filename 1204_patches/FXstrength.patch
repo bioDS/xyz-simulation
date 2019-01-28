@@ -1,0 +1,10 @@
+diff --git a/simulation/FXstrength/FXstrength.R b/simulation/FXstrength/FXstrength.R
+index 82aaf77..eef980c 100755
+--- a/simulation/FXstrength/FXstrength.R
++++ b/simulation/FXstrength/FXstrength.R
+@@ -1,4 +1,4 @@
+-#!/usr/bin/Rscript
++#!/home/kieran/src/R-3.2.4/bin/Rscript
+ require(dplyr)
+ require(tidyr)
+ require(ggplot2)
