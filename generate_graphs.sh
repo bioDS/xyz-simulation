@@ -1,4 +1,7 @@
 #!/bin/bash
+
+trap "echo Exited!; exit;" SIGINT SIGTERM
+
 if [ $1 == "large" ]; then
     echo "generating large graphs"
     prf_size="l"
@@ -24,14 +27,29 @@ else
     exit 0
 fi
 
+if [ $2 == "n" ]; then
+    read_fits="n"
+else
+    read_fits="y"
+fi
 
-cd PrecRecF1; ./PrecRecF1.R $prf_size
-./PrecRecF1_lethals.R
+echo "PrecRecF1"
+cd PrecRecF1; ./PrecRecF1.R $read_fits $prf_size
+if [ $1 == "large" ]; then
+    echo "PrecRecF1_lethals"
+    ./PrecRecF1_lethals.R $read_fits
+fi
 cd ..
-cd FXstrength; ./FXstrength.R y $mult
+echo "FXstrength"
+cd FXstrength; ./FXstrength.R $read_fits $mult
 cd ..
+echo "FXdiff"
 cd FXdiff; ./FXdiff.R $mult
 cd ..
-cd NumObservations; ./NumObservations.R y $mult n
+echo "NumObservations"
+cd NumObservations; ./NumObservations.R $read_fits $mult n
 cd ..
-cd l_diff; ./l_diff.R $prf_size y
+if [ $1 == "large" ]; then
+    echo "l_diff"
+    cd l_diff; ./l_diff.R $prf_size $read_fits
+fi
