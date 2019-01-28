@@ -62,7 +62,7 @@ for (numrows in c(1000 * mult)) { #1000,
   } else if (numrows == 1000) {
     rseq <- c(0, 10, 20, 40, 80, Inf)#c(seq(0, 150, by = 50), 250)
   } else {
-    rseq <- c(0, 20*mult, 40*mult, 80*mult, 160*mult, Inf) #TODO: what should these be?
+    rseq <- c(0, 10*mult, 20*mult, 40*mult, 80*mult, Inf) #TODO: what should these be?
   }
   for (t in c("yes", "no")) {
   dat_nobs <- readRDS("NumObservations/dat_numobs.rds") %>% filter(nlethals == 0)
@@ -191,7 +191,7 @@ if (args[3] == 'y') {
 	
 	
 	# rseq <- c(seq(0, 150, by = 50), Inf)
-	rseq <- c(0, 20*mult, 40*mult, 80*mult, 160*mult, Inf)
+	rseq <- c(0, 10*mult, 20*mult, 40*mult, 80*mult, Inf)
 	
 	ans <- filter(dat, !is.na(value)) %>% #, value > 0
 	  select(-n) %>%
