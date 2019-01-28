@@ -72,7 +72,7 @@ for (numrows in c(1000 * mult)) { #1000,
     dat_nobs <- dat_nobs %>%
       filter(n == numrows) %>%
       filter(test == t) %>%
-      filter(L == round(sqrt(levels(p) %>% as.numeric))) %>%
+      filter(L == round(sqrt(p %>% as.character %>% as.numeric))) %>%
       filter(nbi == 20*mult, SNR != 1) %>%
       mutate(SNR = factor(SNR, labels = paste0("SNR = ", levels(factor(SNR))))) %>%
       filter(nbij %in% (c(5*mult, 20*mult, 50*mult, 100*mult))) %>%

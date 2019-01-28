@@ -16,14 +16,14 @@ for (numrows in c(1000 * mult)) { #400, 1000
     #mult<-1
   } else if (numrows == 10000) {
     #mult<-10
-    rseq <- 25*c(0, 10, 20, 40, 80, Inf)#c(seq(0, 150, by = 50), 250)
+    rseq <- mult*c(0, 10, 20, 40, 80, Inf)#c(seq(0, 150, by = 50), 250)
   }
   for (t in c("yes", "no")) {
     dat_dir <- readRDS("FXstrength/dat_fxstrength.rds") %>%
       filter(type == "TP") %>%
       filter(n == numrows) %>%
       filter(SNR != 1) %>%
-      filter(L == round(sqrt(levels(p) %>% as.numeric))) %>%
+      filter(L == round(sqrt(p %>% as.character %>% as.numeric))) %>%
 #      mutate(SNR = factor(SNR, labels = paste0("SNR = ", levels(SNR)))) %>%
       filter(nbi == 20*mult) %>%
       filter(nbij %in% c(5*mult, 20*mult, 50*mult, 100*mult)) %>%

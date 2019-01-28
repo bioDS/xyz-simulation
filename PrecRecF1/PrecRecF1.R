@@ -8,19 +8,19 @@ setwd("..")
 
 args <- commandArgs(trailingOnly = TRUE)
 
-if (length(args) >= 2) {
-    append_str = args[2]
+if (length(args) >= 3) {
+    append_str = args[3]
 } else {
     append_str = ''
 }
 
-if (args[1] == 'l') {
+if (args[2] == 'l') {
     cat("using large data\n")
     large_int <- TRUE
     graph_numrows <- c(10000)
     graph_nbi <- c("0", "200", "500", "1000")
     graph_nbij <- c("50", "200", "500", "1000")
-} else if (args[1] == 'm') {
+} else if (args[2] == 'm') {
     cat("using mixed data\n")
     graph_numrows <- c(10000)
     graph_nbi <- c("0", "20", "50", "100")
@@ -34,50 +34,51 @@ if (args[1] == 'l') {
     large_int <- FALSE
 }
 
-# Precision, recall and F1 for interaction terms
- ans <- lapply(list.files(path = "./fits_proper/", pattern = "", full.names = TRUE), function(f) {#, sprintf("n%d_p%d", n, p)), function(f) {
-   ans <- readRDS(f)
-   n <- regmatches(x = f, m = regexpr(f, pattern = "(?<=n)\\d+(?=_)", perl = TRUE)) %>% as.numeric
-   p <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_p)\\d+(?=_)", perl = TRUE)) %>% as.numeric
-   SNR <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_SNR)\\d+(?=_)", perl = TRUE)) %>% as.numeric
-   L <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_L)\\d+(?=_)", perl = TRUE)) %>% as.numeric
-   nbi <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbi)\\d+(?=_)", perl = TRUE)) %>% as.numeric
-   nbij <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbij)\\d+(?=_)", perl = TRUE)) %>% as.numeric
-   nlethals <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nlethals)\\d+(?=_)", perl = TRUE)) %>% as.numeric
-   perc_viol <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_viol)\\d+(?=_)", perl = TRUE)) %>% as.numeric
-   ID <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_)\\d+(?=_|\\.rds)", perl = TRUE)) %>% as.numeric
-   smry_int <- ans$smry %>% filter(type == "interaction")
-   notest <- data.frame(n = n, p = p, SNR = SNR, L = L, nbi = nbi, nbij = nbij, nlethals = nlethals, 
-                        precision = sum(smry_int[["TP"]]) / nrow(smry_int),
-                        recall = sum(smry_int[["TP"]]) / nbij) %>%
-     mutate(F1 = 2 *  (precision * recall) / (precision + recall),
-            test = "no")
-   smry_int <- mutate(smry_int, pval = p.adjust(pval, method = "BH")) %>%
-     filter(pval < 0.05)
-   test <- data.frame(n = n, p = p, SNR = SNR, L = L, nbi = nbi, nbij = nbij, nlethals = nlethals,
-                      precision = sum(smry_int[["TP"]]) / nrow(smry_int),
-                      recall = sum(smry_int[["TP"]]) / nbij) %>%
-     mutate(F1 = 2 *  (precision * recall) / (precision + recall),
-            test = "yes")
-   rbind(notest, test) %>% data.frame(., id = ID)
- }) %>% do.call("rbind", .) %>%
-   tbl_df %>%
-   mutate(n = factor(n),
-          p = factor(p),
-          SNR = factor(SNR),
-          L = factor(L),
-          nbi = factor(nbi),
-          nbij = factor(nbij),
-          nlethals = factor(nlethals))
- saveRDS(ans, file = "PrecRecF1/dat_precrecf1.rds")
-
+if (args[1] == 'y') {
+    # Precision, recall and F1 for interaction terms
+     ans <- lapply(list.files(path = "./fits_proper/", pattern = "", full.names = TRUE), function(f) {#, sprintf("n%d_p%d", n, p)), function(f) {
+       ans <- readRDS(f)
+       n <- regmatches(x = f, m = regexpr(f, pattern = "(?<=n)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+       p <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_p)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+       SNR <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_SNR)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+       L <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_L)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+       nbi <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbi)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+       nbij <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbij)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+       nlethals <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nlethals)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+       perc_viol <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_viol)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+       ID <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_)\\d+(?=_|\\.rds)", perl = TRUE)) %>% as.numeric
+       smry_int <- ans$smry %>% filter(type == "interaction")
+       notest <- data.frame(n = n, p = p, SNR = SNR, L = L, nbi = nbi, nbij = nbij, nlethals = nlethals, 
+                            precision = sum(smry_int[["TP"]]) / nrow(smry_int),
+                            recall = sum(smry_int[["TP"]]) / nbij) %>%
+         mutate(F1 = 2 *  (precision * recall) / (precision + recall),
+                test = "no")
+       smry_int <- mutate(smry_int, pval = p.adjust(pval, method = "BH")) %>%
+         filter(pval < 0.05)
+       test <- data.frame(n = n, p = p, SNR = SNR, L = L, nbi = nbi, nbij = nbij, nlethals = nlethals,
+                          precision = sum(smry_int[["TP"]]) / nrow(smry_int),
+                          recall = sum(smry_int[["TP"]]) / nbij) %>%
+         mutate(F1 = 2 *  (precision * recall) / (precision + recall),
+                test = "yes")
+       rbind(notest, test) %>% data.frame(., id = ID)
+     }) %>% do.call("rbind", .) %>%
+       tbl_df %>%
+       mutate(n = factor(n),
+              p = factor(p),
+              SNR = factor(SNR),
+              L = factor(L),
+              nbi = factor(nbi),
+              nbij = factor(nbij),
+              nlethals = factor(nlethals))
+     saveRDS(ans, file = "PrecRecF1/dat_precrecf1.rds")
+}
 
 
 for (numrows in graph_numrows) { #400
   for (t in c("yes", "no")) {
     dat_precrecf1 <- readRDS(file = "PrecRecF1/dat_precrecf1.rds") %>%
       filter(n == numrows) %>%
-      filter(L == round(sqrt(levels(p) %>% as.numeric))) %>%
+      filter(L == round(sqrt(p %>% as.character %>% as.numeric))) %>%
       filter(test == t) %>%
       filter(nbi %in% graph_nbi) %>%
       filter(nbij %in% graph_nbij) %>%
