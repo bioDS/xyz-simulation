@@ -62,7 +62,7 @@ if (args[1] == 'y') {
 
 mult <- args[2] %>% as.numeric
 
-for (numrows in c(10000)) {#1000
+for (numrows in c(1000*mult)) {#1000
   nbij_values = c(5*mult,20*mult,50*mult,100*mult)
   for (t in c("yes", "no")) {
     dat_fxs <- readRDS("FXstrength/dat_fxstrength.rds") %>% filter(nlethals == 0)
@@ -95,7 +95,7 @@ for (numrows in c(10000)) {#1000
       mutate(measure = factor(measure, levels = c("precision", "recall", "F1"), labels = c("Precision", "Recall", "F1")))
     
     levels(dat_fxs$range) <- c(1, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 5)
-#    dat_fxs$range <- factor(dat_fxs$range, labels = c("(-infinity,-3]",  "(-3,-1]", "(-1,1]", "(1,3]", "(3,infinity]"))
+    dat_fxs$range <- factor(dat_fxs$range, labels = c("(-infinity,-3]",  "(-3,-1]", "(-1,1]", "(1,3]", "(3,infinity]"))
     dat_fxs <- dat_fxs %>% group_by(n, p, SNR, nbij, measure, range) %>%
       summarise(mean = mean(value, na.rm = TRUE), sem = sd(value, na.rm = TRUE) / sqrt(n()))
     
