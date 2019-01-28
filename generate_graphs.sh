@@ -32,6 +32,6 @@ cd FXstrength; ./FXstrength.R y $mult
 cd ..
 cd FXdiff; ./FXdiff.R $mult
 cd ..
-cd NumObservations; ./NumObservations.R $mult
+cd NumObservations; ./NumObservations.R y $mult n
 cd ..
 cd l_diff; ./l_diff.R $prf_size y
