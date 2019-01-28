@@ -54,7 +54,7 @@ append_str <- "lethal"
    mutate(n = factor(n),
           p = factor(p),
           SNR = factor(SNR),
-          L = factor(L)
+          L = factor(L),
           nbi = factor(nbi),
           nbij = factor(nbij),
           nlethals = factor(nlethals),
