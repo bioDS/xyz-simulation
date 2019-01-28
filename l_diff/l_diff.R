@@ -10,7 +10,7 @@ setwd("..")
 args <- commandArgs(trailingOnly = TRUE)
 #args <- c('large', 'no')
 
-SNR_limits <- c(2,5,10)
+SNR_limits <- c(5)
 
 if (args[1] == 'l') {
     cat("using large data\n")
