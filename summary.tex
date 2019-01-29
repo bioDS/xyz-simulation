@@ -1,0 +1,89 @@
+\documentclass{amsart}
+
+\usepackage{todonotes}
+
+\begin{document}
+	
+\section{Data Generation}
+We simulated an siRNA perturbation matrix, $Q$.
+
+
+\begin{quotation}
+We simulated siRNA–gene perturbation matrices based on four
+commercially available genome–wide libraries for 20,822 human genes from Qiagen with an overall size of 90,000 siRNAs. First, we predicted sequence dependent off-targets using TargetScan [23] for each siRNA as described in [13]. We thresholded all predictions to be 1 if
+larger than zero and 0 otherwise.
+\todo{(from old main.tex, this is presumably Q1\_binary, which hasn't changed):}
+\end{quotation}
+
+% X
+\subsection{Perturbation matrix}
+$n \in \{1000,10000\}$ siRNAs and $p \in \{100,1000\}$ genes were sampled without replacement from $Q$ to form $X$.
+
+% interactions (& lethals)
+\subsection{Interactions}
+We chose $i \in \{5, 20, 50, 100\}$ distinct pairs of genes at random, from those that occur at least once together in some row $X_n$, to be interacting pairs. The strength of their interactions was sampled from Norm(0,2).\todo{note on log scale?}
+
+For testing xyz's ability to find synthetic lethal pairs, $l \in \{0, 10,20,50,100\}$ additional interactions were added in the same fashion, with strengths of -1000.\footnote{Since the data is generated on a log scale, a fitness value of exactly 0 cannot be represented. Any row in which these interactions occurred, however, would have at most $\frac{1}{2^{1000}} \approx 0$ of the population survive each generation.}
+
+
+% main effects
+\subsection{Main effects}
+For each gene present in an non-lethal interaction effect, a main effect strength was sampled from Norm(0,1). In the cases were no lethal pairs were added, this produces a strong hierarchy. While xyz does not require the presence of a strong hierarchy, having one produced the best performance in [citation]\todo{cite xyz}.
+\todo{(and also because it was part of the glinternet simulation and there was no need to change it)}
+
+% fitness
+\subsection{Fitness and Noise}
+For every row $X_i$, the initial fitness value $Y_i$ is the sum of the main, interaction, and lethal effect strengths present in it's row.
+
+% noise
+For signal to noise ratios $SNR \in \{2,5,10\}$, noise was sampled from Norm(0,1) and added to $Y$ as $Y \leftarrow Y + \sqrt{\frac{var(Y)}{SNR \times var(noise)}} * noise$.
+
+% Test
+\subsection{Significance test}
+%It's probably best to refer to the original main.tex significance section here, the test hasn't changed. Long story short, $p > 0.05$ using chi-squared, which may or may not be appropriate.
+~\\
+\todo[inline]{This may or may not have been the appropriate test for xyz.}
+
+\begin{quotation}
+	(original glinternet version):\\
+	In classical linear regression analysis, the significance of the $j$th predictor is tested by comparing the two nested models with with fixed subsets of predictors $M$ and $M \cup \{j\}$ using the chi-squared test. However, if the two sets of predictors $M$ and $M \cup \{j\}$ are not fixed, as is the case for any greedy or adaptive procedure such as the lasso, the use of the $\chi^2_1$ null distribution is too liberal. Lockhart et al. suggest the \emph{covariance test statistic} $T_k$ for the lasso which, under reasonable assumptions on $\vec{X}$, is asymptotically distributed as $\operatorname{Exp}(1)$~\cite{Lockhart:2013hm}. Due to the overlap of coefficients in the overlapped group lasso, it is however unclear if the proposed test is applicable to our model. Therefore, we resort to the classical chi-squared test, well aware of the inflation of type I error. We correct p-values for multiple testing using the procedure by Benjamini and Hochberg and reject at the level of $\alpha = 0.05$.
+\end{quotation}
+
+\subsection{xyz}
+For every combination of parameters, ten simulations were run.
+We ran \verb|xyz_regression| from [xyz]\todo{cite} on each, with a regression value of 0.9, and (except where specifically testing the effect of different values of L) $L = \sqrt{p}$ projections, to find only the strong interactions (as in [xyz]).
+
+\section{Evaluation}
+
+% precision, recall F1
+We primarily evaluated xyz's ability to propose interacting pairs, rather than its ability to estimate interaction strengths. To that end, we measured the number true positives (TP), false positives (FP), and false negatives (FN) in each run, and compared the following performance measures:
+
+$$\textnormal{Precision} = \frac{TP}{TP + FP}$$
+$$\textnormal{Recall} = \frac{TP}{TP + FN}$$
+$$\textnormal{F1} = 2 \times \frac{\textnormal{Precision} \times \textnormal{Recall}}{\textnormal{Precision} + \textnormal{Recall}}$$
+
+The following [specific things?] were [...evaluated?]\todo{wording}
+
+\todo[inline]{This next bit could be a bit less ... bullet-pointy?}
+\subsection{PrecRecF1}
+Precision, recall, and F1 performance measures for varying numbers of interactions, additional main effects, and signal to noise ratios.
+
+\subsection{PrecRecF1\_lethal}
+Precision, recall, and F1 performance for varying numbers of synthetic lethal pairs, with additional background interactions. This was the only comparison for which lethal interactions were added.
+
+\subsection{l\_diff}
+True positives and false positives as a result of increasing the number of projections. This was run entirely on $p = 1000$ genes with a signal to noise ratio of five.
+
+\subsection{FXstrength}
+Precision, recall, and F1 performance for effects of difference strengths, with varying numbers of interactions. This was run on both $n = 1,000$, $p = 100$ and $n = 10,000$, $p = 1,000$.
+
+The proportion of effect strength estimates with the correct sign was also compared for both sizes.
+
+\subsection{NumObservations}
+Precision, recall, and F1 performance measures compared to the number of times each interaction was observed.
+
+\subsection{FXdiff}
+The proportion of effect strength estimates with the correct sign compared to the number of times the interaction was observed.
+
+
+\end{document}
