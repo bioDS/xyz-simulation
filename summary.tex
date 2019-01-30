@@ -103,46 +103,53 @@ The following aspects of xyz's performance were evaluated:
 
 \todo[inline]{This next bit could be a bit less ... bullet-pointy?}
 \subsection{PrecRecF1}
-Precision, recall, and F1 performance measures for varying numbers of interactions, additional main effects, and signal to noise ratios.
 
-\begin{minipage}{\linewidth}
-	\centering
-	\includegraphics[width=0.5\linewidth]{"output/PrecRecF1_n1000_tno_large0_"}%
-	\includegraphics[width=0.5\linewidth]{"output/PrecRecF1_n1000_tyes_large0_"}
-\end{minipage}
-\begin{minipage}{\linewidth}
-	\centering
-	\includegraphics[width=0.5\linewidth]{"output/PrecRecF1_n10000_tno_large1_"}%
-	\includegraphics[width=0.5\linewidth]{"output/PrecRecF1_n10000_tyes_large1_"}
-\end{minipage}
+\begin{figure}
+	\begin{minipage}{\linewidth}
+		\centering
+		\includegraphics[width=0.5\linewidth]{"output/PrecRecF1_n1000_tno_large0_"}%
+		\includegraphics[width=0.5\linewidth]{"output/PrecRecF1_n1000_tyes_large0_"}
+	\end{minipage}
+	\begin{minipage}{\linewidth}
+		\centering
+		\includegraphics[width=0.5\linewidth]{"output/PrecRecF1_n10000_tno_large1_"}%
+		\includegraphics[width=0.5\linewidth]{"output/PrecRecF1_n10000_tyes_large1_"}
+	\end{minipage}
+	\caption{Precision, recall, and F1 performance measures for varying numbers of interactions, additional main effects, and signal to noise ratios.}
+\end{figure}
+
+
+
 
 \subsection{PrecRecF1\_lethal}
-Precision, recall, and F1 performance for varying numbers of synthetic lethal pairs, with additional background interactions. This was the only comparison for which lethal interactions were added.
-
+\begin{figure}
 \begin{minipage}{\linewidth}
 	\centering
 	\includegraphics[width=0.5\linewidth]{"output/PrecRecF1_n10000_tno_large0_lethalTRUE_lethal"}%
 	\includegraphics[width=0.5\linewidth]{"output/PrecRecF1_n10000_tno_large0_lethalTRUE_lethal"}
 \end{minipage}
-
+\caption{Precision, recall, and F1 performance for varying numbers of synthetic lethal pairs, with additional background interactions. This was the only comparison for which lethal interactions were added. Neither side of the lethal interactions were used as main effects, and as far as lethal interactions are concerned, there is no hierarchy present.}
+\end{figure}
 \subsection{l\_diff}
-True positives and false positives as a result of increasing the number of projections. This was run entirely on $p = 1000$ genes with a signal to noise ratio of five.
 
-\begin{minipage}{\linewidth}
+
+\begin{figure}
+	\begin{minipage}{\linewidth}
 	\centering
 	\includegraphics[width=0.5\linewidth]{"output/l_diff_n10000_SNR5_tno"}%
 	\includegraphics[width=0.5\linewidth]{"output/l_diff_n10000_SNR5_tyes"}
 \end{minipage}
+\caption{True positives and false positives as a result of increasing the number of projections. This was run entirely on $p = 1000$ genes with a signal to noise ratio of five.}
+\end{figure}
 
-	\includegraphics[width=0.5\linewidth]{"output/quant_analysis_n10000"}
-
+\includegraphics[width=0.5\linewidth]{"output/quant_analysis_n10000"}
+\todo{slightly misleading scale, but I wanted TP to actually be visible.}
 
 \subsection{FXstrength}
-Precision, recall, and F1 performance for effects of difference strengths, with varying numbers of interactions. This was run on both $n = 1,000$, $p = 100$ and $n = 10,000$, $p = 1,000$.
 
-The proportion of effect strength estimates with the correct sign was also compared for both sizes.
 
-\begin{minipage}{\linewidth}
+\begin{figure}
+	\begin{minipage}{\linewidth}
 	\centering
 	\includegraphics[width=0.5\linewidth]{"output/FXstrength_PRF_n1000_tno_mult1_"}%
 	\includegraphics[width=0.5\linewidth]{"output/FXstrength_PRF_n1000_tyes_mult1_"}
@@ -153,22 +160,26 @@ The proportion of effect strength estimates with the correct sign was also compa
 	\includegraphics[width=0.5\linewidth]{"output/FXstrength_PRF_n10000_tyes_mult10_"}
 \end{minipage}
 
-\begin{minipage}{\linewidth}
-	\centering
-	\includegraphics[width=0.5\linewidth]{"output/FXstrength_direction_n1000_tno_mult1_"}%
-\end{minipage}
-\begin{minipage}{\linewidth}
-	\centering
-	\includegraphics[width=0.5\linewidth]{"output/FXstrength_direction_n10000_tno_mult10_"}%
-\end{minipage}
+\caption{Precision, recall, and F1 performance for effects of difference strengths, with varying numbers of interactions. This was run on both $n = 1,000$, $p = 100$ and $n = 10,000$, $p = 1,000$.	
+}
+\end{figure}
 
-
+\begin{figure}
+	\begin{minipage}{\linewidth}
+		\centering
+		\includegraphics[width=0.5\linewidth]{"output/FXstrength_direction_n1000_tno_mult1_"}%
+		\centering
+		\includegraphics[width=0.5\linewidth]{"output/FXstrength_direction_n10000_tno_mult10_"}
+		\caption{The proportion of effect strength estimates with the correct sign was also compared for both sizes. Left: $p = 100$, right: $p = 1000$.}
+	\end{minipage}
+\end{figure}
 
 
 \subsection{NumObservations}
-Precision, recall, and F1 performance measures compared to the number of times each interaction was observed.
 
-\begin{minipage}{\linewidth}
+
+\begin{figure}
+	\begin{minipage}{\linewidth}
 	\centering
 	\includegraphics[width=0.5\linewidth]{"output/NumObservations_n1000_tno"}%
 	\includegraphics[width=0.5\linewidth]{"output/NumObservations_n1000_tyes"}
@@ -178,13 +189,16 @@ Precision, recall, and F1 performance measures compared to the number of times e
 	\includegraphics[width=0.5\linewidth]{"output/NumObservations_n10000_tno"}%
 	\includegraphics[width=0.5\linewidth]{"output/NumObservations_n10000_tyes"}
 \end{minipage}
+\caption{Precision, recall, and F1 performance measures compared to the number of times each interaction was observed.\todo[inline]{the $p = 1000$ graph looks a bit suspicious, how can recall be higher across the board than it is on average?}}
+\end{figure}
 
 
 
 \subsection{FXdiff}
-The proportion of effect strength estimates with the correct sign compared to the number of times the interaction was observed.
 
-\begin{minipage}{\linewidth}
+
+\begin{figure}
+	\begin{minipage}{\linewidth}
 	\centering
 	\includegraphics[width=0.5\linewidth]{"output/FXdiff_n1000_tno"}%
 	\includegraphics[width=0.5\linewidth]{"output/FXdiff_n1000_tyes"}
@@ -194,6 +208,8 @@ The proportion of effect strength estimates with the correct sign compared to th
 	\includegraphics[width=0.5\linewidth]{"output/FXdiff_n10000_tno"}%
 	\includegraphics[width=0.5\linewidth]{"output/FXdiff_n10000_tyes"}
 \end{minipage}
+\caption{The proportion of effect strength estimates with the correct sign compared to the number of times the interaction was observed.}
+\end{figure}
 
 
 
