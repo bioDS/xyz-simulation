@@ -34,13 +34,17 @@
 }
 \end{filecontents*}
 
-\documentclass{amsart}
+\documentclass{article}
 
-\usepackage{todonotes}
-%\usepackage{cite}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{amsmath}
+%\usepackage{float}
 
 \begin{document}
-	
+
+\listoftodos
+\clearpage
+
 \section{Data Generation}
 %\begin{quotation}
 We simulated siRNA–gene perturbation matrices based on four
@@ -100,9 +104,7 @@ $$\textnormal{Recall} = \frac{TP}{TP + FN}$$
 $$\textnormal{F1} = 2 \times \frac{\textnormal{Precision} \times \textnormal{Recall}}{\textnormal{Precision} + \textnormal{Recall}}$$
 ~\\
 The following aspects of xyz's performance were evaluated:
-
-\todo[inline]{This next bit could be a bit less ... bullet-pointy?}
-\subsection{PrecRecF1}
+%\subsection{PrecRecF1}
 
 \begin{figure}
 	\begin{minipage}{\linewidth}
@@ -121,7 +123,7 @@ The following aspects of xyz's performance were evaluated:
 
 
 
-\subsection{PrecRecF1\_lethal}
+%\subsection{PrecRecF1\_lethal}
 \begin{figure}
 \begin{minipage}{\linewidth}
 	\centering
@@ -130,7 +132,7 @@ The following aspects of xyz's performance were evaluated:
 \end{minipage}
 \caption{Precision, recall, and F1 performance for varying numbers of synthetic lethal pairs, with additional background interactions. This was the only comparison for which lethal interactions were added. Neither side of the lethal interactions were used as main effects, and as far as lethal interactions are concerned, there is no hierarchy present.}
 \end{figure}
-\subsection{l\_diff}
+%\subsection{l\_diff}
 
 
 \begin{figure}
@@ -145,7 +147,7 @@ The following aspects of xyz's performance were evaluated:
 \includegraphics[width=0.5\linewidth]{"output/quant_analysis_n10000"}
 \todo{slightly misleading scale, but I wanted TP to actually be visible.}
 
-\subsection{FXstrength}
+%\subsection{FXstrength}
 
 
 \begin{figure}
@@ -175,7 +177,7 @@ The following aspects of xyz's performance were evaluated:
 \end{figure}
 
 
-\subsection{NumObservations}
+%\subsection{NumObservations}
 
 
 \begin{figure}
@@ -194,7 +196,7 @@ The following aspects of xyz's performance were evaluated:
 
 
 
-\subsection{FXdiff}
+%\subsection{FXdiff}
 
 
 \begin{figure}
