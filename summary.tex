@@ -1,35 +1,71 @@
+\begin{filecontents*}{summary.bib}
+@ARTICLE{Thanei2016-wf,
+	title         = "The xyz algorithm for fast interaction search in
+	high-dimensional data",
+	author        = "Thanei, Gian-Andrea and Meinshausen, Nicolai and Shah, Rajen
+	D",
+	abstract      = "When performing regression on a dataset with $p$ variables,
+	it is often of interest to go beyond using main linear
+	effects and include interactions as products between
+	individual variables. For small-scale problems, these
+	interactions can be computed explicitly but this leads to a
+	computational complexity of at least $\mathcal\{O\}(p^2)$ if
+	done naively. This cost can be prohibitive if $p$ is very
+	large. We introduce a new randomised algorithm that is able
+	to discover interactions with high probability and under
+	mild conditions has a runtime that is subquadratic in $p$.
+	We show that strong interactions can be discovered in almost
+	linear time, whilst finding weaker interactions requires
+	$\mathcal\{O\}(p^\alpha)$ operations for $1 < \alpha < 2$
+	depending on their strength. The underlying idea is to
+	transform interaction search into a closestpair problem
+	which can be solved efficiently in subquadratic time. The
+	algorithm is called $\mathit\{xyz\}$ and is implemented in
+	the language R. We demonstrate its efficiency for
+	application to genome-wide association studies, where more
+	than $10^\{11\}$ interactions can be screened in under $280$
+	seconds with a single-core $1.2$ GHz CPU.",
+	month         =  oct,
+	year          =  2016,
+	archivePrefix = "arXiv",
+	primaryClass  = "stat.ML",
+	original_id   = "e4d8125b-1093-0fb9-a9a5-244e8c45f1cd",
+	eprint        = "1610.05108"
+}
+\end{filecontents*}
+
 \documentclass{amsart}
 
 \usepackage{todonotes}
+%\usepackage{cite}
 
 \begin{document}
 	
 \section{Data Generation}
-We simulated an siRNA perturbation matrix, $Q$.
-
-
-\begin{quotation}
+%\begin{quotation}
 We simulated siRNA–gene perturbation matrices based on four
 commercially available genome–wide libraries for 20,822 human genes from Qiagen with an overall size of 90,000 siRNAs. First, we predicted sequence dependent off-targets using TargetScan [23] for each siRNA as described in [13]. We thresholded all predictions to be 1 if
-larger than zero and 0 otherwise.
-\todo{(from old main.tex, this is presumably Q1\_binary, which hasn't changed):}
-\end{quotation}
+larger than zero and 0 otherwise
+\todo{from old main.tex, this is presumably Q1\_binary, which hasn't changed. Not sure who wrote this.}
+to produce the matrix $Q$.
+%\end{quotation}
 
 % X
 \subsection{Perturbation matrix}
-$n \in \{1000,10000\}$ siRNAs and $p \in \{100,1000\}$ genes were sampled without replacement from $Q$ to form $X$.
+$n$ siRNAs and $p$ genes were sampled from $Q$ without replacement to form $X$. We simulated and analysed a small ($n = 1000,\ p=100$), and large ($n = 10000,\ p=1000$) matrix.
 
 % interactions (& lethals)
 \subsection{Interactions}
-We chose $i \in \{5, 20, 50, 100\}$ distinct pairs of genes at random, from those that occur at least once together in some row $X_n$, to be interacting pairs. The strength of their interactions was sampled from Norm(0,2).\todo{note on log scale?}
+We chose $i \in \{5, 20, 50, 100\}$ distinct pairs of genes at random, from those that occur together at least once in some row of $X$, to be interacting pairs. The strength of their interactions was sampled from Norm(0,2).\todo{note on log scale?}
 
 For testing xyz's ability to find synthetic lethal pairs, $l \in \{0, 10,20,50,100\}$ additional interactions were added in the same fashion, with strengths of -1000.\footnote{Since the data is generated on a log scale, a fitness value of exactly 0 cannot be represented. Any row in which these interactions occurred, however, would have at most $\frac{1}{2^{1000}} \approx 0$ of the population survive each generation.}
 
 
 % main effects
 \subsection{Main effects}
-For each gene present in an non-lethal interaction effect, a main effect strength was sampled from Norm(0,1). In the cases were no lethal pairs were added, this produces a strong hierarchy. While xyz does not require the presence of a strong hierarchy, having one produced the best performance in [citation]\todo{cite xyz}.
-\todo{(and also because it was part of the glinternet simulation and there was no need to change it)}
+For each gene present in an non-lethal interaction effect, a main effect strength was sampled from Norm(0,1). In the cases were no lethal pairs were added, this produces a strong hierarchy. While xyz does not require a strong hierarchy, having one improves performance.\cite{Thanei2016-wf}
+\todo{(and also because it was part of the glinternet simulation)}
+\todo{Since the performance on random interactions was quite poor, it seemed reasonable to leave this in. For the synthetic lethal test (which seemed to be the one where this mattered most), no main interactions were added.}
 
 % fitness
 \subsection{Fitness and Noise}
@@ -41,6 +77,7 @@ For signal to noise ratios $SNR \in \{2,5,10\}$, noise was sampled from Norm(0,1
 % Test
 \subsection{Significance test}
 %It's probably best to refer to the original main.tex significance section here, the test hasn't changed. Long story short, $p > 0.05$ using chi-squared, which may or may not be appropriate.
+We tested whether the estimated interactions strength was significantly $> 0$ using the chi-squared test, adjusted using the Benjamini \& Hochberg procedure. For each performance measure, we used both the complete set of interactions returned by xyz, and those that significantly deviated from 0, with a q-value $< 0.05$.
 ~\\
 \todo[inline]{This may or may not have been the appropriate test for xyz.}
 
@@ -51,7 +88,7 @@ For signal to noise ratios $SNR \in \{2,5,10\}$, noise was sampled from Norm(0,1
 
 \subsection{xyz}
 For every combination of parameters, ten simulations were run.
-We ran \verb|xyz_regression| from [xyz]\todo{cite} on each, with a regression value of 0.9, and (except where specifically testing the effect of different values of L) $L = \sqrt{p}$ projections, to find only the strong interactions (as in [xyz]).
+We used \verb|xyz_regression| to find interactions, with a regression value of 0.9, and, except where specifically testing the effect of different values of L, $L = \sqrt{p}$ projections, to focus on the strong interactions\cite{Thanei2016-wf}.
 
 \section{Evaluation}
 
@@ -61,8 +98,8 @@ We primarily evaluated xyz's ability to propose interacting pairs, rather than i
 $$\textnormal{Precision} = \frac{TP}{TP + FP}$$
 $$\textnormal{Recall} = \frac{TP}{TP + FN}$$
 $$\textnormal{F1} = 2 \times \frac{\textnormal{Precision} \times \textnormal{Recall}}{\textnormal{Precision} + \textnormal{Recall}}$$
-
-The following [specific things?] were [...evaluated?]\todo{wording}
+~\\
+The following aspects of xyz's performance were evaluated:
 
 \todo[inline]{This next bit could be a bit less ... bullet-pointy?}
 \subsection{PrecRecF1}
@@ -85,5 +122,7 @@ Precision, recall, and F1 performance measures compared to the number of times e
 \subsection{FXdiff}
 The proportion of effect strength estimates with the correct sign compared to the number of times the interaction was observed.
 
+\bibliography{summary.bib}
+\bibliographystyle{plain}
 
 \end{document}
