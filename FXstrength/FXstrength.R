@@ -87,10 +87,11 @@ for (numrows in c(1000*mult)) {#1000
       summarise(count = n()) %>% 
       spread(type, count, fill = 0) %>%
       # filter(FP > 0) %>% # avoid 0 effects for test = yes
+      filter(!is.na(range)) %>%
       mutate(precision = TP / (TP + FP),
              recall = TP / (TP + FN)) %>%
       mutate(F1 = 2 *  (precision * recall) / (precision + recall)) %>%
-      filter(!is.na(precision), !is.na(recall), !is.na(F1)) %>%
+      #filter(!is.na(precision), !is.na(recall), !is.na(F1)) %>%
       gather(measure, value, precision, recall, F1) %>%
       mutate(measure = factor(measure, levels = c("precision", "recall", "F1"), labels = c("Precision", "Recall", "F1")))
     
@@ -110,7 +111,7 @@ for (numrows in c(1000*mult)) {#1000
       scale_x_discrete(labels = c(expression(paste("(-", infinity, ", -3]")), "(-3,-1]", "(-1,1]", "(1,3]", expression(paste("(3, ", infinity, ")")))) +
       facet_grid(measure~SNR) +
       scale_color_discrete(name = "True interactions") +
-      # ylim(c(0,1)) +
+      ylim(c(0,1)) +
       xlab("True epistasis") +
       ylab("") +
 #      theme_fs() +
