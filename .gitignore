@@ -1,8 +1,34 @@
 # Ignore Q1_binary.rds, unless we do actually want this
 Q1_binary.rds
 
-*.pdf
 *.DS_Store
 *.zip
 *.rds
 *.tar.gz
+
+# LaTeX files
+*.aux
+*.log
+*.out
+*.bcf
+*.xml
+*.pdf
+*.synctex.gz
+*.*(busy)
+*.blg
+*.bbl
+*.tdo
+*.acn
+*.glo
+*.ist
+*.toc
+*.acr
+*.alg
+*.glg
+*.gls
+*.bib
+
+# @gavruskin
+*.tmp
+*.swp
+tmp
