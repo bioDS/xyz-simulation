@@ -82,11 +82,12 @@ for (numrows in c(1000 * mult)) { #1000,
       mutate(precision = TP / (TP + FP),
              recall = TP / (TP + FN)) %>%
       mutate(F1 = 2 *  (precision * recall) / (precision + recall)) %>%
-      filter(!is.na(precision), !is.na(recall), !is.na(F1)) %>%
+      #filter(!is.na(precision), !is.na(recall), !is.na(F1)) %>%
       gather(measure, value, precision, recall, F1) %>%
       mutate(measure = factor(measure, levels = c("precision", "recall", "F1"), labels = c("Precision", "Recall", "F1"))) %>%
       # filter(measure == "recall") %>%
       mutate(range = cut(observations, rseq)) %>%
+      filter(observations > 0) %>%
       group_by(n, p, SNR, nbij, measure, range) %>%
       summarise(mean = mean(value, na.rm = TRUE), sem = sd(value, na.rm = TRUE) / sqrt(n()))
     
