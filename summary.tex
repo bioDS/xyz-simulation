@@ -102,6 +102,8 @@ We primarily evaluated xyz's ability to propose interacting pairs, rather than i
 $$\textnormal{Precision} = \frac{TP}{TP + FP}$$
 $$\textnormal{Recall} = \frac{TP}{TP + FN}$$
 $$\textnormal{F1} = 2 \times \frac{\textnormal{Precision} \times \textnormal{Recall}}{\textnormal{Precision} + \textnormal{Recall}}$$
+To avoid misleading graphs, where only high values were present, F1 values were set to $0$ when both precision and recall were 0.
+
 ~\\
 The following aspects of xyz's performance were evaluated:
 %\subsection{PrecRecF1}
@@ -141,10 +143,18 @@ The following aspects of xyz's performance were evaluated:
 	\includegraphics[width=0.5\linewidth]{"output/l_diff_n10000_SNR5_tno"}%
 	\includegraphics[width=0.5\linewidth]{"output/l_diff_n10000_SNR5_tyes"}
 \end{minipage}
-\caption{True positives and false positives as a result of increasing the number of projections. This was run entirely on $p = 1000$ genes with a signal to noise ratio of five.}
+\caption{Precision, recall, and F1 as a result of increasing the number of projections. This was run entirely on $p = 1000$ genes with a signal to noise ratio of five.}
 \end{figure}
 
-\includegraphics[width=0.5\linewidth]{"output/quant_analysis_n10000"}
+\begin{figure}
+	\begin{minipage}{\linewidth}
+		\centering
+		\includegraphics[width=0.5\linewidth]{"output/quant_analysis_n10000"}
+	\end{minipage}
+	\caption{True positives and false positives as a result of increasing the number of projections. This was run entirely on $p = 1000$ genes with a signal to noise ratio of five.}
+\end{figure}
+
+
 \todo{slightly misleading scale, but I wanted TP to actually be visible.}
 
 %\subsection{FXstrength}
@@ -197,7 +207,7 @@ The following aspects of xyz's performance were evaluated:
 	\includegraphics[width=0.5\linewidth]{"output/NumObservations_n10000_tno"}%
 	\includegraphics[width=0.5\linewidth]{"output/NumObservations_n10000_tyes"}
 \end{minipage}
-\caption{Precision, recall, and F1 performance measures compared to the number of times each interaction was observed.\todo[inline]{0-100 is not on the graph, this is excluding half the results. Also, check missing values.}}
+\caption{Precision, recall, and F1 performance measures compared to the number of times each interaction was observed. The number of main effects was fixed to 20 when $p=100$ (above), and 200 when $p=1000$ (below).}
 \end{figure}
 
 \begin{figure}
