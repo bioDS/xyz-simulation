@@ -65,11 +65,8 @@ for (numrows in c(1000 * mult)) { #1000,
     rseq <- c(0, 10*mult, 20*mult, 40*mult, 80*mult, Inf) #TODO: what should these be?
   }
   for (t in c("yes", "no")) {
-  dat_nobs <- readRDS("NumObservations/dat_numobs.rds") %>% filter(nlethals == 0)
-    TP=length(unlist((dat_nobs %>% filter(type=="TP"))[1]))
-    FP=length(unlist((dat_nobs %>% filter(type=="FP"))[1]))
-    FN=length(unlist((dat_nobs %>% filter(type=="FN"))[1]))
-    dat_nobs <- dat_nobs %>%
+  dat_nobs <- readRDS("NumObservations/dat_numobs.rds")%>%
+      filter(nlethals == 0) %>%
       filter(n == numrows) %>%
       filter(test == t) %>%
       filter(L == round(sqrt(p %>% as.character %>% as.numeric))) %>%
@@ -82,6 +79,7 @@ for (numrows in c(1000 * mult)) { #1000,
       mutate(precision = TP / (TP + FP),
              recall = TP / (TP + FN)) %>%
       mutate(F1 = 2 *  (precision * recall) / (precision + recall)) %>%
+      mutate(F1 = case_when(is.na(F1) ~ 0, TRUE ~ F1)) %>%
       #filter(!is.na(precision), !is.na(recall), !is.na(F1)) %>%
       gather(measure, value, precision, recall, F1) %>%
       mutate(measure = factor(measure, levels = c("precision", "recall", "F1"), labels = c("Precision", "Recall", "F1"))) %>%

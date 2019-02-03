@@ -78,6 +78,7 @@ for (SNR_limit in SNR_limits) {
           filter(SNR == SNR_limit) %>%
           filter(L %in% c(10, 100, 1000)) %>%
           mutate(L = factor(L, levels = levels(L), labels = paste0("L = ", levels(L)))) %>%
+          mutate(F1 = case_when(is.na(F1) ~ 0, TRUE ~ F1)) %>%
           group_by(n, p, L, nbi, nbij, test) #%>% sample_n(10, replace=TRUE) #TODO: improve this?
         
         pl <- group_by(dat_l_diff, L, nbi, nbij) %>%

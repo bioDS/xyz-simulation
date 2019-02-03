@@ -65,11 +65,8 @@ mult <- args[2] %>% as.numeric
 for (numrows in c(1000*mult)) {#1000
   nbij_values = c(5*mult,20*mult,50*mult,100*mult)
   for (t in c("yes", "no")) {
-    dat_fxs <- readRDS("FXstrength/dat_fxstrength.rds") %>% filter(nlethals == 0)
-    TP=length(unlist((dat_fxs %>% filter(type=="TP"))[1]))
-    FP=length(unlist((dat_fxs %>% filter(type=="FP"))[1]))
-    FN=length(unlist((dat_fxs %>% filter(type=="FN"))[1]))
-    dat_fxs <- dat_fxs %>%
+    dat_fxs <- readRDS("FXstrength/dat_fxstrength.rds") %>%
+      filter(nlethals == 0) %>%
       filter(n == numrows) %>%
       filter(test == t) %>%
       filter(L == round(sqrt(p %>% as.character %>% as.numeric))) %>%
@@ -91,6 +88,7 @@ for (numrows in c(1000*mult)) {#1000
       mutate(precision = TP / (TP + FP),
              recall = TP / (TP + FN)) %>%
       mutate(F1 = 2 *  (precision * recall) / (precision + recall)) %>%
+      mutate(F1 = case_when(is.na(F1) ~ 0, TRUE ~ F1)) %>%
       #filter(!is.na(precision), !is.na(recall), !is.na(F1)) %>%
       gather(measure, value, precision, recall, F1) %>%
       mutate(measure = factor(measure, levels = c("precision", "recall", "F1"), labels = c("Precision", "Recall", "F1")))

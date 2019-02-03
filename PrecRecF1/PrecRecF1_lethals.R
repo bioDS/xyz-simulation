@@ -76,6 +76,7 @@ for (numrows in graph_numrows) { #400
           filter(nbij %in% graph_nbij) %>%
           filter(SNR != "1") %>%
           filter(lethal == g_lethal) %>%
+          mutate(F1 = case_when(is.na(F1) ~ 0, TRUE ~ F1)) %>%
           mutate(SNR = factor(SNR, levels = levels(SNR), labels = paste0("SNR = ", levels(SNR)))) %>%
           group_by(n, p, SNR, nbij, test, nlethals, lethal) %>% sample_n(10, replace=TRUE) #TODO: improve this?
         
