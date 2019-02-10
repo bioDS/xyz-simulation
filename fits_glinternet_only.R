@@ -114,7 +114,7 @@ if (verbose)
 ## Write out
 if (write_out) {
     if (verbose) cat("Saving\n")
-    saveRDS(list(fit = regression_results,
+    saveRDS(list(fit = fit,
                  bij = bij_ind,
                  bi = bi_ind,
                  obs = obs,
@@ -122,8 +122,8 @@ if (write_out) {
                  fx_main = fx_main,
                  fit_red = fit_red,
                  smry = smry),
-            file = sprintf("./fits_proper/n%d_p%d_SNR%d_nbi%d_nbij%d_viol%d_L%d_%s.rds",
-                       n, p, SNR, num_bi, num_bij, perc_viol, L, ID))
+            file = sprintf("./fits_proper/n%d_p%d_SNR%d_nbi%d_nbij%d_viol%d_%s.rds",
+                       n, p, SNR, num_bi, num_bij, perc_viol, ID))
 } else {
     cat("Not saving\n")
 }
