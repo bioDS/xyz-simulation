@@ -48,11 +48,11 @@ gc()
 ## Fit model using glinternet
 if (verbose) cat("Fitting model\n")
 if (verbose) cat("Fitting model\n")
-fit <- glinternet.cv(X = X %>% as.matrix,
+time <- system.time(fit <- glinternet.cv(X = X %>% as.matrix,
                      Y = Y %>% as.numeric,
                      numLevels = rep(1,p),
                      family = "gaussian",
-                     nLambda = 50, lambdaMinRatio = lambda_min_ratio, verbose = TRUE)
+                     nLambda = 50, numCores=10, lambdaMinRatio = lambda_min_ratio, verbose = TRUE))
 
 if (verbose) cat("Collecting stats\n")
 cf <- coef(fit, lambdaType = "lambdaHat") #lambdaIndex = 50)#
