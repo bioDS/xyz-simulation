@@ -1,0 +1,10 @@
+numCores=10, 'n10000_p1000_SNR5_nbi5_nbij500_nlethals5_viol0_3594.rds'
+
+4530s, freebsd13-current:
+	2520s
+x1-yoga, fedora 29:
+	2234s
+r815, ubuntu 12.04.5:
+	3029s	
+
+
