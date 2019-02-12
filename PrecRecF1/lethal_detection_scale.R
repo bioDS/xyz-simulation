@@ -1,4 +1,4 @@
-#!/usr/local/bin/Rscript
+#!/usr/bin/env Rscript
 require(ggplot2)
 require(dplyr)
 require(RColorBrewer)
@@ -8,8 +8,17 @@ setwd("..")
 
 args <- commandArgs(trailingOnly = TRUE)
 
-if (length(args) >= 2) {
-    append_str = args[2]
+if (args[1] == "x") {
+	use_xyz = TRUE
+} else if (args[1] == "g") {
+	use_xyz = FALSE
+} else {
+    cat("[x]yz or [g]linternet required\n")
+    q()
+}
+
+if (length(args) >= 3) {
+    append_str = args[3]
 } else {
     append_str = ''
 }
@@ -21,14 +30,17 @@ graph_nlethals <- c("10", "20", "40", "80", "100")
 large_int <- FALSE
 append_str <- "lethal"
 
-if (args[1] == 'y') {
+if (args[2] == 'y') {
     # Precision, recall and F1 for interaction terms
      ans <- lapply(list.files(path = "./fits_proper/", pattern = "", full.names = TRUE), function(f) {#, sprintf("n%d_p%d", n, p)), function(f) {
        ans <- readRDS(f)
        n <- regmatches(x = f, m = regexpr(f, pattern = "(?<=n)\\d+(?=_)", perl = TRUE)) %>% as.numeric
        p <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_p)\\d+(?=_)", perl = TRUE)) %>% as.numeric
        SNR <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_SNR)\\d+(?=_)", perl = TRUE)) %>% as.numeric
-       L <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_L)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+       if (use_xyz)
+           L <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_L)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+       else
+           L <- 0
        nbi <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbi)\\d+(?=_)", perl = TRUE)) %>% as.numeric
        nbij <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbij)\\d+(?=_)", perl = TRUE)) %>% as.numeric
        nlethals <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nlethals)\\d+(?=_)", perl = TRUE)) %>% as.numeric
@@ -75,8 +87,13 @@ for (numrows in graph_numrows) { #400
           filter(nbij == as.numeric(as.character(p))/5) %>%
           filter(SNR != "1") %>%
           #filter(lethal == g_lethal) %>%
+	  filter(p %>% as.character %>% as.numeric == (n %>% as.character %>% as.numeric)/2) %>%
           mutate(frac_lethals = nlethals %>% as.character %>% as.numeric / (p %>% as.character %>% as.numeric)) %>%
           filter(frac_lethals == 0.05) %>%
+          mutate(frac_bij = nbij %>% as.character %>% as.numeric / (p %>% as.character %>% as.numeric)) %>%
+          filter(frac_bij == 0.2) %>%
+          mutate(frac_bi = nbi %>% as.character %>% as.numeric / (p %>% as.character %>% as.numeric)) %>%
+          filter(frac_bi == 0.01) %>%
           mutate(frac_lethals = factor(frac_lethals)) %>%
           mutate(F1 = case_when(is.na(F1) ~ 0, TRUE ~ F1)) %>%
           mutate(SNR = factor(SNR, levels = levels(SNR), labels = paste0("SNR = ", levels(SNR)))) %>%
@@ -112,7 +129,7 @@ for (numrows in graph_numrows) { #400
           #theme_fs() +
           theme(legend.position = "bottom")
         pl
-        ggsave(pl, file = sprintf("PrecRecF1/large_lethal_n%d_t%s_large%d_lethal%s_%s.pdf", numrows, t, large_int, g_lethal, append_str), width = 5, height = 7)
+        ggsave(pl, file = sprintf("PrecRecF1/large_lethal_n%d_t%s_large%d_xyz%s_%s.pdf", numrows, t, large_int, use_xyz, append_str), width = 5, height = 7)
     }
   }
 }
