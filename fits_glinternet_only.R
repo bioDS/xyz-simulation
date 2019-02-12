@@ -1,4 +1,4 @@
-#!/usr/bin/Rscript
+#!/usr/bin/env Rscript
 require(Matrix)
 require(dplyr)
 require(glinternet)
