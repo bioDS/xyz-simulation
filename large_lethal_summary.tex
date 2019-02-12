@@ -1,0 +1,31 @@
+\documentclass{article}
+
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{amsmath}
+%\usepackage{float}
+
+\begin{document}
+
+\section{Lethal detection in larger matrices}
+For multipliers in 5, 10, 20, 40:
+
+(n = 200, p = 100, bij = 20, lethals = 5) * multiplier.
+
+interactions were then found with both xyz (using L = $\sqrt{p}$), and glinternet. correctly found lethal pairs are considered true positives, any other pair (including a true interaction that is not a lethal) is considered a false positive.
+\subsection{xyz}
+\begin{minipage}{\linewidth}
+	\centering
+	\includegraphics[width=0.5\linewidth]{"PrecRecF1/large_lethal_n5000_tno_large0_xyzTRUE_lethal"}%
+	\includegraphics[width=0.5\linewidth]{"PrecRecF1/large_lethal_n5000_tyes_large0_xyzTRUE_lethal"}
+\end{minipage}
+Testing for significance on the right, xyz.
+
+\subsection{glinternet}
+\begin{minipage}{\linewidth}
+	\centering
+	\includegraphics[width=0.5\linewidth]{"PrecRecF1/large_lethal_n5000_tno_large0_xyzFALSE_lethal"}%
+	\includegraphics[width=0.5\linewidth]{"PrecRecF1/large_lethal_n5000_tyes_large0_xyzFALSE_lethal"}
+\end{minipage}
+Testing for significance on the right, glinternet.
+
+\end{document}
