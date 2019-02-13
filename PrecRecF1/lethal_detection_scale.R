@@ -10,8 +10,10 @@ args <- commandArgs(trailingOnly = TRUE)
 
 if (args[1] == "x") {
 	use_xyz = TRUE
+	fits_path='./fits_proper/'
 } else if (args[1] == "g") {
 	use_xyz = FALSE
+	fits_path='./fits_glinternet/'
 } else {
     cat("[x]yz or [g]linternet required\n")
     q()
@@ -29,10 +31,11 @@ graph_nbij <- c("0", "200", "500", "1000")
 graph_nlethals <- c("10", "20", "40", "80", "100")
 large_int <- FALSE
 append_str <- "lethal"
+rds_file = sprintf("PrecRecF1/large_lethal_xyz%s.rds", use_xyz)
 
 if (args[2] == 'y') {
     # Precision, recall and F1 for interaction terms
-     ans <- lapply(list.files(path = "./fits_proper/", pattern = "", full.names = TRUE), function(f) {#, sprintf("n%d_p%d", n, p)), function(f) {
+     ans <- lapply(list.files(path = fits_path, pattern = "", full.names = TRUE), function(f) {#, sprintf("n%d_p%d", n, p)), function(f) {
        ans <- readRDS(f)
        n <- regmatches(x = f, m = regexpr(f, pattern = "(?<=n)\\d+(?=_)", perl = TRUE)) %>% as.numeric
        p <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_p)\\d+(?=_)", perl = TRUE)) %>% as.numeric
@@ -71,14 +74,14 @@ if (args[2] == 'y') {
               nbi = factor(nbi),
               nbij = factor(nbij),
               nlethals = factor(nlethals))
-     saveRDS(ans, file = "PrecRecF1/large_lethal.rds")
+     saveRDS(ans, file = rds_file)
 }
 
 
 for (numrows in graph_numrows) { #400
   for (t in c("yes", "no")) {
     for (g_lethal in c(TRUE)) {
-        dat_precrecf1 <- readRDS(file = "PrecRecF1/large_lethal.rds") %>%
+        dat_precrecf1 <- readRDS(file = rds_file) %>%
           #filter(n == numrows) %>%
           #filter(L == round(sqrt(p %>% as.character %>% as.numeric))) %>%
           filter(test == t) %>%
