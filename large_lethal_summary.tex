@@ -2,7 +2,7 @@
 
 \usepackage[colorinlistoftodos]{todonotes}
 \usepackage{amsmath}
-%\usepackage{float}
+\usepackage{float}
 
 \begin{document}
 
@@ -13,19 +13,29 @@ For multipliers in 5, 10, 20, 40:
 
 interactions were then found with both xyz (using L = $\sqrt{p}$), and glinternet. correctly found lethal pairs are considered true positives, any other pair (including a true interaction that is not a lethal) is considered a false positive.
 \subsection{xyz}
+\begin{figure}[H]
 \begin{minipage}{\linewidth}
 	\centering
 	\includegraphics[width=0.5\linewidth]{"PrecRecF1/large_lethal_n5000_tno_large0_xyzTRUE_lethal"}%
 	\includegraphics[width=0.5\linewidth]{"PrecRecF1/large_lethal_n5000_tyes_large0_xyzTRUE_lethal"}
 \end{minipage}
-Testing for significance on the right, xyz.
+\caption{xyz, testing for significance on the right.}
+\end{figure}
+
+Beyond $p = 2000$, xyz reliably fails to find any of the lethal pairs. Curiously, the precision appears to be somewhat consistent until correct pairs stop being found entirely.
 
 \subsection{glinternet}
+\begin{figure}[H]
 \begin{minipage}{\linewidth}
 	\centering
 	\includegraphics[width=0.5\linewidth]{"PrecRecF1/large_lethal_n5000_tno_large0_xyzFALSE_lethal"}%
 	\includegraphics[width=0.5\linewidth]{"PrecRecF1/large_lethal_n5000_tyes_large0_xyzFALSE_lethal"}
 \end{minipage}
-Testing for significance on the right, glinternet.
+\caption{glinternet, testing for significance on the right.}
+\end{figure}
+\todo[inline]{wip: $p=4000$}
+\verb|glinternet|, on the other hand, maintains fairly consistent precision as $p$ increases. Considering the unmodified\todo{uncorrected/untested maybe?} output of glinterner, the $F1$ value even marginally increases for larger values $p$. After the significance test, there is a roughly proportional reduction in recall as the number of lethal interactions increases. Given the consistent precision, it appears the actual number of significant interactions found is not changing, while the available number increases.
+
+The decreasing trend in recall before the test is concerning, however. It may be that for large enough matrices, we see an effect similar to that of \verb|xyz|, where precision is maintained until no results are found.
 
 \end{document}
