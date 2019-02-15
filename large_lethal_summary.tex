@@ -38,4 +38,15 @@ Beyond $p = 2000$, xyz reliably fails to find any of the lethal pairs. Curiously
 
 The decreasing trend in recall before the test is concerning, however. It may be that for large enough matrices, we see an effect similar to that of \verb|xyz|, where precision is maintained until no results are found.
 
+\section{Time taken}
+\begin{figure}[H]
+	\begin{minipage}{\linewidth}
+		\centering
+		\includegraphics[width=0.5\linewidth]{"time_taken/time_taken_xyzTrue"}%
+		\includegraphics[width=0.5\linewidth]{"time_taken/time_taken_xyzFalse"}
+	\end{minipage}
+	\caption{Left: xyz, right: glinternet.}
+\end{figure}
+Neither xyz nor glinternet quite take a linear amount of time to run\footnote{Times will have been affected by scheduling, background use, the etent to which threads were running with shared cache, etc. This is not likely to have affected the overall result very significantly.}, but the runtime for glinternet increases sharply beyond $p=2000$.
+\todo[inline]{collect xyz/glinternet times from same machine}
 \end{document}

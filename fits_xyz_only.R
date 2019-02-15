@@ -126,7 +126,8 @@ if (write_out) {
                  fx_int = fx_int,
                  fx_main = fx_main,
                  fit_red = fit_red,
-                 smry = smry),
+                 smry = smry,
+		 time = time),
             file = sprintf("./fits_proper/n%d_p%d_SNR%d_nbi%d_nbij%d_nlethals%d_viol%d_L%d_%s.rds",
                        n, p, SNR, num_bi, num_bij, num_lethals, perc_viol, L, ID))
 } else {
