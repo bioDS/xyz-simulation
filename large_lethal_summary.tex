@@ -33,8 +33,8 @@ Beyond $p = 2000$, xyz reliably fails to find any of the lethal pairs. Curiously
 \end{minipage}
 \caption{glinternet, testing for significance on the right.}
 \end{figure}
-\todo[inline]{wip: $p=4000$}
-\verb|glinternet|, on the other hand, maintains fairly consistent precision as $p$ increases. Considering the unmodified\todo{uncorrected/untested maybe?} output of glinterner, the $F1$ value even marginally increases for larger values $p$. After the significance test, there is a roughly proportional reduction in recall as the number of lethal interactions increases. Given the consistent precision, it appears the actual number of significant interactions found is not changing, while the available number increases.
+\todo[inline]{wip: $p=4000$ has some results still to come}
+\verb|glinternet|, on the other hand, maintains fairly consistent precision as $p$ increases. Considering the unmodified\todo{uncorrected/untested maybe?} output of glinternet, the $F1$ value even marginally increases for larger values $p$. After the significance test, there is a roughly proportional reduction in recall as the number of lethal interactions increases. Given the consistent precision, it appears the actual number of significant interactions found is not changing, while the available number increases.
 
 The decreasing trend in recall before the test is concerning, however. It may be that for large enough matrices, we see an effect similar to that of \verb|xyz|, where precision is maintained until no results are found.
 
