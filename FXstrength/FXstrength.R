@@ -1,4 +1,4 @@
-#!/usr/bin/Rscript
+#!/usr/bin/env Rscript
 require(dplyr)
 require(tidyr)
 require(ggplot2)

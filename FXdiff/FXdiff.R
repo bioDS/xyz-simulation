@@ -1,4 +1,4 @@
-#!/usr/bin/Rscript
+#!/usr/bin/env Rscript
 require(ggplot2)
 require(RColorBrewer)
 require(dplyr)
