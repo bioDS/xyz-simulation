@@ -169,21 +169,25 @@ for (numrows in graph_numrows) { #400
     summarise(change = yes - no) %>%
     ggplot(aes(x = nbij, y = change)) +
     geom_bar(aes(fill = nbi), stat = "identity", position = "dodge") +
-     facet_wrap(~measure, scale = "free_y", ncol = 1) +
-     scale_fill_manual(name = "Additional\nmain effects", values = c("#7fcdbb", "#1d91c0", "#253494")) +
-    scale_fill_discrete(name = "True additional\nmain effects") +
+    # facet_wrap(~measure, scale = "free_y", ncol = 1) +
+    # scale_fill_manual(name = "Additional\nmain effects", values = c("#7fcdbb", "#1d91c0", "#253494")) +
+    #scale_fill_discrete(name = "True additional\nmain effects") +
     ylim(c(0, 0.8)) +
-    xlab("True interactions") +
+    #xlab("True interactions") +
     ylab("Precision") +
+    theme(axis.title.x=element_blank(),
+    axis.text.x=element_blank(),
+    axis.ticks.x=element_blank()) +
     #theme_fs() +
-    theme(legend.position = "bottom")
+    theme(legend.position = "none")
   
   pl.rec <- group_by(subset(dat, measure == "recall"), n, p, nbi, nbij, measure) %>%
     summarise(change = yes - no) %>%
     ggplot(aes(x = nbij, y = change)) +
     geom_bar(aes(fill = nbi), stat = "identity", position = "dodge") +
-     facet_wrap(~measure, scale = "free_y", ncol = 1) +
-     scale_fill_manual(name = "Additional\nmain effects", values = c("#7fcdbb", "#1d91c0", "#253494")) +
+    scale_y_reverse() +
+    # facet_wrap(~measure, scale = "free_y", ncol = 1) +
+    # scale_fill_manual(name = "Additional\nmain effects", values = c("#7fcdbb", "#1d91c0", "#253494")) +
     scale_fill_discrete(name = "True additional\nmain effects") +
     ylim(c(-0.8, 0)) +
     xlab("True interactions") +
