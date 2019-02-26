@@ -33,23 +33,51 @@ else
     read_fits="y"
 fi
 
-echo "PrecRecF1"
-cd PrecRecF1; ./PrecRecF1.R $read_fits $prf_size
-if [ $1 == "large" ]; then
-    echo "PrecRecF1_lethals"
-    ./PrecRecF1_lethals.R $read_fits # actually won't work unless 'y' is used.
+use_xyz=1
+use_glinternet=1
+
+if [ $3 == "x" ]; then
+    use_glinternet=0
+elif [ $3 == "g" ]; then
+    use_xyz=0
 fi
-cd ..
-echo "FXstrength"
-cd FXstrength; ./FXstrength.R $read_fits $mult
-cd ..
-echo "FXdiff"
-cd FXdiff; ./FXdiff.R $mult
-cd ..
-echo "NumObservations"
-cd NumObservations; ./NumObservations.R $read_fits $mult n
-cd ..
-if [ $1 == "large" ]; then
-    echo "l_diff"
-    cd l_diff; ./l_diff.R $prf_size $read_fits
+
+if [ $use_xyz == 1 ]; then
+    echo "regenerating xyz graphs:"
+    echo "PrecRecF1"
+    cd PrecRecF1; ./PrecRecF1.R $read_fits $prf_size x
+    if [ $1 == "large" ]; then
+        echo "PrecRecF1_lethals"
+        ./PrecRecF1_lethals.R $read_fits # actually won't work unless 'y' is used.
+    fi
+    cd ..
+    echo "FXstrength"
+    cd FXstrength; ./FXstrength.R $read_fits $mult x
+    cd ..
+    echo "FXdiff"
+    cd FXdiff; ./FXdiff.R $mult x
+    cd ..
+    echo "NumObservations"
+    cd NumObservations; ./NumObservations.R $read_fits $mult n x
+    cd ..
+    if [ $1 == "large" ]; then
+        echo "l_diff"
+        cd l_diff; ./l_diff.R $prf_size $read_fits
+    fi
+fi
+
+if [ $use_glinternet == 1 ]; then
+    echo "regenerating glinternet graphs:"
+    echo "PrecRecF1"
+    cd PrecRecF1; ./PrecRecF1.R $read_fits $prf_size g
+    cd ..
+    echo "FXstrength"
+    cd FXstrength; ./FXstrength.R $read_fits $mult g
+    cd ..
+    echo "FXdiff"
+    cd FXdiff; ./FXdiff.R $mult g
+    cd ..
+    echo "NumObservations"
+    cd NumObservations; ./NumObservations.R $read_fits $mult n g
+    cd ..
 fi
