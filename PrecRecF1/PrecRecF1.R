@@ -92,8 +92,8 @@ if (args[1] == 'y') {
 for (numrows in graph_numrows) { #400
   for (t in c("yes", "no")) {
     dat_precrecf1 <- readRDS(file = rds_file)
-    if (use_xyz)
-      dat_precrecf1 <- dat_precrecf1 %>% filter(L == round(sqrt(p %>% as.character %>% as.numeric)))
+      if (use_xyz)
+        dat_precrecf1 <- dat_precrecf1 %>% filter(L == round(sqrt(p %>% as.character %>% as.numeric)))
       dat_precrecf1 <- dat_precrecf1 %>%
       filter(n == numrows) %>%
       filter(test == t) %>%
