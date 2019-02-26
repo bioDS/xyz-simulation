@@ -93,8 +93,8 @@ for (numrows in graph_numrows) { #400
   for (t in c("yes", "no")) {
     dat_precrecf1 <- readRDS(file = rds_file)
     if (use_xyz)
-      	dat_precrecf1 <- dat_precrecf1 %>% filter(L == round(sqrt(p %>% as.character %>% as.numeric))) %>%
-    dat_precrecf1 <- dat_precrecf1 %>%
+      dat_precrecf1 <- dat_precrecf1 %>% filter(L == round(sqrt(p %>% as.character %>% as.numeric)))
+      dat_precrecf1 <- dat_precrecf1 %>%
       filter(n == numrows) %>%
       filter(test == t) %>%
       filter(nbi %in% graph_nbi) %>%
@@ -103,7 +103,7 @@ for (numrows in graph_numrows) { #400
       filter(nlethals == 0) %>%
       mutate(F1 = case_when(is.na(F1) ~ 0, TRUE ~ F1)) %>%
       mutate(SNR = factor(SNR, levels = levels(SNR), labels = paste0("SNR = ", levels(SNR)))) %>%
-      group_by(n, p, SNR, nbi, nbij, test) %>% sample_n(10, replace=TRUE) #TODO: improve this?
+      group_by(n, p, SNR, nbi, nbij, test) %>% sample_n(10, replace=FALSE) #TODO: improve this?
     
     pl <- group_by(dat_precrecf1, SNR, nbi, nbij) %>%
       summarise(mean = mean(precision, na.rm = TRUE), sd = sd(precision, na.rm = TRUE) / sqrt(n())) %>%
@@ -152,7 +152,7 @@ require(gridExtra)
 #source("~/Projects/R/fs_.R")
 for (numrows in graph_numrows) { #400
   
-  dat <- readRDS(file = "PrecRecF1/dat_precrecf1.rds") %>%
+  dat <- readRDS(file = rds_file) %>%
     filter(n == numrows) %>%
     mutate(test = factor(test)) %>%
     group_by(n, p, SNR, nbi, nbij, test) %>%
