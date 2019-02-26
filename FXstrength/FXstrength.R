@@ -9,16 +9,29 @@ setwd("..")
 #L_restriction <- 100
 args <- commandArgs(trailingOnly = TRUE)
 
-if (length(args) >= 3) {
-    append_str = args[3]
+if (args[3] == "x") {
+       use_xyz = TRUE
+       fits_path='./fits_proper/'
+} else if (args[3] == "g") {
+       use_xyz = FALSE
+       fits_path='./fits_glinternet/'
+} else {
+    cat("[x]yz or [g]linternet required\n")
+    q()
+}
+
+
+if (length(args) >= 4) {
+    append_str = args[4]
 } else {
     append_str = ''
 }
+rds_file = sprintf("FXstrength/dat_fxstrength_xyz%s.rds", use_xyz)
 
 ## Number of observations
 if (args[1] == 'y') {
     cat("regenerating data\n")
-    ans <- lapply(list.files(path = "./fits_proper/", pattern = "", full.names = TRUE), function(f) {#, sprintf("n%d_p%d", n, p)), function(f) {
+    ans <- lapply(list.files(path = fits_path, pattern = "", full.names = TRUE), function(f) {#, sprintf("n%d_p%d", n, p)), function(f) {
       ans <- readRDS(f)
       n <- regmatches(x = f, m = regexpr(f, pattern = "(?<=n)\\d+(?=_)", perl = TRUE)) %>% as.numeric
       p <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_p)\\d+(?=_)", perl = TRUE)) %>% as.numeric
@@ -27,7 +40,10 @@ if (args[1] == 'y') {
       nbij <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbij)\\d+(?=_)", perl = TRUE)) %>% as.numeric
       nlethals <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nlethals)\\d+(?=_)", perl = TRUE)) %>% as.numeric
       perc_viol <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_viol)\\d+(?=_)", perl = TRUE)) %>% as.numeric
-       L <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_L)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+       if (use_xyz)
+           L <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_L)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+       else
+           L <- 0
       id <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_)\\d+(?=\\.rds)", perl = TRUE)) %>% as.numeric
       smry_int <- ans$smry %>% filter(type == "interaction")
       notest <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij, L=L, id = id, nlethals = nlethals,
@@ -57,7 +73,7 @@ if (args[1] == 'y') {
              nlethals = factor(nlethals),
              L = factor(L),
              type = factor(type))
-    saveRDS(ans, file = "FXstrength/dat_fxstrength.rds")
+    saveRDS(ans, file = rds_file)
 }
 
 mult <- args[2] %>% as.numeric
@@ -65,13 +81,14 @@ mult <- args[2] %>% as.numeric
 for (numrows in c(1000*mult)) {#1000
   nbij_values = c(5*mult,20*mult,50*mult,100*mult)
   for (t in c("yes", "no")) {
-    dat_fxs <- readRDS("FXstrength/dat_fxstrength.rds") %>%
+      dat_fxs <- readRDS(file = rds_file)
+      if (use_xyz)
+        dat_fxs <- dat_fxs %>% filter(L == round(sqrt(p %>% as.character %>% as.numeric)))
+      dat_fxs <- dat_fxs %>%
       filter(nlethals == 0) %>%
       filter(n == numrows) %>%
       filter(test == t) %>%
-      filter(L == round(sqrt(p %>% as.character %>% as.numeric))) %>%
       filter(nbi == 0, SNR != 1) %>%
-#      filter(L == L_restriction) %>%
       mutate(SNR = factor(SNR, labels = paste0("SNR = ", levels(factor(SNR))))) %>%
       rowwise %>%
       mutate(coef = ifelse(is.na(coef), coef_est, coef)) %>%
@@ -116,10 +133,10 @@ for (numrows in c(1000*mult)) {#1000
       theme(legend.position = "bottom",
             axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
     pl
-    ggsave(pl, file = sprintf("FXstrength/FXstrength_PRF_n%d_t%s_mult%d_%s.pdf", numrows, t, mult, append_str), width = 5, height = 7)
+    ggsave(pl, file = sprintf("FXstrength/FXstrength_PRF_n%d_t%s_mult%d_xyz%s_%s.pdf", numrows, t, mult, use_xyz, append_str), width = 5, height = 7)
     
     
-   pl_wrongdir <- readRDS("FXstrength/dat_fxstrength.rds") %>%
+   pl_wrongdir <- readRDS(rds_file) %>%
       filter(nlethals == 0) %>%
       filter(n == numrows) %>%
       filter(test == t) %>%
@@ -144,7 +161,7 @@ for (numrows in c(1000*mult)) {#1000
       theme(legend.position = "bottom",
             axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
     pl_wrongdir
-    ggsave(pl_wrongdir, file = sprintf("FXstrength/FXstrength_direction_n%d_t%s_mult%d_%s.pdf", numrows, t, mult, append_str), width = 4.5, height = 4)
+    ggsave(pl_wrongdir, file = sprintf("FXstrength/FXstrength_direction_n%d_t%s_mult%d_xyz%s_%s.pdf", numrows, t, mult, use_xyz, append_str), width = 4.5, height = 4)
   }
 }
 
