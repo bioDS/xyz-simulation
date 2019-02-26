@@ -9,9 +9,22 @@ setwd("..")
 
 args <- commandArgs(trailingOnly = TRUE)
 
+if (args[4] == "x") {
+       use_xyz = TRUE
+       fits_path='./fits_proper/'
+} else if (args[4] == "g") {
+       use_xyz = FALSE
+       fits_path='./fits_glinternet/'
+} else {
+    cat("[x]yz or [g]linternet required\n")
+    q()
+}
+rds_file = sprintf("NumObservations/dat_numobs_xyz%s.rds", use_xyz)
+
+
 if (args[1] == 'y') {
     # Number of observations
-     ans <- lapply(list.files(path = "./fits_proper/", pattern = "", full.names = TRUE), function(f) {#, spriadditifffntf("n%d_p%d", n, p)), function(f) {
+     ans <- lapply(list.files(path = fits_path, pattern = "", full.names = TRUE), function(f) {#, spriadditifffntf("n%d_p%d", n, p)), function(f) {
        ans <- readRDS(f)
        n <- regmatches(x = f, m = regexpr(f, pattern = "(?<=n)\\d+(?=_)", perl = TRUE)) %>% as.numeric
        p <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_p)\\d+(?=_)", perl = TRUE)) %>% as.numeric
@@ -20,7 +33,11 @@ if (args[1] == 'y') {
        nbij <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbij)\\d+(?=_)", perl = TRUE)) %>% as.numeric
        nlethals <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nlethals)\\d+(?=_)", perl = TRUE)) %>% as.numeric
        perc_viol <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_viol)\\d+(?=_)", perl = TRUE)) %>% as.numeric
-       L <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_L)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+       if (use_xyz)
+           L <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_L)\\d+(?=_)", perl = TRUE
+)) %>% as.numeric
+       else
+           L <- 0
        id <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_)\\d+(?=\\.rds)", perl = TRUE)) %>% as.numeric
        smry_int <- ans$smry %>% filter(type == "interaction")
        notest <- data.frame(n = n, p = p, SNR = SNR, nbi = nbi, nbij = nbij, L=L, id = id, nlethals = nlethals,
@@ -50,7 +67,7 @@ if (args[1] == 'y') {
               nlethals = factor(nlethals),
               L = factor(L),
               type = factor(type))
-     saveRDS(ans, file = "NumObservations/dat_numobs.rds")
+     saveRDS(ans, file = rds_file)
 }
 
 
@@ -65,11 +82,13 @@ for (numrows in c(1000 * mult)) { #1000,
     rseq <- c(0, 10*mult, 20*mult, 40*mult, 80*mult, Inf) #TODO: what should these be?
   }
   for (t in c("yes", "no")) {
-  dat_nobs <- readRDS("NumObservations/dat_numobs.rds")%>%
+      dat_nobs <- readRDS(file = rds_file)
+      if (use_xyz)
+        dat_nobs <- dat_nobs %>% filter(L == round(sqrt(p %>% as.character %>% as.numeric)))
+      dat_nobs <- dat_nobs %>%
       filter(nlethals == 0) %>%
       filter(n == numrows) %>%
       filter(test == t) %>%
-      filter(L == round(sqrt(p %>% as.character %>% as.numeric))) %>%
       filter(nbi == 20*mult, SNR != 1) %>%
       mutate(SNR = factor(SNR, labels = paste0("SNR = ", levels(factor(SNR))))) %>%
       filter(nbij %in% (c(5*mult, 20*mult, 50*mult, 100*mult))) %>%
@@ -107,7 +126,7 @@ for (numrows in c(1000 * mult)) { #1000,
       theme(legend.position = "bottom",
             axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
     pl
-    ggsave(pl, file = sprintf("NumObservations/NumObservations_n%d_t%s.pdf", numrows, t), width = 5, height = 7)
+    ggsave(pl, file = sprintf("NumObservations/NumObservations_n%d_t%s_xyz%s.pdf", numrows, t, use_xyz), width = 5, height = 7)
   }
 }
 
