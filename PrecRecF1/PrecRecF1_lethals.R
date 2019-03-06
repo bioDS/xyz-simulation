@@ -8,27 +8,46 @@ setwd("..")
 
 args <- commandArgs(trailingOnly = TRUE)
 
-if (length(args) >= 2) {
-    append_str = args[2]
+if (length(args) >= 3) {
+    append_str = args[3]
 } else {
     append_str = ''
 }
 
+if (args[2] == "x") {
+	use_xyz = TRUE
+	fits_path='./fits_proper/'
+} else if (args[2] == "g") {
+	use_xyz = FALSE
+	fits_path='./fits_glinternet/'
+} else {
+    cat("[x]yz or [g]linternet required\n")
+    q()
+}
+rds_file = sprintf("PrecRecF1/dat_precrecf1_lethals_xyz%s.rds", use_xyz)
+
 cat("using lethal data\n")
-graph_numrows <- c(10000)
-graph_nbij <- c("0", "200", "500", "1000")
-graph_nlethals <- c("10", "20", "50", "100")
+#graph_numrows <- c(10000)
+#graph_nbij <- c("0", "200", "500", "1000")
+#graph_nlethals <- c("10", "20", "50", "100")
+#large_int <- FALSE
+#append_str <- "lethal"
+graph_numrows <- c(1000)
+graph_nbij <- c("0", "20", "50", "100")
+graph_nlethals <- c("1", "2", "5", "10")
 large_int <- FALSE
-append_str <- "lethal"
 
 if (args[1] == 'y') {
     # Precision, recall and F1 for interaction terms
-     ans <- lapply(list.files(path = "./fits_proper/", pattern = "", full.names = TRUE), function(f) {#, sprintf("n%d_p%d", n, p)), function(f) {
+     ans <- lapply(list.files(path = fits_path, pattern = "", full.names = TRUE), function(f) {#, sprintf("n%d_p%d", n, p)), function(f) {
        ans <- readRDS(f)
        n <- regmatches(x = f, m = regexpr(f, pattern = "(?<=n)\\d+(?=_)", perl = TRUE)) %>% as.numeric
        p <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_p)\\d+(?=_)", perl = TRUE)) %>% as.numeric
        SNR <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_SNR)\\d+(?=_)", perl = TRUE)) %>% as.numeric
-       L <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_L)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+       if (use_xyz)
+           L <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_L)\\d+(?=_)", perl = TRUE)) %>% as.numeric
+       else
+           L <- 0
        nbi <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbi)\\d+(?=_)", perl = TRUE)) %>% as.numeric
        nbij <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nbij)\\d+(?=_)", perl = TRUE)) %>% as.numeric
        nlethals <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_nlethals)\\d+(?=_)", perl = TRUE)) %>% as.numeric
@@ -60,16 +79,18 @@ if (args[1] == 'y') {
               nbij = factor(nbij),
               nlethals = factor(nlethals),
               lethal = factor(lethal))
-     saveRDS(ans, file = "PrecRecF1/dat_precrecf1.rds")
+     saveRDS(ans, file = rds_file)
 }
 
 
 for (numrows in graph_numrows) { #400
   for (t in c("yes", "no")) {
     for (g_lethal in c(TRUE)) {
-        dat_precrecf1 <- readRDS(file = "PrecRecF1/dat_precrecf1.rds") %>%
+      dat_precrecf1 <- readRDS(file = rds_file)
+        if (use_xyz)
+          dat_precrecf1 <- dat_precrecf1 %>% filter(L == round(sqrt(p %>% as.character %>% as.numeric)))
+        dat_precrecf1 <- dat_precrecf1 %>%
           filter(n == numrows) %>%
-          filter(L == round(sqrt(p %>% as.character %>% as.numeric))) %>%
           filter(test == t) %>%
           filter(nbi == 10) %>%
           filter(nlethals %in% graph_nlethals) %>%
@@ -110,7 +131,7 @@ for (numrows in graph_numrows) { #400
           #theme_fs() +
           theme(legend.position = "bottom")
         pl
-        ggsave(pl, file = sprintf("PrecRecF1/PrecRecF1_n%d_t%s_large%d_lethal%s_%s.pdf", numrows, t, large_int, g_lethal, append_str), width = 5, height = 7)
+        ggsave(pl, file = sprintf("PrecRecF1/PrecRecF1_n%d_t%s_large%d_lethal%s_xyz%s_%s.pdf", numrows, t, large_int, g_lethal, use_xyz, append_str), width = 5, height = 7)
     }
   }
 }
