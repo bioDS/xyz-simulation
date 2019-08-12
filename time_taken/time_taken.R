@@ -109,7 +109,7 @@ pl <- group_by(dat_time, pval, frac_lethals) %>%
   geom_errorbar(colour = "darkgrey", width=.3, position=position_dodge(.35)) +
   #scale_y_continuous(trans='log2') +
   #scale_x_continuous(trans='log2') +
-  xlab("Number of genes") +
+  xlab("Genes") +
   ylab("Time to discover interactions (seconds)") +
   theme(legend.position = "none")
 pl
