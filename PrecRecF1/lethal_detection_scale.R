@@ -124,13 +124,14 @@ for (numrows in graph_numrows) { #400
           geom_line(aes(colour = frac_lethals), position=position_dodge(.35)) +
           geom_point(aes(colour = frac_lethals), position=position_dodge(.35), size = 1) +
           geom_errorbar(colour = "darkgrey", width=.3, position=position_dodge(.35)) +
-          #scale_color_discrete(name = "True additional interactions") +
+          scale_color_discrete(name = "") +
           # scale_colour_manual(name = "Additional main effects", values = c("#7fcdbb", "#1d91c0", "#253494")) + #brewer.pal(7, "Set3")[-1]) + #
           ylim(c(0,1)) +
           #xlab("True lethal pairs") +
+          xlab("Genes") +
           ylab("") +
           #theme_fs() +
-          theme(legend.position = "bottom")
+          theme(legend.position = "none")
         pl
         ggsave(pl, file = sprintf("PrecRecF1/large_lethal_n%d_t%s_large%d_xyz%s_%s.pdf", numrows, t, large_int, use_xyz, append_str), width = 5, height = 7)
     }
