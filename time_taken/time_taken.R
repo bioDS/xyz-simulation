@@ -95,7 +95,7 @@ dat_time <- readRDS(file = rds_file) %>%
  mutate(pval = p %>% as.character %>% as.numeric)
 
 pl <- group_by(dat_time, pval, frac_lethals) %>%
-  summarise(mean = mean(time, na.rm = TRUE), sd = sd(precision, na.rm = TRUE) / sqrt(n())) %>%
+  summarise(mean = mean(time, na.rm = TRUE), sd = sd(time, na.rm = TRUE) / sqrt(n())) %>%
   ggplot(aes(x = pval, 
              y = mean, 
              group = 1,
