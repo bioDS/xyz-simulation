@@ -2,6 +2,7 @@
 library(normInfectX)
 library(dplyr)
 library(glinternet)
+library(Matrix)
 
 ifx = readRDS("./IFX_QIAGEN.rds")
 
@@ -14,4 +15,4 @@ filtered_cl_adeno = cl_adeno %>% filter(LIBRARY=="Qiagen") %>% select(Catalog_nu
 X = ifx[filtered_cl_adeno$Catalog_number,]
 Y = log2(filtered_cl_adeno$eCount_oCells / mean(filtered_cl_adeno$eCount_oCells))
 
-gl_output = glinternet.cv(X, Y, numLevels=rep(1,dim(X)[2]))
+#gl_output = glinternet.cv(X, Y, numLevels=rep(1,dim(X)[2]))
