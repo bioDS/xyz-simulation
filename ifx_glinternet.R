@@ -6,16 +6,31 @@ library(Matrix)
 
 ifx = readRDS("./IFX_QIAGEN.rds")
 
-cl_output = clean("bartonella", cases = c("Kinome"), libraries = c("Qiagen"))
+cl_output = clean(cases = c("Kinome"), libraries = c("Qiagen"))
 #cl_output = readRDS("./cl_output.rds")
 
-cl_bartonella = cl_output$bartonella
-filtered_cl_bartonella = cl_bartonella %>% select(Catalog_number, eCount_oCells) %>% filter(!is.na(eCount_oCells))
+#cl_bartonella = cl_output$bartonella
+#filtered_cl_bartonella = cl_bartonella %>% select(Catalog_number, eCount_oCells) %>% filter(!is.na(eCount_oCells))
 
-X = ifx[filtered_cl_bartonella$Catalog_number,]
-X = X[,colSums(X) != 0]
-Y = log2(filtered_cl_bartonella$eCount_oCells / mean(filtered_cl_bartonella$eCount_oCells))
+kinases = c()
+catalog_numbers = c()
+fitness_measure = c()
+for (pathogen in cl_output) {
+	kinases = c(kinases, as.character(pathogen$ID))
+	pathogen = pathogen %>% filter(!is.na(eCount_oCells))
+	catalog_numbers = c(catalog_numbers, pathogen$Catalog_number)
+	fitness_measure = c(fitness_measure, pathogen$eCount_oCells)
+}
+kinases = unique(kinases)
+#catalog_numbers = unique(catalog_numbers)
 
-gl_output = glinternet.cv(X, Y, numLevels=rep(1,dim(X)[2]))
+X = ifx[catalog_numbers, kinases]
+#X = X[,colSums(X) != 0]
+Y = log2(fitness_measure / mean(fitness_measure))
+
+saveRDS(X, "X.rds")
+saveRDS(fitness_measure, "fitness_measure.rds")
+saveRDS(Y, "Y")
+gl_output = glinternet.cv(X, fitness_measure, numLevels=rep(1,dim(X)[2]), verbose=TRUE, lambdaMinRatio=0.05)
 
 saveRDS(gl_output, "gl_output.rds")
