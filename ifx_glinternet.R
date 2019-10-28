@@ -42,6 +42,6 @@ Y = log2(fitness_measure / fitness_diff)
 saveRDS(X, "X.rds")
 saveRDS(fitness_measure, "fitness_measure.rds")
 saveRDS(Y, "Y")
-#gl_output = glinternet.cv(X, fitness_measure, numLevels=rep(1,dim(X)[2]), verbose=TRUE,  numCores=10)
-##
-#saveRDS(gl_output, "gl_output.rds")
+gl_output = glinternet.cv(X, fitness_measure, numLevels=rep(1,dim(X)[2]), verbose=TRUE,  numCores=10)
+#
+saveRDS(gl_output, "gl_output.rds")
