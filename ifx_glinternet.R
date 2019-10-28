@@ -37,11 +37,11 @@ X[X != 0] <- 1
 X = as.matrix(X)
 X = X[,!duplicated(t(X))]
 #X = X[,colSums(X) != 0]
-Y = log2(fitness_measure / fitness_diff)
+Y = log2(fitness_diff)
 
 saveRDS(X, "X.rds")
-saveRDS(fitness_measure, "fitness_measure.rds")
-saveRDS(Y, "Y")
-gl_output = glinternet.cv(X, fitness_measure, numLevels=rep(1,dim(X)[2]), verbose=TRUE,  numCores=10)
+saveRDS(fitness_diff, "fitness_diff.rds")
+saveRDS(Y, "Y.rds")
+gl_output = glinternet.cv(X, Y, numLevels=rep(1,dim(X)[2]), verbose=TRUE,  numCores=10)
 #
 saveRDS(gl_output, "gl_output.rds")
