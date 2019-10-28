@@ -25,6 +25,7 @@ kinases = unique(kinases)
 #catalog_numbers = unique(catalog_numbers)
 
 X = ifx[catalog_numbers, kinases]
+X[X != 0] <- 1
 #X = X[,colSums(X) != 0]
 Y = log2(fitness_measure / mean(fitness_measure))
 
