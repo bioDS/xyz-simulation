@@ -23,7 +23,7 @@ cl_output$rhino$seed_cells = 1000
 cl_output$salmonella$seed_cells = 550
 cl_output$shigella$seed_cells = 600
 cl_output$vaccinia$seed_cells = 600
-for (pathogen in cl_output) {
+for (pathogen in cl_output["adeno"]) {
 	kinases = c(kinases, as.character(pathogen$ID))
 	pathogen = pathogen %>% filter(!is.na(eCount_oCells))
 	catalog_numbers = c(catalog_numbers, pathogen$Catalog_number)
