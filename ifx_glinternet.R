@@ -6,6 +6,8 @@ library(Matrix)
 
 ifx = readRDS("./IFX_QIAGEN.rds")
 
+lambda_min_ratio = 5e-2
+
 cl_output = clean(cases = c("Kinome"), libraries = c("Qiagen"))
 #cl_output = readRDS("./cl_output.rds")
 
@@ -23,7 +25,7 @@ cl_output$rhino$seed_cells = 1000
 cl_output$salmonella$seed_cells = 550
 cl_output$shigella$seed_cells = 600
 cl_output$vaccinia$seed_cells = 600
-for (pathogen in cl_output["adeno"]) {
+for (pathogen in cl_output) {
 	kinases = c(kinases, as.character(pathogen$ID))
 	pathogen = pathogen %>% filter(!is.na(eCount_oCells))
 	catalog_numbers = c(catalog_numbers, pathogen$Catalog_number)
@@ -42,6 +44,6 @@ Y = log2(fitness_diff)
 saveRDS(X, "X.rds")
 saveRDS(fitness_diff, "fitness_diff.rds")
 saveRDS(Y, "Y.rds")
-gl_output = glinternet.cv(X, Y, numLevels=rep(1,dim(X)[2]), verbose=TRUE,  numCores=10)
+gl_output = glinternet.cv(X, Y, numLevels=rep(1,dim(X)[2]), verbose=TRUE,  numCores=10, lambdaMinRatio = lambda_min_ratio, family = "gaussian", nLambda = 50)
 #
 saveRDS(gl_output, "gl_output.rds")
