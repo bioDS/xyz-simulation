@@ -40,6 +40,9 @@ fx_int <- data.frame(gene_i = cf$interactions$contcont[,1], gene_j = cf$interact
 
 fx_int %>% data.frame
 
+## Fit main effects only for comparison
+fit_main_only = lm(Y ~ X)
+
 ## Statistical test if b_i and b_ij are sig. > 0
 Z <- cbind(X[,fx_main[["gene_i"]]])
 for (i in 1:nrow(fx_int)) {
@@ -67,6 +70,7 @@ if (verbose)
 ## Write out
 if (verbose) cat("Saving\n")
 saveRDS(list(fit = fit,
+             fit_main_only = fit_main_only,
              fx_int = fx_int,
              fx_main = fx_main,
              fit_red = fit_red,
