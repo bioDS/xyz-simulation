@@ -133,7 +133,7 @@ for (numrows in c(1000*mult)) {#1000
       theme(legend.position = "bottom",
             axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
     pl
-    ggsave(pl, file = sprintf("FXstrength/FXstrength_PRF_n%d_t%s_mult%d_xyz%s_snr5_%s.pdf", numrows, t, mult, use_xyz, append_str), width = 5, height = 7)
+    ggsave(pl, file = sprintf("FXstrength/FXstrength_PRF_n%d_t%s_mult%d_xyz%s_snr5_%s.pdf", numrows, t, mult, use_xyz, append_str), width = 3, height = 4)
     
     
 q()
@@ -163,7 +163,7 @@ q()
       theme(legend.position = "bottom",
             axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
     pl_wrongdir
-    ggsave(pl_wrongdir, file = sprintf("FXstrength/FXstrength_direction_n%d_t%s_mult%d_xyz%s_%s.pdf", numrows, t, mult, use_xyz, append_str), width = 4.5, height = 4)
+    ggsave(pl_wrongdir, file = sprintf("FXstrength/FXstrength_direction_n%d_t%s_mult%d_xyz%s_%s.pdf", numrows, t, mult, use_xyz, append_str), height = 4.5, height = 4)
   }
 }
 

@@ -46,7 +46,7 @@ for (numrows in c(1000)) { #400,
       theme(legend.position = "bottom",
             axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
     pl
-    ggsave(pl, file = sprintf("FXdiff/FXdiff_n%d_t%s.pdf", numrows, t), width = 5, height = 4)
+    ggsave(pl, file = sprintf("FXdiff/FXdiff_n%d_t%s.pdf", numrows, t), width = 3, height = 4)
   }
 }
 

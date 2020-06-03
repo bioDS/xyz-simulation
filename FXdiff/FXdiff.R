@@ -65,14 +65,14 @@ for (numrows in c(1000 * mult)) { #400, 1000
       xlab("Observations of double knockdown") +
       ylab("Absolute deviation [%]") +
      # ylim(c(0, 4)) +
-#      theme_fs() +
+	  theme_bw() +
       theme(legend.position = "bottom",
             axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
             
      # if (use_xyz)
      #     pl <- pl + ylim(c(0,4))
     pl
-    ggsave(pl, file = sprintf("FXdiff/FXdiff_n%d_t%s_xyz%s.pdf", numrows, t, use_xyz), width = 5, height = 4)
+    ggsave(pl, file = sprintf("FXdiff/FXdiff_n%d_t%s_xyz%s.pdf", numrows, t, use_xyz), width = 4, height = 4)
   }
 }
 

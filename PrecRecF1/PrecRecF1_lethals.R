@@ -128,10 +128,10 @@ for (numrows in graph_numrows) { #400
           ylim(c(0,1)) +
           xlab("True lethal pairs") +
           ylab("") +
-          #theme_fs() +
+          theme_bw() +
           theme(legend.position = "bottom")
         pl
-        ggsave(pl, file = sprintf("PrecRecF1/PrecRecF1_n%d_t%s_large%d_lethal%s_xyz%s_%s.pdf", numrows, t, large_int, g_lethal, use_xyz, append_str), width = 5, height = 7)
+        ggsave(pl, file = sprintf("PrecRecF1/PrecRecF1_n%d_t%s_large%d_lethal%s_xyz%s_%s.pdf", numrows, t, large_int, g_lethal, use_xyz, append_str), width = 3, height = 4)
     }
   }
 }
@@ -174,7 +174,7 @@ for (numrows in graph_numrows) { #400
     ylim(c(0, 0.8)) +
     xlab("True interactions") +
     ylab("Precision") +
-    #theme_fs() +
+    theme_bw() +
     theme(legend.position = "bottom")
   
   pl.rec <- group_by(subset(dat, measure == "recall"), n, p, nbi, nbij, measure) %>%
@@ -187,10 +187,10 @@ for (numrows in graph_numrows) { #400
     ylim(c(-0.8, 0)) +
     xlab("True interactions") +
     ylab("Recall") +
-    #theme_fs() +
+    theme_bw() +
     theme(legend.position = "bottom")
   
-  pdf(sprintf("PrecRecF1/test_analysis_n%d_large%d_lethal%s_%s.pdf", numrows, large_int, g_lethal, append_str), width = 5, height = 5)
+  pdf(sprintf("PrecRecF1/test_analysis_n%d_large%d_lethal%s_%s.pdf", numrows, large_int, g_lethal, append_str), width = 3, width = 3)
   grid.arrange(pl.prec, pl.rec, ncol = 1)
   dev.off()
 }

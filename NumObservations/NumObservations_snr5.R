@@ -126,7 +126,7 @@ for (numrows in c(1000 * mult)) { #1000,
       theme(legend.position = "bottom",
             axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
     pl
-    ggsave(pl, file = sprintf("NumObservations/NumObservations_n%d_t%s_xyz_snr5_%s.pdf", numrows, t, use_xyz), width = 5, height = 7)
+    ggsave(pl, file = sprintf("NumObservations/NumObservations_n%d_t%s_xyz_snr5_%s.pdf", numrows, t, use_xyz), width = 3, height = 4)
   }
 }
 
@@ -232,5 +232,5 @@ if (args[3] == 'y') {
 	  theme(legend.position = "bottom",
 	        axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 	
-	ggsave(pl, file = sprintf("NumObservations/NumObservations_n%d_percGenes.pdf", numrows), width = 5, height = 3)
+	ggsave(pl, file = sprintf("NumObservations/NumObservations_n%d_percGenes.pdf", numrows), width = 3, height = 3)
 }

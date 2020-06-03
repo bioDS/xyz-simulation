@@ -26,7 +26,7 @@ if (length(args) >= 3) {
 }
 
 cat("using lethal data\n")
-graph_numrows <- c(5000)
+graph_numrows <- c(10000)
 graph_nbij <- c("0", "200", "500", "1000")
 graph_nlethals <- c("10", "20", "40", "80", "100")
 large_int <- FALSE
@@ -131,8 +131,7 @@ for (numrows in graph_numrows) { #400
           xlab("Genes") +
           ylab("") +
           #theme_bw(base_size=15) +
-		  theme_bw() +
-          #theme_fs() +
+          theme_bw() +
           theme(legend.position = "none")
         pl
         ggsave(pl, file = sprintf("PrecRecF1/large_lethal_n%d_t%s_large%d_xyz%s_%s.pdf", numrows, t, large_int, use_xyz, append_str), width = 3, height = 4)

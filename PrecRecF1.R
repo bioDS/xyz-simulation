@@ -87,7 +87,7 @@ for (numrows in c(1000)) { #400
 #      theme_fs() +
       theme(legend.position = "bottom")
     pl
-    ggsave(pl, file = sprintf("PrecRecF1/PrecRecF1_n%d_t%s_a%.2f.pdf", numrows, t, target_alpha), width = 5, height = 7)
+    ggsave(pl, file = sprintf("PrecRecF1/PrecRecF1_n%d_t%s_a%.2f.pdf", numrows, t, target_alpha), width = 3, height = 4)
   }
 }
 
@@ -145,7 +145,7 @@ for (numrows in c(400, 1000)) {
 #    theme_fs() +
     theme(legend.position = "bottom")
   
-  pdf(sprintf("PrecRecF1/test_analysis_n%d.pdf", numrows), width = 5, height = 5)
+  pdf(sprintf("PrecRecF1/test_analysis_n%d.pdf", numrows), width = 3, width = 3)
   grid.arrange(pl.prec, pl.rec, ncol = 1)
   dev.off()
 }
