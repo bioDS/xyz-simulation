@@ -111,6 +111,7 @@ pl <- group_by(dat_time, pval, frac_lethals) %>%
   #scale_x_continuous(trans='log2') +
   xlab("Genes") +
   ylab("Time to discover interactions (seconds)") +
-  theme(legend.position = "none")
+  theme(legend.position = "none") +
+  theme_bw(base_size=15)
 pl
 ggsave(pl, file = sprintf("time_taken/time_taken_xyz%s.pdf", use_xyz), width = 5, height = 7)
