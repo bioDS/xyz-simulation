@@ -17,7 +17,8 @@ lambda_min_ratio = 5e-2
 args <- commandArgs(trailingOnly = TRUE)
 
 print(args)
-f <- args[1]
+#f <- args[1]
+f <- "simulated_data/n1000_p100_SNR2_nbi0_nbij5_nlethals0_viol0_6493.rds"
 #L <- args[2] %>% as.numeric
 write_out <- args[2] == 'write'
 regression_alpha <- 0.9
@@ -52,7 +53,7 @@ time <- system.time(fit <- glinternet.cv(X = X %>% as.matrix,
                      Y = Y %>% as.numeric,
                      numLevels = rep(1,p),
                      family = "gaussian",
-                     nLambda = 50, numCores=10, lambdaMinRatio = lambda_min_ratio, verbose = TRUE))
+                     nLambda = 5, numCores=10, lambdaMinRatio = 0.4, verbose = FALSE))
 
 if (verbose) cat("Collecting stats\n")
 cf <- coef(fit, lambdaType = "lambdaHat") #lambdaIndex = 50)#
@@ -121,6 +122,7 @@ if (write_out) {
                  fx_int = fx_int,
                  fx_main = fx_main,
                  fit_red = fit_red,
+				 time = time,
                  smry = smry),
             file = sprintf("./fits_glinternet/n%d_p%d_SNR%d_nbi%d_nbij%d_nlethals%d_viol%d_%s.rds",
                        n, p, SNR, num_bi, num_bij, num_lethals, perc_viol, ID))

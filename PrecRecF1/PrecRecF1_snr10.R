@@ -99,11 +99,11 @@ for (numrows in graph_numrows) { #400
       filter(test == t) %>%
       filter(nbi %in% graph_nbi) %>%
       filter(nbij %in% graph_nbij) %>%
-      filter(SNR != "1") %>%
+      filter(SNR == 10) %>%
       filter(nlethals == 0) %>%
       mutate(F1 = case_when(is.na(F1) ~ 0, TRUE ~ F1)) %>%
       mutate(SNR = factor(SNR, levels = levels(SNR), labels = paste0("SNR = ", levels(SNR)))) %>%
-      group_by(n, p, SNR, nbi, nbij, test) %>% sample_n(10, replace=FALSE) #TODO: improve this?
+      group_by(n, p, SNR, nbi, nbij, test) %>% sample_n(10, replace=TRUE) #TODO: improve this?
     
     pl <- group_by(dat_precrecf1, SNR, nbi, nbij) %>%
       summarise(mean = mean(precision, na.rm = TRUE), sd = sd(precision, na.rm = TRUE) / sqrt(n())) %>%
@@ -133,14 +133,14 @@ for (numrows in graph_numrows) { #400
       #theme_fs() +
       theme(legend.position = "bottom")
     pl
-    ggsave(pl, file = sprintf("PrecRecF1/PrecRecF1_n%d_t%s_large%d_xyz%s_%s.pdf", numrows, t, large_int, use_xyz, append_str), width = 3, height = 4)
+    ggsave(pl, file = sprintf("PrecRecF1/PrecRecF1_n%d_t%s_large%d_xyz%s_snr10_%s.pdf", numrows, t, large_int, use_xyz, append_str), width = 5, height = 7)
   }
 }
 
 
 
 
-
+q()
 
 
 
@@ -193,10 +193,9 @@ for (numrows in graph_numrows) { #400
     xlab("True interactions") +
     ylab("Recall") +
     #theme_fs() +
-	theme_bw() +
     theme(legend.position = "bottom")
   
-  pdf(sprintf("PrecRecF1/test_analysis_n%d_large%d_xyz%s_%s.pdf", numrows, large_int, use_xyz, append_str), width = 3, height = 3)
+  pdf(sprintf("PrecRecF1/test_analysis_n%d_large%d_xyz%s_snr10_%s.pdf", numrows, large_int, use_xyz, append_str), width = 5, height = 5)
   grid.arrange(pl.prec, pl.rec, ncol = 1)
   dev.off()
 }

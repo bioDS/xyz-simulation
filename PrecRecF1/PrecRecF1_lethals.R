@@ -16,7 +16,7 @@ if (length(args) >= 3) {
 
 if (args[2] == "x") {
 	use_xyz = TRUE
-	fits_path='./fits_proper/'
+	fits_path='./fits_proper_large/'
 } else if (args[2] == "g") {
 	use_xyz = FALSE
 	fits_path='./fits_glinternet/'
@@ -27,14 +27,14 @@ if (args[2] == "x") {
 rds_file = sprintf("PrecRecF1/dat_precrecf1_lethals_xyz%s.rds", use_xyz)
 
 cat("using lethal data\n")
-#graph_numrows <- c(10000)
-#graph_nbij <- c("0", "200", "500", "1000")
-#graph_nlethals <- c("10", "20", "50", "100")
+graph_numrows <- c(10000)
+graph_nbij <- c("0", "200", "500", "1000")
+graph_nlethals <- c("10", "20", "50", "100")
 #large_int <- FALSE
-#append_str <- "lethal"
-graph_numrows <- c(1000)
-graph_nbij <- c("0", "20", "50", "100")
-graph_nlethals <- c("1", "2", "5", "10")
+append_str <- "numcheck"
+#graph_numrows <- c(1000)
+#graph_nbij <- c("0", "20", "50", "100")
+#graph_nlethals <- c("1", "2", "5", "10")
 large_int <- FALSE
 
 if (args[1] == 'y') {

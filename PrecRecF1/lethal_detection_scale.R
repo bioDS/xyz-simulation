@@ -130,10 +130,12 @@ for (numrows in graph_numrows) { #400
           #xlab("True lethal pairs") +
           xlab("Genes") +
           ylab("") +
+          #theme_bw(base_size=15) +
+		  theme_bw() +
           #theme_fs() +
           theme(legend.position = "none")
         pl
-        ggsave(pl, file = sprintf("PrecRecF1/large_lethal_n%d_t%s_large%d_xyz%s_%s.pdf", numrows, t, large_int, use_xyz, append_str), width = 5, height = 7)
+        ggsave(pl, file = sprintf("PrecRecF1/large_lethal_n%d_t%s_large%d_xyz%s_%s.pdf", numrows, t, large_int, use_xyz, append_str), width = 3, height = 4)
     }
   }
 }

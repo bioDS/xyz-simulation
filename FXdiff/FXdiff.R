@@ -64,10 +64,13 @@ for (numrows in c(1000 * mult)) { #400, 1000
 #      scale_x_discrete(labels = c("(0, 10]", "(10, 20]", "(20, 40]", "(40, 80]", expression(paste("(80, ", infinity, ")")))) +
       xlab("Observations of double knockdown") +
       ylab("Absolute deviation [%]") +
-      ylim(c(0, 4)) +
+     # ylim(c(0, 4)) +
 #      theme_fs() +
       theme(legend.position = "bottom",
             axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+            
+     # if (use_xyz)
+     #     pl <- pl + ylim(c(0,4))
     pl
     ggsave(pl, file = sprintf("FXdiff/FXdiff_n%d_t%s_xyz%s.pdf", numrows, t, use_xyz), width = 5, height = 4)
   }

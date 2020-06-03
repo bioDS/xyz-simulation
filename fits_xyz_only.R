@@ -13,13 +13,16 @@ require(xyz)
 verbose <- TRUE
 lethal_coef <- -1000
 
-args <- commandArgs(trailingOnly = TRUE)
+#args <- commandArgs(trailingOnly = TRUE)
 
-print(args)
-f <- args[1]
-L <- args[2] %>% as.numeric
-write_out <- args[3] == 'write'
-regression_alpha <- 0.9
+#print(args)
+#f <- args[1]
+#L <- args[2] %>% as.numeric
+#write_out <- args[3] == 'write'
+f = "./simulated_data_large/n10000_p1000_SNR5_nbi500_nbij500_viol0_49127.rds"
+L = 1000
+write_out = FALSE
+regression_alpha <- 1.0
 
 n <- regmatches(x = f, m = regexpr(f, pattern = "(?<=n)\\d+(?=_)", perl = TRUE)) %>% as.numeric
 p <- regmatches(x = f, m = regexpr(f, pattern = "(?<=_p)\\d+(?=_)", perl = TRUE)) %>% as.numeric
@@ -51,13 +54,16 @@ gc()
 
 ## Fit model, wip: use xyz
 if (verbose) cat("Fitting model\n")
-time <- system.time(regression_results <- xyz_regression(X, Y %>% as.numeric, standardize=TRUE, standardize_response=TRUE, alpha=regression_alpha, L=L))
+X[X == 0] <- -1
+time <- system.time(regression_results <- xyz_regression(X, Y %>% as.numeric, standardize=TRUE, standardize_response=TRUE, alpha=regression_alpha, L=L, n_lambda=20))
+#time <- system.time(regression_results <- xyz_search(X, Y %>% as.numeric, L=L, N=2000))
 
 
 if (verbose) cat("Collecting stats\n")
 
 # Collect coefficients
-fx_main <- data.frame(gene_i = regression_results[[1]][[10]]) %>%
+fx_main <- data.frame(gene_i = regression_results[[1]][[10]]) %>% # for xyz_regression
+#fx_main <- data.frame(gene_i = regression_results[[1]][regression_results[[1]][1,]==regression_results[[1]][2,]]) %>% # for xyz_search
   arrange(gene_i) %>%
   mutate(type = "main", gene_j = NA, TP = (gene_i %in% bi_ind[["gene_i"]] || gene_i %in% lethal_ind[["gene_i"]]))  %>%
   mutate(lethal=gene_i %in% lethal_ind[["gene_i"]]) %>%
@@ -68,8 +74,10 @@ fx_main <- data.frame(gene_i = regression_results[[1]][[10]]) %>%
 fx_main
 
 # remove reflexive results
-first = unlist(split(regression_results[[3]][[10]], 1:2)[1])
-second = unlist(split(regression_results[[3]][[10]], 1:2)[2])
+first = unlist(split(regression_results[[3]][[10]], 1:2)[1]) # for xyz_regression
+second = unlist(split(regression_results[[3]][[10]], 1:2)[2]) # for xyz_regression
+#first = unlist(split(regression_results[[1]], 1:2)[1])
+#second = unlist(split(regression_results[[1]], 1:2)[2])
 
 nfirst = first[first != second]
 nsecond = second[first != second]

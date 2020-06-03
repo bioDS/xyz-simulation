@@ -119,7 +119,7 @@ for (SNR_limit in SNR_limits) {
 #         facet_wrap(~TP, scale = "free_y", ncol = 1) +
 #         scale_fill_manual(name = "Additional\nmain effects", values = c("#7fcdbb", "#1d91c0", "#253494")) +
 #        scale_fill_discrete(name = "True additional\nmain effects") +
-        ylim(c(0, 50)) +
+        ylim(c(0, 30)) +
     #    xlab("True interactions") +
         ylab("True Positives") +
         theme(axis.title.x=element_blank(),
@@ -141,7 +141,7 @@ for (SNR_limit in SNR_limits) {
         #theme_fs() +
         theme(legend.position = "bottom")
       
-      pdf(sprintf("l_diff/quant_analysis_n%d.pdf", numrows), width = 5, height = 8)
+      pdf(sprintf("l_diff/quant_analysis_n%d.pdf", numrows), width = 5, height = 5)
       grid.arrange(pl.prec, pl.rec, ncol = 1)
       dev.off()
       }

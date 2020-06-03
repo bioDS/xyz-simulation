@@ -89,7 +89,7 @@ for (numrows in c(1000 * mult)) { #1000,
       filter(nlethals == 0) %>%
       filter(n == numrows) %>%
       filter(test == t) %>%
-      filter(nbi == 20*mult, SNR != 1) %>%
+      filter(nbi == 20*mult, SNR == 5) %>%
       mutate(SNR = factor(SNR, labels = paste0("SNR = ", levels(factor(SNR))))) %>%
       filter(nbij %in% (c(5*mult, 20*mult, 50*mult, 100*mult))) %>%
       group_by(n, p, SNR, nbi, nbij, observations, type) %>%
@@ -126,12 +126,12 @@ for (numrows in c(1000 * mult)) { #1000,
       theme(legend.position = "bottom",
             axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
     pl
-    ggsave(pl, file = sprintf("NumObservations/NumObservations_n%d_t%s_xyz%s.pdf", numrows, t, use_xyz), width = 5, height = 7)
+    ggsave(pl, file = sprintf("NumObservations/NumObservations_n%d_t%s_xyz_snr5_%s.pdf", numrows, t, use_xyz), width = 5, height = 7)
   }
 }
 
 
-
+q()
 
 #
 #
@@ -227,7 +227,6 @@ if (args[3] == 'y') {
 	  geom_errorbar(aes(ymin = mean - sem, ymax = mean + sem), stat = "identity", width = 0.3) +
 	  xlab("Observations of double knockdown") +
 	  ylab("Gene pairs [%]") +
-	  ylim(0,50) +
 	#  scale_x_discrete(labels = c("(0, 10]", "(10, 20]", "(20, 40]", "(40, 80]", expression(paste("(80, ", infinity, ")")))) +
 	#  theme_fs() +
 	  theme(legend.position = "bottom",
