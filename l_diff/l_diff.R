@@ -110,7 +110,7 @@ for (SNR_limit in SNR_limits) {
     #      scale_y_continuous(trans='log10') +
           theme(legend.position = "bottom")
         pl
-        ggsave(pl, file = sprintf("l_diff/l_diff_n%d_SNR%d_t%s.pdf", numrows, SNR_limit, t), width = 3, height = 4)
+        ggsave(pl, file = sprintf("l_diff/l_diff_n%d_SNR%d_t%s.pdf", numrows, SNR_limit, t), width = 4, height = 4)
     
       
       pl.prec <- group_by(subset(dat_l_diff), n, p, nbi, L) %>%
@@ -141,7 +141,7 @@ for (SNR_limit in SNR_limits) {
         theme_bw() +
         theme(legend.position = "bottom")
       
-      pdf(sprintf("l_diff/quant_analysis_n%d.pdf", numrows), width = 3, width = 3)
+      pdf(sprintf("l_diff/quant_analysis_n%d.pdf", numrows), width = 4, height = 4)
       grid.arrange(pl.prec, pl.rec, ncol = 1)
       dev.off()
       }

@@ -31,7 +31,7 @@ graph_numrows <- c(10000)
 graph_nbij <- c("0", "200", "500", "1000")
 graph_nlethals <- c("10", "20", "50", "100")
 #large_int <- FALSE
-append_str <- "numcheck"
+append_str <- "lethal"
 #graph_numrows <- c(1000)
 #graph_nbij <- c("0", "20", "50", "100")
 #graph_nlethals <- c("1", "2", "5", "10")
@@ -131,7 +131,7 @@ for (numrows in graph_numrows) { #400
           theme_bw() +
           theme(legend.position = "bottom")
         pl
-        ggsave(pl, file = sprintf("PrecRecF1/PrecRecF1_n%d_t%s_large%d_lethal%s_xyz%s_%s.pdf", numrows, t, large_int, g_lethal, use_xyz, append_str), width = 3, height = 4)
+        ggsave(pl, file = sprintf("PrecRecF1/PrecRecF1_n%d_t%s_large%d_lethal%s_xyz%s_%s.pdf", numrows, t, large_int, g_lethal, use_xyz, append_str), width = 4, height = 4)
     }
   }
 }
