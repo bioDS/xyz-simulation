@@ -8,6 +8,8 @@ setwd("..")
 
 args <- commandArgs(trailingOnly = TRUE)
 
+large = FALSE
+
 if (args[3] == "x") {
 	use_xyz = TRUE
 	fits_path='./fits_proper/'
@@ -31,6 +33,8 @@ if (args[2] == 'l') {
     graph_numrows <- c(10000)
     graph_nbi <- c("0", "200", "500", "1000")
     graph_nbij <- c("50", "200", "500", "1000")
+	fits_path='./fits_proper_large/'
+	large = TRUE
 } else if (args[2] == 'm') {
     cat("using mixed data\n")
     graph_numrows <- c(10000)
@@ -44,7 +48,7 @@ if (args[2] == 'l') {
     graph_nbij <- c("5", "20", "50", "100")
     large_int <- FALSE
 }
-rds_file = sprintf("PrecRecF1/dat_precrecf1_xyz%s.rds", use_xyz)
+rds_file = sprintf("PrecRecF1/dat_precrecf1_xyz%s_large.rds", use_xyz, large)
 
 if (args[1] == 'y') {
     # Precision, recall and F1 for interaction terms
@@ -103,7 +107,7 @@ for (numrows in graph_numrows) { #400
       filter(nlethals == 0) %>%
       mutate(F1 = case_when(is.na(F1) ~ 0, TRUE ~ F1)) %>%
       mutate(SNR = factor(SNR, levels = levels(SNR), labels = paste0("SNR = ", levels(SNR)))) %>%
-      group_by(n, p, SNR, nbi, nbij, test) %>% sample_n(10, replace=FALSE) #TODO: improve this?
+      group_by(n, p, SNR, nbi, nbij, test) %>% sample_n(10, replace=TRUE) #TODO: improve this?
     
     pl <- group_by(dat_precrecf1, SNR, nbi, nbij) %>%
       summarise(mean = mean(precision, na.rm = TRUE), sd = sd(precision, na.rm = TRUE) / sqrt(n())) %>%
