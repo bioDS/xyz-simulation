@@ -8,10 +8,14 @@ require(reshape2)
 setwd("..")
 
 args <- commandArgs(trailingOnly = TRUE)
+mult <- args[2] %>% as.numeric
 
 if (args[4] == "x") {
        use_xyz = TRUE
        fits_path='./fits_proper/'
+       if (mult == 10) {
+           fits_path='../fits_proper_large'
+       }
 } else if (args[4] == "g") {
        use_xyz = FALSE
        fits_path='./fits_glinternet/'
@@ -19,7 +23,14 @@ if (args[4] == "x") {
     cat("[x]yz or [g]linternet required\n")
     q()
 }
-rds_file = sprintf("NumObservations/dat_numobs_xyz%s.rds", use_xyz)
+
+
+
+if (mult == 10) {
+	fits_path='./fits_proper_large'
+}
+
+rds_file = sprintf("NumObservations/dat_numobs_xyz%s_mult%s.rds", use_xyz, mult)
 
 
 if (args[1] == 'y') {
@@ -70,10 +81,9 @@ if (args[1] == 'y') {
      saveRDS(ans, file = rds_file)
 }
 
+numrows = 1000*mult
 
-mult <- args[2] %>% as.numeric
-
-for (numrows in c(1000 * mult)) { #1000, 
+if (args[3] != 'y') {
   if (numrows == 400) {
     rseq <- 0#c(seq(0, 60, by = 20), 100)
   } else if (numrows == 1000) {
@@ -115,22 +125,21 @@ for (numrows in c(1000 * mult)) { #1000,
                                ymin = mean - sem)) +
       geom_line(aes(colour = nbij), position = position_dodge(.35)) +
       geom_point(aes(colour = nbij), position = position_dodge(.35), size = 1) +
-      geom_errorbar(colour = "darkgrey", width = 0.3, position = position_dodge(.35)) +
+      #geom_errorbar(colour = "darkgrey", width = 0.3, position = position_dodge(.35)) +
       facet_grid(measure~SNR) +
       scale_color_discrete(name = "True interactions") +
-#      scale_x_discrete(labels = c("(0, 10]", "(10, 20]", "(20, 40]", "(40, 80]", expression(paste("(80, ", infinity, ")")))) +
+ #     scale_x_discrete(labels = c("(0, 10]", "(10, 20]", "(20, 40]", "(40, 80]", expression(paste("(80, ", infinity, ")")))) +
       ylim(c(0,1)) +
       xlab("Observations of double knockdown") +
       ylab("") +
-	  theme_bw() +
-#      theme_fs() +
+    theme_bw() +
+ #     theme_fs() +
       theme(legend.position = "bottom",
             axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
     pl
     ggsave(pl, file = sprintf("NumObservations/NumObservations_n%d_t%s_xyz%s.pdf", numrows, t, use_xyz), width = 4, height = 4)
   }
 }
-
 
 
 
@@ -209,7 +218,7 @@ if (args[3] == 'y') {
 	
 	
 	
-	# rseq <- c(seq(0, 150, by = 50), Inf)
+	#rseq <- c(seq(0, 150, by = 50), Inf)
 	rseq <- c(0, 10*mult, 20*mult, 40*mult, 80*mult, Inf)
 	
 	ans <- filter(dat, !is.na(value)) %>% #, value > 0
@@ -228,9 +237,9 @@ if (args[3] == 'y') {
 	  geom_errorbar(aes(ymin = mean - sem, ymax = mean + sem), stat = "identity", width = 0.3) +
 	  xlab("Observations of double knockdown") +
 	  ylab("Gene pairs [%]") +
-	  ylim(0,50) +
-	#  scale_x_discrete(labels = c("(0, 10]", "(10, 20]", "(20, 40]", "(40, 80]", expression(paste("(80, ", infinity, ")")))) +
-	#  theme_fs() +
+	  #ylim(0,50) +
+	  #scale_x_discrete(labels = c("(0", "50", "100", "150")) +
+	  theme_bw() +
 	  theme(legend.position = "bottom",
 	        axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 	

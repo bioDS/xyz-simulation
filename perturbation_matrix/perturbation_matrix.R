@@ -99,6 +99,7 @@ for (numrows in c(400, 1000)) {
     ylab("Frequency") +
     ggtitle("A") +
 #    theme_fs() +
+	theme_bw() +
     theme(plot.title = element_text(hjust = -0.1, vjust = -0.2, size = 18))
   pl.hist
   
@@ -115,6 +116,7 @@ for (numrows in c(400, 1000)) {
              label = sprintf("%.0f%% non-zero", ident_perc * 100), 
              hjust = 1.2, vjust = -1.5, colour = "black") +
 #    theme_fs() +
+	theme_bw() +
     theme(legend.position = "bottom",
           plot.title = element_text(hjust = -0.1, vjust = -0.2, size = 18),
           panel.grid.major = element_blank(),
